@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
+const $ = require('jquery');
 
 /**
  * This class represents the lazy loaded HubStartComponent.
@@ -16,11 +17,6 @@ export class HubStartComponent implements OnInit {
 
     ngOnInit() {
         console.log('HubStart');
-    }
-
-    goToTerminal() {
-    }
-
-    goToAnnotate() {
+        $.material.init();
     }
 }

@@ -1,0 +1,170 @@
+<div class="annotator container-fluid">
+    <div class="toolbar panel row">
+        <div class="col-xs-12">
+            <div class="btn-toolbar" role="toolbar">
+                <span class="filename h4">Filename</span>
+                <div class="btn-group pull-right" role="group">
+                    <button id="saveAnnotation" type="button" class="btn btn-raised btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="image-display row">
+        <div class="image-panel col-xs-8">
+            <div class="image-canvas-wrapper">
+                <canvas id="image" class="well image-canvas"></canvas>
+                <img id="imageHolder" class="hidden" src=""/>
+            </div>
+            <div class="bottom-toolbar">
+                <div class="btn-toolbar" role="toolbar">
+                    <div class="btn-group mouse-position" role="group">
+                        <button type="button" class="btn btn-default x">x</button>
+                        <button type="button" class="btn btn-default y">y</button>
+                    </div>
+                    <div class="btn-group frame-navigator" role="group">
+                        <div class="col-xs-6 form-group current-frame">
+                            <input type="number" id="frame-navigator" class="form-control"/>
+                        </div>
+                        <div class="col-xs-6 btn btn-default total-frames">
+                            out of <span>0</span>
+                        </div>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="previous-image" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-chevron-left"></span>
+                        </button>
+                        <button id="zoom-in" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-zoom-in"></span>
+                        </button>
+                        <button id="zoom-out" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-zoom-out"></span>
+                        </button>
+                        <button id="next-image" type="button" class="btn btn-default">
+                            <span class="glyphicon glyphicon-chevron-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="control-panel panel col-xs-4">
+            <ul class="nav nav-tabs nav-justified">
+                <li><a id="calibrationTab" data-toggle="tab" href="">Calibration</a></li>
+                <li><a id="annotationTab" data-toggle="tab" href="">Annotation</a></li>
+            </ul>
+            <div class="alert alert-warning text-center">
+                <h4>Not calibrated. Auto infer real location not functional.</h4>
+            </div>
+            <div class="controls calibration">
+                <form id="calibration" class="form-horizontal" action="#">
+                    <fieldset>
+                        <h4>Calibration Files</h4>
+                        <div class="form-group is-fileinput">
+                            <label class="col-xs-4 control-label" for="lensCalibrationFile">Lens Calibration</label>
+                            <div class="col-xs-8">
+                                <input type="file" class="form-control" id="lensCalibrationFile" />
+                                <input readonly="" class="form-control" placeholder="Select file..." type="text">
+                            </div>
+                        </div>
+                        <div class="form-group is-fileinput">
+                            <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
+                            <div class="col-xs-8">
+                                <input type="file" class="form-control" id="perspectiveCalibrationFile" />
+                                <input readonly="" class="form-control" placeholder="Select file..." type="text">
+                            </div>
+                        </div>
+                        <h4>Image Origin</h4>
+                        <div class="coordinates row">
+                            <div class="col-xs-6 form-group">
+                                <label class="col-xs-4 control-label" for="imageOriginX">X</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="number" id="imageOriginX" />
+                                </div>
+                            </div>
+                            <div class="col-xs-6 form-group">
+                                <label class="col-xs-4 control-label" for="imageOriginY">Y</label>
+                                <div class="col-xs-8">
+                                    <input class="form-control" type="number" id="imageOriginY" />
+                                </div>
+                            </div>
+                            <div class="col-xs-offset-2 col-xs-10">
+                                <button id="selectImageOrigin" type="button" class="btn btn-default">Select</button>
+                            </div>
+                        </div>
+                        <div class="coordinates row">
+                            <div class="col-xs-4 form-group">
+                                <div class="checkbox">
+                                    <label class="col-xs-12">
+                                        <input type="checkbox" id="flipOriginX" /> Flip X
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 form-group">
+                                <div class="checkbox">
+                                    <label class="col-xs-12">
+                                        <input type="checkbox" id="flipOriginY" /> Flip Y
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 form-group">
+                                <div class="checkbox">
+                                    <label class="col-xs-12">
+                                        <input type="checkbox" id="switchOrigin" /> Switch X-Y
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+            <div class="controls annotation">
+                <form id="annotation" class="form-horizontal" action="#">
+                    <fieldset>
+                        <div class="autofill">
+                            <h4>Sequence</h4>
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="sequenceNumber">Number</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="sequenceNumber" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="sequenceName">Name</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="sequenceName" />
+                                </div>
+                            </div>
+                            <h4>Video</h4>
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="videoIncrement">Increment</label>
+                                <div class="col-xs-8">
+                                    <input type="text" class="form-control" id="videoIncrement" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="videoCamera">Camera</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="videoCamera" />
+                                </div>
+                            </div>
+                            <h4>Frame</h4>
+                            <div class="form-group">
+                                <label class="col-xs-4 control-label" for="frameNumber">Number</label>
+                                <div class="col-xs-8">
+                                    <input type="number" class="form-control" id="frameNumber" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="people">
+                        </div>
+                        <div class="col-xs-6">
+                            <button id="addPerson" type="button" class="btn btn-default">Add Person</button>
+                        </div>
+                        <div class="col-xs-6">
+                            <button id="removePerson" type="button" class="btn btn-default">Remove Person</button>
+                        </div>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

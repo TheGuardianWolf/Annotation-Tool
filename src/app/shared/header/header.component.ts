@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Location } from '@angular/common';
 
 /**
  * This class represents the navigation bar component.
@@ -8,4 +9,12 @@ import { Component } from '@angular/core';
   template: require('./header.component.html'),
   //styleUrls: ['./header.component.scss'],
 })
-export class HeaderComponent { }
+export class HeaderComponent {
+    constructor(
+        private _location: Location
+    ) { }
+
+    backPressed() {
+        this._location.back();
+    }
+}

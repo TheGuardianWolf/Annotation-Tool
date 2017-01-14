@@ -1,0 +1,77 @@
+<div class="hub hub-workspace container-fluid">
+    <div class="row">
+        <div class="col-xs-6">
+            <div class="panel hub-item hub-item-left">
+                <div class="title">
+                    <h3>Create Workspace</h3>
+                </div>
+                <div class="icon">
+                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </div>
+                <div class="options">
+                    {{create.directory}}
+                    <form id="createWorkspace" class="form-horizontal" action="#">
+                        <div class="form-group is-fileinput">
+                            <label class="control-label col-xs-3" for="extractDirectory">Workspace Directory</label>
+                            <div class="col-xs-9">
+                                <FileElectron 
+                                              [(ngModel)]="create.directory" 
+                                              inputId="extractDirectory" 
+                                              name="extractDirectory" 
+                                              placeholder="Select directory..." 
+                                              webkitdirectory="true"
+                                              >
+                                </FileElectron>
+                            </div>
+                        </div>
+                        <div class="form-group is-fileinput">
+                            <label class="control-label col-xs-3" for="videoFile">Video File</label>
+                            <div class="col-xs-9">
+                                <FileElectron 
+                                              inputId="videoFile" 
+                                              name="videoFile" 
+                                              placeholder="Select file..."
+                                              extension="mkv">
+                                </FileElectron>
+                            </div>
+                        </div>
+                        <div class="form-group is-fileinput">
+                            <label class="control-label col-xs-3" for="annotationFileCW">Annotation File</label>
+                            <div class="col-xs-9">
+                                <FileElectron inputId="annotationFileCW" name="annotationFileCW" placeholder="Select file..."></FileElectron>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-default btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="panel hub-item hub-item-right">
+                <div class="title">
+                    <h3>Load Workspace</h3>
+                </div>
+                <div class="icon">
+                    <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
+                </div>
+                <div class="options">
+                    <form id="loadWorkspace" class="form-horizontal" action="#">
+                        <div class="form-group is-fileinput">
+                            <label class="control-label col-xs-3" for="loadDirectory">Workspace Directory</label>
+                            <div class="col-xs-9">
+                                <FileElectron inputId="loadDirectory" name="loadDirectory" placeholder="Select directory..." webkitdirectory="true"></FileElectron>
+                            </div>
+                        </div>
+                        <div class="form-group is-fileinput">
+                            <label class="control-label col-xs-3" for="annotationFileLW">Annotation File</label>
+                            <div class="col-xs-9">
+                                <FileElectron inputId="annotationFileLW" name="annotationFileLW" placeholder="Select file..."></FileElectron>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-default btn-primary">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

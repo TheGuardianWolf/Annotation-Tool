@@ -24,14 +24,21 @@ var webpackConfig = {
 
 	module: {
 		loaders: [
-			{ test: /\.ts$/,   loader: 'awesome-typescript-loader!angular2-template-loader?keepUrl=true' },
-			{ test: /\.html$/, loader: 'html-loader' },
-			{ test: /\.scss$/,
-				loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!sass-loader?sourceMap')
+            {
+                test: /\.ts$/,
+                loader: 'awesome-typescript-loader!angular2-template-loader?keepUrl=true'
+            },
+            {
+                test: /\.html$/,
+                loader: 'html-loader'
+            },
+            {
+                test: /\.scss$/,
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!resolve-url!sass-loader?sourceMap')
             },
             {
                 test: /\.css$/,
-                loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap')
+                loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!resolve-url')
             },
             //{
             //    test: /\.(eot|woff|woff2|ttf|svg|png|jpg|jpeg|fs)$/,
@@ -42,14 +49,18 @@ var webpackConfig = {
                 loader: 'file-loader'
             },
 		]
-	},
+    },
+
+    sassLoader: {
+        precision: 8
+    },
 
 	devServer: {
 		contentBase: 'app',
 		publicPath: '/build',
 	},
 
-    target: 'electron-renderer',
+    //target: 'electron-renderer',
 
     resolve: {
         alias: {

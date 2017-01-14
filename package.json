@@ -29,6 +29,7 @@
     "html-loader": "^0.4.3",
     "node-sass": "^3.8.0",
     "reflect-metadata": "^0.1.9",
+    "resolve-url-loader": "^1.6.1",
     "sass-loader": "^3.2.2",
     "source-map-loader": "^0.1.5",
     "spectron": "^3.2.3",

@@ -7,6 +7,7 @@
     "es6-promise": "registry:dt/es6-promise#3.0.0+20160211003958"
   },
   "globalDependencies": {
+    "bootstrap-material": "file:src/typings/bootstrap-material.d.ts",
     "core-js": "registry:dt/core-js#0.0.0+20160602141332",
     "node": "registry:dt/node#6.0.0+20160621231320"
   }
