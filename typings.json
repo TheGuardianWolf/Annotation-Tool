@@ -1,6 +1,6 @@
 {
-  "name": "angular2-seed",
-  "version": false,
+  "name": "uoa-annotation-tool",
+  "version": "0.2.0",
   "dependencies": {},
   "ambientDependencies": {
     "es6-collections": "registry:dt/es6-collections#0.5.1+20160316155526",
@@ -9,6 +9,7 @@
   "globalDependencies": {
     "bootstrap-material": "file:src/typings/bootstrap-material.d.ts",
     "core-js": "registry:dt/core-js#0.0.0+20160602141332",
-    "node": "registry:dt/node#6.0.0+20160621231320"
+    "node": "registry:dt/node#6.0.0+20160621231320",
+    "paper": "github:clark-stevenson/paper.d.ts/paper.d.ts"
   }
 }

@@ -5,10 +5,12 @@ import { HubWorkspaceComponent } from './hub-workspace.component';
 import { HubWorkspaceRoutingModule } from './hub-workspace-routing.module';
 import { SharedModule } from '../shared/shared.module';
 
+import { WorkspaceService } from '../shared/workspace/workspace.service';
+
 @NgModule({
     imports: [CommonModule, FormsModule, HubWorkspaceRoutingModule, SharedModule],
     declarations: [HubWorkspaceComponent],
     exports: [HubWorkspaceComponent],
-    providers: []
+    providers: [WorkspaceService]
 })
 export class HubWorkspaceModule { }

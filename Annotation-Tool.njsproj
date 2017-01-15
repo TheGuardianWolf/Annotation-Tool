@@ -49,6 +49,9 @@
     <TypeScriptCompile Include="src\app\shared\file-electron\file-electron.component.ts" />
     <TypeScriptCompile Include="src\app\shared\header\header.component.ts" />
     <TypeScriptCompile Include="src\app\shared\shared.module.ts" />
+    <TypeScriptCompile Include="src\app\shared\workspace\calibration\calibration.ts" />
+    <TypeScriptCompile Include="src\app\shared\workspace\paper-canvas\paper-canvas.ts" />
+    <TypeScriptCompile Include="src\app\shared\workspace\storage\storage.ts" />
     <TypeScriptCompile Include="src\main.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\vendor.ts" />
@@ -77,10 +80,15 @@
     <Folder Include="src\app\shared\camera-tool\" />
     <Folder Include="src\app\shared\file-electron\" />
     <Folder Include="src\app\shared\workspace\" />
+    <Folder Include="src\app\shared\workspace\calibration\" />
+    <Folder Include="src\app\shared\workspace\storage\" />
+    <Folder Include="src\app\shared\workspace\paper-canvas\" />
     <Folder Include="src\app\views\" />
     <Folder Include="src\app\views\home\" />
     <Folder Include="src\app\views\page1" />
     <Folder Include="src\app\views\page2" />
+    <Folder Include="src\utils\" />
+    <Folder Include="src\utils\includes\" />
     <Folder Include="src\styles" />
     <Folder Include="typings" />
     <Folder Include="typings\globals" />

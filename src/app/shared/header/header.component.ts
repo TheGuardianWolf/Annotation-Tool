@@ -10,6 +10,8 @@ import { Location } from '@angular/common';
   //styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent {
+    public showLoader: boolean = false;
+
     constructor(
         private _location: Location
     ) { }
