@@ -1,5 +1,6 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+import * as path from 'path';
 const $ = require('jquery');
 
 // Validation for file-electron inputs not currently working
@@ -26,7 +27,7 @@ export function createFileElectronValidator(extension) {
             [attr.webkitdirectory]="webkitdirectory === 'true' ? true : null"
             (change)="fileChanged($event)"
             >
-        <input readonly="" class="form-control" [attr.placeholder]="placeholder" type="text">
+        <input #fileInputDisplay readonly="" class="form-control" [attr.placeholder]="placeholder" type="text">
     `,
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => FileElectronComponent), multi: true },
@@ -36,6 +37,7 @@ export function createFileElectronValidator(extension) {
 
 export class FileElectronComponent implements ControlValueAccessor, OnChanges, OnInit {
     @ViewChild('fileInput') fileInput: ElementRef;
+    @ViewChild('fileInputDisplay') fileInputDisplay: ElementRef;
 
     onTouched: any = () => { };
     propagateChange: any = () => { };
@@ -77,7 +79,11 @@ export class FileElectronComponent implements ControlValueAccessor, OnChanges, O
     }
 
     writeValue(value) {
-        this._path = value;
+        if (value !== this._path) {
+            this._path = value;
+            this.fileInputDisplay.nativeElement.value =
+                value ? this._path.split(path.delimiter) : null;
+        }
     }
 
     registerOnChange(fn) {

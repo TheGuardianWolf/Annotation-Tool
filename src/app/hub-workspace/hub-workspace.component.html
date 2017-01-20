@@ -9,12 +9,11 @@
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </div>
                 <div class="options">
-                    <form id="createWorkspace" class="form-horizontal" action="#">
+                    <form id="createWorkspace" class="form-horizontal" action="#" [formGroup]="createForm" (ngSubmit)="createWorkspace()">
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="extractDirectory">Workspace Directory</label>
                             <div class="col-xs-9">
-                                <FileElectron 
-                                              [(ngModel)]="create.directory" 
+                                <FileElectron formControlName="directory" 
                                               inputId="extractDirectory" 
                                               name="extractDirectory" 
                                               placeholder="Select directory..." 
@@ -24,8 +23,7 @@
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="videoFile">Video File</label>
                             <div class="col-xs-9">
-                                <FileElectron 
-                                              [(ngModel)]="create.video"
+                                <FileElectron formControlName="video"
                                               inputId="videoFile" 
                                               name="videoFile" 
                                               placeholder="Select file..."
@@ -35,14 +33,13 @@
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="annotationFileCW">Annotation File</label>
                             <div class="col-xs-9">
-                                <FileElectron 
-                                              [(ngModel)]="create.annotation"
-                                              inputId="annotationFileCW" 
-                                              name="annotationFileCW" 
+                                <FileElectron formControlName="annotation"
+                                              inputId="annotationFileCW"
+                                              name="annotationFileCW"
                                               placeholder="Select file..."></FileElectron>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-default btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-default btn-primary" [disabled]="!createForm.valid">Submit</button>
                     </form>
                 </div>
             </div>
@@ -56,12 +53,11 @@
                     <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 </div>
                 <div class="options">
-                    <form id="loadWorkspace" class="form-horizontal" action="#">
+                    <form id="loadWorkspace" class="form-horizontal" action="#" [formGroup]="loadForm" (ngSubmit)="loadWorkspace()">
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="loadDirectory">Workspace Directory</label>
                             <div class="col-xs-9">
-                                <FileElectron 
-                                              [(ngModel)]="load.directory"
+                                <FileElectron formControlName="directory"
                                               inputId="loadDirectory" 
                                               name="loadDirectory" 
                                               placeholder="Select directory..." 
@@ -71,14 +67,13 @@
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="annotationFileLW">Annotation File</label>
                             <div class="col-xs-9">
-                                <FileElectron 
-                                              [(ngModel)]="load.directory"
+                                <FileElectron formControlName="annotation"
                                               inputId="annotationFileLW" 
                                               name="annotationFileLW" 
                                               placeholder="Select file..."></FileElectron>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-default btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-default btn-primary" [disabled]="!loadForm.valid">Submit</button>
                     </form>
                 </div>
             </div>

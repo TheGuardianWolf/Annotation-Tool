@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
+import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 const $ = require('jquery');
 
 interface ICreate {
@@ -23,18 +24,19 @@ interface ILoad {
 })
 
 export class HubWorkspaceComponent implements OnInit {
-    public create: ICreate = {
-        directory: '',
-        videoFile: '',
-        annotationFile: null
-    };
-    public load: ILoad = {
-        directory: '',
-        annotationFile: null
-    };
+    public createForm: FormGroup;
+    public loadForm: FormGroup;
 
-    constructor(
-    ) {
+    constructor(fb: FormBuilder) {
+        this.createForm = fb.group({
+            'directory': [null, Validators.required],
+            'video': [null, Validators.required],
+            'annotation': [null]
+        });
+        this.loadForm = fb.group({
+            'directory': [null, Validators.required],
+            'annotation': [null]
+        });
     }
 
     ngOnInit() {

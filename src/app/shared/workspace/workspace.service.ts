@@ -1,9 +1,9 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 
-import { Point, Person, Frame, Video, Sequence, Annotation } from './storage/storage';
-import { PaperCanvas } from './paper-canvas/paper-canvas';
-import { Calibration } from './calibration/calibration';
+import { Point, Person, Frame, Video } from './classes/storage';
+import { PaperCanvas } from './classes/paper-canvas';
+import { Calibration } from './classes/calibration';
 
 /**
  * Backend state store for the workspace service
@@ -12,10 +12,6 @@ class Workspace {
     public paperCanvas: PaperCanvas;
 
     public imageList: Array<HTMLImageElement>
-
-    public annotation: Annotation;
-
-    public sequence: Sequence;
 
     public video: Video;
 
@@ -30,7 +26,10 @@ class Workspace {
  */
 @Injectable()
 export class WorkspaceService {
-    public busy: Observable<boolean>;
+    private _busy: Observable<boolean>;
+    get busy() {
+        return this._busy;
+    }
 
     // Workspace reference
     public workspace: Workspace;

@@ -1,4 +1,4 @@
-﻿import { Point } from '../storage/storage';
+﻿import { Point } from './storage';
 
 export class Calibration {
     private _calibrated: boolean = false;

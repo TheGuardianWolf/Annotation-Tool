@@ -101,17 +101,17 @@ export class Frame {
         return {
             'frameNumber': this.frameNumber,
             'numberOfPeople': this.people.length,
-            'people': this.people.map((curr) => {
-                return curr.toObject();
+            'people': this.people.map((person) => {
+                return person.toObject();
             })
         };
     }
 
     static parse(frame) {
         let f = new Frame(frame.frameNumber);
-        frame.people.forEach((curr) => {
-            if (curr) {
-                f.addPerson(Person.parse(curr));
+        frame.people.forEach((person) => {
+            if (person) {
+                f.addPerson(Person.parse(person));
             }
         });
         return f;
@@ -119,11 +119,15 @@ export class Frame {
 }
 
 export class Video {
+    public number: number;
+    public name: string;
     public increment: string;
     public camera: number;
     public frames: Array<Frame>;
 
-    constructor(increment, camera) {
+    constructor(number, name, increment, camera) {
+        this.number = number;
+        this.name = name;
         this.increment = increment;
         this.camera = camera;
         this.frames = [];
@@ -140,84 +144,23 @@ export class Video {
 
     toObject() {
         return {
+            'number': this.number,
+            'name': this.name,
             'increment': this.increment,
             'camera': this.camera,
-            'frames': this.frames.map((curr) => {
-                return curr.toObject();
+            'frames': this.frames.map((frame) => {
+                return frame.toObject();
             })
         };
     }
 
     static parse(video) {
-        let v = new Video(video.increment, video.camera);
-        video.frames.forEach((curr) => {
-            if (curr) {
-                v.addFrame(Frame.parse(curr));
+        let v = new Video(video.number, video.name, video.increment, video.camera);
+        video.frames.forEach((frame) => {
+            if (frame) {
+                v.addFrame(Frame.parse(frame));
             }
         });
         return v;
-    }
-}
-
-export class Sequence {
-    public number: number;
-    public name: string;
-    public videos: Array<Video>;
-
-    constructor(number, name) {
-        this.number = number;
-        this.name = name;
-        this.videos = [];
-    }
-
-    addVideo(video) {
-        this.videos.push(video);
-    }
-
-    toObject() {
-        return {
-            'number': this.number,
-            'name': this.name,
-            'videos': this.videos.map((curr) => {
-                return curr.toObject();
-            })
-        };
-    }
-
-    static parse(sequence) {
-        let s = new Sequence(sequence.number, sequence.name);
-        sequence.videos.forEach((curr) => {
-            if (curr) {
-                s.addVideo(Video.parse(curr));
-            }
-        });
-        return s;
-    }
-}
-
-export class Annotation {
-    public sequences: Array<Sequence>;
-
-    constructor(annotationArray) {
-        if (!annotationArray) {
-            this.sequences = [];
-        }
-        else {
-            this.sequences = annotationArray.map((curr) => {
-                if (curr) {
-                    return Sequence.parse(curr);
-                }
-            });
-        }
-    }
-
-    addSequence(sequence) {
-        this.sequences.push(sequence);
-    }
-
-    toObject() {
-        return this.sequences.map((curr) => {
-            return curr.toObject();
-        });
     }
 }
