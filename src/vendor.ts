@@ -8,6 +8,8 @@ import '@angular/forms';
 import '@angular/http';
 import '@angular/router';
 
+import 'q';
+
 import 'jquery';
 import 'bootstrap-material-design';
 

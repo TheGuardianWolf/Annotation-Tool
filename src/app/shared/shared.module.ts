@@ -13,16 +13,16 @@ import { CameraToolService } from './camera-tool/camera-tool.service';
  */
 
 @NgModule({
-  imports: [CommonModule, RouterModule],
-  declarations: [],
-  exports: [HeaderComponent, FileElectronComponent,
-    CommonModule, FormsModule, RouterModule]
+    imports: [CommonModule, RouterModule],
+    declarations: [HeaderComponent, FileElectronComponent],
+    exports: [HeaderComponent, FileElectronComponent,
+        CommonModule, FormsModule, RouterModule]
 })
 export class SharedModule {
-  static forRoot(): ModuleWithProviders {
-    return {
-        ngModule: SharedModule,
-        providers: [WorkspaceService, CameraToolService]
-    };
-  }
+    static forRoot(): ModuleWithProviders {
+        return {
+            ngModule: SharedModule,
+            providers: [WorkspaceService, CameraToolService]
+        };
+    }
 }

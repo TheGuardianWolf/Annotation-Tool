@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
-const $ = require('jquery');
+declare var $;
 
 import { IWorkspaceConfig, WorkspaceService } from '../shared/workspace/workspace.service';
 
@@ -18,14 +18,15 @@ import { IWorkspaceConfig, WorkspaceService } from '../shared/workspace/workspac
 })
 
 export class HubWorkspaceComponent implements OnInit {
-    private _router: Router;
-    public _ws: WorkspaceService;
+    private router: Router;
+    public ws: WorkspaceService;
 
     public createForm: FormGroup;
     public loadForm: FormGroup;
 
     constructor(_fb: FormBuilder, _ws: WorkspaceService, _router: Router) {
-        this._router = _router;
+        this.router = _router;
+        this.ws = _ws;
         this.createForm = _fb.group({
             'directory': [null, Validators.required],
             'video': [null, Validators.required],
@@ -35,29 +36,27 @@ export class HubWorkspaceComponent implements OnInit {
             'directory': [null, Validators.required],
             'annotation': [null]
         });
-        this._ws = _ws;
     }
 
     ngOnInit() {
-        console.log('HubWorkspace');
         $.material.init();
     }
 
     initWorkspace(event: Event, create: boolean) {
         event.preventDefault();
         if (create) {
-            this._ws.init({
+            this.ws.init({
                 directory: this.createForm.get('directory').value,
                 video: this.createForm.get('video').value,
                 annotation: this.createForm.get('annotation').value
             });
         }
         else {
-            this._ws.init({
+            this.ws.init({
                 directory: this.loadForm.get('directory').value,
                 annotation: this.loadForm.get('annotation').value
             });
         }
-        this._router.navigate(['annotator']);
+        this.router.navigate(['/annotator']);
     }
 }

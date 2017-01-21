@@ -11,6 +11,13 @@ import { Http } from '@angular/http';
 })
 
 export class ControlPanelComponent {
+    public currentControl: string = 'calibration';
+
     constructor(
     ) { }
+
+    public changeControls(event) {
+        event.preventDefault();
+        this.currentControl = event.currentTarget.getAttribute('data-control');
+    }
 }

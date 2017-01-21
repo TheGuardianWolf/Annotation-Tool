@@ -1,7 +1,8 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import * as path from 'path';
-const $ = require('jquery');
+
+declare var $;
 
 // Validation for file-electron inputs not currently working
 export function createFileElectronValidator(extension) {

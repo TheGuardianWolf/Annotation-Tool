@@ -16,7 +16,6 @@ export class HubStartComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        console.log('HubStart');
         $.material.init();
     }
 }

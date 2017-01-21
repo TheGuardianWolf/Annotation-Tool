@@ -5,7 +5,7 @@ import { AnnotatorComponent } from './annotator.component';
 @NgModule({
   imports: [
     RouterModule.forChild([
-      { path: 'annotator', component: AnnotatorComponent }
+          { path: 'annotator', component: AnnotatorComponent },
     ])
   ],
   exports: [RouterModule]

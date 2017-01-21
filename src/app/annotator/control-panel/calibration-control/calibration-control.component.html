@@ -5,15 +5,20 @@
             <div class="form-group is-fileinput">
                 <label class="col-xs-4 control-label" for="lensCalibrationFile">Lens Calibration</label>
                 <div class="col-xs-8">
-                    <input type="file" class="form-control" id="lensCalibrationFile" />
-                    <input readonly="" class="form-control" placeholder="Select file..." type="text">
+                    <FileElectron [(ngModel)]="ws.workspace.calibration.lensCalibrationFile"
+                                  inputId="lensCalibrationFile"
+                                  name="lensCalibrationFile"
+                                  placeholder="Select file..."
+                                  webkitdirectory="false"></FileElectron>
                 </div>
             </div>
             <div class="form-group is-fileinput">
                 <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
                 <div class="col-xs-8">
-                    <input type="file" class="form-control" id="perspectiveCalibrationFile" />
-                    <input readonly="" class="form-control" placeholder="Select file..." type="text">
+                    <FileElectron inputId="perspectiveCalibrationFile"
+                                  name="perspectiveCalibrationFile"
+                                  placeholder="Select file..."
+                                  webkitdirectory="false"></FileElectron>
                 </div>
             </div>
             <h4>Image Origin</h4>

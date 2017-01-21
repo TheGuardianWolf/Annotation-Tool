@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Http } from '@angular/http';
 import { WorkspaceService } from '../shared/workspace/workspace.service';
+import { Router } from '@angular/router';
 
 /**
  * This class represents the lazy loaded HubStartComponent.
@@ -12,16 +13,17 @@ import { WorkspaceService } from '../shared/workspace/workspace.service';
 })
 
 export class AnnotatorComponent implements OnInit {
-    private _ws: WorkspaceService;
+    private ws: WorkspaceService;
+    private router: Router;
 
-    constructor(_as: WorkspaceService) {
-        this._ws = _as;
+    constructor(_router: Router, _ws: WorkspaceService) {
+        this.ws = _ws;
+        this.router = _router;
     }
 
     ngOnInit() {
-        console.log('Annotator');
-        if (!this._ws.workspace) {
-
+        if (!this.ws.initialised) {
+            this.router.navigate(['/hub', 'workspace']);
         }
     }
 }

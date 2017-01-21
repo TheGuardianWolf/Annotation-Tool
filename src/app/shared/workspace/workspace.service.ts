@@ -1,6 +1,8 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
-import { Workspace } from './classes/workspace';
+import { Workspace } from '../classes/workspace';
+import { CameraToolService } from '../camera-tool/camera-tool.service';
+
+import * as Q from 'q';
 
 export interface IWorkspaceConfig {
     directory: string;
@@ -13,29 +15,51 @@ export interface IWorkspaceConfig {
  */
 @Injectable()
 export class WorkspaceService {
-    private _busy: Observable<boolean>;
+    private _busy: boolean;
     get busy() {
-        return this._busy;
+        return this._busy || this.workspace.busy;
     }
 
+    private _initialised: boolean = false;
+    get initialised() {
+        return this._initialised;
+    }
+
+    private cts: CameraToolService;
+
     // Workspace reference
-    public workspace: Workspace;
+    public workspace: Workspace = new Workspace();
 
     // Inputs
     public videoFile: string;
     public annotationFile: string;
     public workspaceDir: string;
 
-    constructor() { }
+    constructor(_cts: CameraToolService) {
+        this.cts = _cts;
+    }
 
     init(config: IWorkspaceConfig) {
         this.workspaceDir = config.directory;
         this.videoFile = config.video;
         this.annotationFile = config.annotation;
 
-        console.log(this.workspaceDir, this.videoFile, this.annotationFile);
+        if (this.videoFile) {
+            this._busy = true;
+            this.cts.extractImages(this.videoFile, this.workspaceDir)
+                .then(() => {
+                })
+        }
+        this._initialised = true;
+    }
 
-        this.workspace = new Workspace();
+    loadImages(): Q.Promise<{}> {
+
+    }
+
+    save() {
+        if (!this._busy) {
+        }
     }
 }
 

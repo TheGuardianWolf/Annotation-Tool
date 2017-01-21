@@ -24,9 +24,9 @@
     <Content Include="src\app\annotator\annotator.component.html" />
     <Content Include="src\app\annotator\annotator.component.scss" />
     <Content Include="src\app\annotator\control-panel\control-panel.component.html" />
-    <Content Include="src\app\annotator\control-panel\controls\settings-control\settings-control.component.html" />
-    <Content Include="src\app\annotator\control-panel\controls\calibration-control\calibration-control.component.html" />
-    <Content Include="src\app\annotator\control-panel\controls\annotation-control\annotation-control.component.html" />
+    <Content Include="src\app\annotator\control-panel\settings-control\settings-control.component.html" />
+    <Content Include="src\app\annotator\control-panel\calibration-control\calibration-control.component.html" />
+    <Content Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.html" />
     <Content Include="src\app\app.component.html" />
     <Content Include="src\app\hub-start\hub-start.component.scss" />
     <Content Include="src\app\hub-workspace\hub-workspace.component.html" />
@@ -35,7 +35,6 @@
     <Content Include="src\app\shared\header\header.component.html" />
     <Content Include="src\app\shared\header\header.component.scss" />
     <Content Include="tsconfig.json" />
-    <Content Include="typings.json" />
     <Content Include="README.md" />
     <Compile Include="webpack.config.js" />
     <Content Include="app\index.html" />
@@ -44,13 +43,11 @@
     <TypeScriptCompile Include="src\app\annotator\annotator.route.ts" />
     <TypeScriptCompile Include="src\app\annotator\annotator.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\annotator.module.ts" />
-    <TypeScriptCompile Include="src\app\annotator\control-panel\controls\calibration-control\calibration-control.component.ts" />
-    <TypeScriptCompile Include="src\app\annotator\control-panel\controls\controls.module.ts" />
-    <TypeScriptCompile Include="src\app\annotator\control-panel\controls\settings-control\settings-control.component.ts" />
-    <TypeScriptCompile Include="src\app\annotator\control-panel\controls\annotation-control\annotation-control.component.ts" />
-    <TypeScriptCompile Include="src\app\shared\workspace\classes\workspace.ts" />
+    <TypeScriptCompile Include="src\app\annotator\control-panel\calibration-control\calibration-control.component.ts" />
+    <TypeScriptCompile Include="src\app\annotator\control-panel\settings-control\settings-control.component.ts" />
+    <TypeScriptCompile Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\workspace.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.module.ts" />
-    <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.route.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.component.ts" />
     <TypeScriptCompile Include="src\app\app.route.ts" />
     <TypeScriptCompile Include="src\app\app.component.ts" />
@@ -62,10 +59,10 @@
     <TypeScriptCompile Include="src\app\shared\file-electron\file-electron.component.ts" />
     <TypeScriptCompile Include="src\app\shared\header\header.component.ts" />
     <TypeScriptCompile Include="src\app\shared\shared.module.ts" />
-    <TypeScriptCompile Include="src\app\shared\workspace\classes\calibration.ts" />
-    <TypeScriptCompile Include="src\app\shared\workspace\classes\canvas.ts" />
-    <TypeScriptCompile Include="src\app\shared\workspace\classes\settings.ts" />
-    <TypeScriptCompile Include="src\app\shared\workspace\classes\storage.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\calibration.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\canvas.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\settings.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\storage.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\vendor.ts" />
     <TypeScriptCompile Include="typings\index.d.ts" />
@@ -83,11 +80,10 @@
     <Folder Include="app" />
     <Folder Include="src" />
     <Folder Include="src\app" />
-    <Folder Include="src\app\annotator\control-panel\controls\" />
     <Folder Include="src\app\annotator\control-panel\" />
-    <Folder Include="src\app\annotator\control-panel\controls\annotation-control\" />
-    <Folder Include="src\app\annotator\control-panel\controls\calibration-control\" />
-    <Folder Include="src\app\annotator\control-panel\controls\settings-control\" />
+    <Folder Include="src\app\annotator\control-panel\annotation-control\" />
+    <Folder Include="src\app\annotator\control-panel\calibration-control\" />
+    <Folder Include="src\app\annotator\control-panel\settings-control\" />
     <Folder Include="src\app\hub-workspace\" />
     <Folder Include="src\app\annotator\" />
     <Folder Include="src\app\shared\" />
@@ -96,15 +92,14 @@
     <Folder Include="src\app\hub-start\" />
     <Folder Include="src\app\shared\camera-tool\" />
     <Folder Include="src\app\shared\file-electron\" />
-    <Folder Include="src\app\shared\workspace\classes\" />
+    <Folder Include="src\app\shared\classes\" />
     <Folder Include="src\app\shared\workspace\" />
+    <Folder Include="src\app\views\" />
     <Folder Include="src\app\views\page1" />
     <Folder Include="src\app\views\page2" />
     <Folder Include="src\utils\" />
     <Folder Include="src\utils\includes\" />
     <Folder Include="src\styles" />
-    <Folder Include="typings" />
-    <Folder Include="typings\globals" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

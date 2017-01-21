@@ -28,13 +28,20 @@ export class Calibration {
         }
     }
 
-    public _imageOrigin: Point;
-    get imageOrigin() {
-        return this._imageOrigin;
+    private _imageOrigin: Point = new Point(null, null);
+    get imageOriginX() {
+        return this._imageOrigin.x;
     }
-    set imageOrigin(point) {
-        this._imageOrigin = point;
-        this.checkCalibrated;
+    get imageOriginY() {
+        return this._imageOrigin.y;
+    }
+    set imageOriginX(coordinate) {
+        this._imageOrigin.x = coordinate;
+        this.checkCalibrated();
+    }
+    set imageOriginY(coordinate) {
+        this._imageOrigin.y = coordinate;
+        this.checkCalibrated();
     }
 
     public flipOrigin: Object = {
