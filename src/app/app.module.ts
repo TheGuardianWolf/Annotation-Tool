@@ -4,7 +4,7 @@ import { HttpModule } from '@angular/http';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 
 import { AppComponent } from './app.component';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app.route';
 
 import { HubStartModule } from './hub-start/hub-start.module';
 import { HubWorkspaceModule } from './hub-workspace/hub-workspace.module';

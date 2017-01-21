@@ -1,24 +1,11 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
+import { Workspace } from './classes/workspace';
 
-import { Point, Person, Frame, Video } from './classes/storage';
-import { PaperCanvas } from './classes/paper-canvas';
-import { Calibration } from './classes/calibration';
-
-/**
- * Backend state store for the workspace service
- */
-class Workspace {    
-    public paperCanvas: PaperCanvas;
-
-    public imageList: Array<HTMLImageElement>
-
-    public video: Video;
-
-    public calibration: Calibration;
-
-    constructor() {
-    }
+export interface IWorkspaceConfig {
+    directory: string;
+    video?: string;
+    annotation?: string;
 }
 
 /**
@@ -41,8 +28,14 @@ export class WorkspaceService {
 
     constructor() { }
 
-    loadWorkspace() { }
+    init(config: IWorkspaceConfig) {
+        this.workspaceDir = config.directory;
+        this.videoFile = config.video;
+        this.annotationFile = config.annotation;
 
-    createWorkspace() { }
+        console.log(this.workspaceDir, this.videoFile, this.annotationFile);
+
+        this.workspace = new Workspace();
+    }
 }
 

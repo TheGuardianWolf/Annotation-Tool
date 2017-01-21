@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HubStartComponent } from './hub-start.component';
-import { HubStartRoutingModule } from './hub-start-routing.module';
+import { HubStartRoutingModule } from './hub-start.route';
 import { SharedModule } from '../shared/shared.module';
 
 @NgModule({

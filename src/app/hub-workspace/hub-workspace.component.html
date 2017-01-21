@@ -9,7 +9,7 @@
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                 </div>
                 <div class="options">
-                    <form id="createWorkspace" class="form-horizontal" action="#" [formGroup]="createForm" (ngSubmit)="createWorkspace()">
+                    <form id="createWorkspace" class="form-horizontal" method="post" [formGroup]="createForm" (ngSubmit)="initWorkspace($event, false)">
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="extractDirectory">Workspace Directory</label>
                             <div class="col-xs-9">
@@ -53,7 +53,7 @@
                     <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
                 </div>
                 <div class="options">
-                    <form id="loadWorkspace" class="form-horizontal" action="#" [formGroup]="loadForm" (ngSubmit)="loadWorkspace()">
+                    <form id="loadWorkspace" class="form-horizontal" method="post" [formGroup]="loadForm" (ngSubmit)="initWorkspace($event, true)">
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="loadDirectory">Workspace Directory</label>
                             <div class="col-xs-9">

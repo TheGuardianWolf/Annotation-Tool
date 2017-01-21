@@ -1,13 +1,15 @@
 var webpack = require('webpack');
 var path = require('path');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 // Webpack Config
 var webpackConfig = {
 	entry: {
 		'polyfills': './src/polyfills.ts',
 		'vendor':    './src/vendor.ts',
-		'app':       './src/main.ts',
+        'app': './src/main.renderer.ts'
 	},
 
 	output: {
@@ -19,7 +21,20 @@ var webpackConfig = {
         new webpack.optimize.CommonsChunkPlugin({ name: ['app', 'vendor', 'polyfills'], minChunks: Infinity }),
         new webpack.ProvidePlugin({
             jQuery: "jquery"
-        })
+        }),
+        new HtmlWebpackPlugin({
+            title: "UoA Annotation Tool",
+            template: "./src/app/index.ejs",
+            inject: "body",
+        }),
+        new CopyWebpackPlugin([
+            { from: './src/main.electron.js', to: './app/electron.js' },
+            { from: './src/package.electron.json', to: './app/package.json' }
+        ],
+            {
+                copyUnmodified: false
+            }
+        )
 	],
 
 	module: {
@@ -60,7 +75,7 @@ var webpackConfig = {
 		publicPath: '/build',
 	},
 
-    //target: 'electron-renderer',
+    target: 'electron-renderer',
 
     resolve: {
         alias: {
