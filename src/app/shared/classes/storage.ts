@@ -1,4 +1,8 @@
-﻿export class Point {
+﻿import * as Q from 'q';
+import * as fs from 'fs';
+import { remote } from 'electron';
+
+export class Point {
     public x: number;
     public y: number;
 
@@ -7,11 +11,11 @@
         this.y = y;
     }
 
-    isValid() {
+    public isValid() {
         return typeof this.x === 'number' && typeof this.y === 'number';
     }
 
-    toObject() {
+    public toObject() {
         return {
             'x': this.x,
             'y': this.y
@@ -45,7 +49,7 @@ export class Person {
         };
     }
 
-    toObject() {
+    public toObject() {
         let person = {
             'id': this.id,
             'obscured': this.obscured,
@@ -93,11 +97,11 @@ export class Frame {
         this.people = [];
     }
 
-    addPerson(person) {
+    public addPerson(person) {
         this.people.push(person);
     }
 
-    toObject() {
+    public toObject() {
         return {
             'frameNumber': this.frameNumber,
             'numberOfPeople': this.people.length,
@@ -133,7 +137,7 @@ export class Video {
         this.frames = [];
     }
 
-    addFrame(frame, index?) {
+    public addFrame(frame, index?) {
         if (typeof index === 'number') {
             this.frames[index] = frame;
         }
@@ -142,7 +146,7 @@ export class Video {
         }
     }
 
-    toObject() {
+    public toObject() {
         return {
             'number': this.number,
             'name': this.name,
@@ -154,7 +158,31 @@ export class Video {
         };
     }
 
-    static parse(video) {
+    public toJSON() {
+        return JSON.stringify(this.toObject())
+    }
+
+    static fromFile(file) {
+        return Q.denodeify(fs.readFile)(file).then(
+            (contents) => {
+                return Video.parse(JSON.parse(contents as string))
+            }
+        );
+    }
+
+    static toFile(video: Video, defaultPath?: string) {
+        let saveOptions: any = {
+            'title': 'Save annotation file'
+        };
+        if (defaultPath) saveOptions.defaultPath = defaultPath;
+
+        return Q.denodeify(fs.writeFile)(
+            remote.dialog.showSaveDialog(saveOptions),
+            JSON.stringify(video, null, 4)
+        );
+    }
+
+    static parse(video: Video) {
         let v = new Video(video.number, video.name, video.increment, video.camera);
         video.frames.forEach((frame) => {
             if (frame) {

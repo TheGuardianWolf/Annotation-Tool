@@ -2,7 +2,7 @@
 /node_modules
 /typings
 /dist
-/app/build
+/app/*
 
 # VS
 ## Ignore Visual Studio temporary files, build results, and

@@ -23,7 +23,6 @@ export class SettingsControlComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log(this.ws);
         $.material.init();
     }
 }

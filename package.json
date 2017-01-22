@@ -5,19 +5,19 @@
   "license": "MIT",
   "main": "",
   "scripts": {
-    "typings-install": "./node_modules/.bin/typings install",
+    "typings-install": "typings install",
     "postinstall": "npm run typings-install",
-    "build": "./node_modules/.bin/webpack --inline --colors --progress --display-error-details --display-cached",
-    "build:prod": "./node_modules/.bin/webpack --progress --profile --colors --display-error-details --display-cached --optimize-occurence-order --optimize-dedupe",
+    "build": "webpack --inline --colors --progress --display-error-details --display-cached",
+    "build:prod": "webpack --progress --profile --colors --display-error-details --display-cached --optimize-occurence-order --optimize-dedupe",
     "build:dist": "npm run build:prod && npm run electron",
-    "start": "./node_modules/.bin/webpack-dev-server --inline --colors --progress --display-error-details --display-cached --port 3333  --content-base app",
+    "start": "electron app",
     "electron": "npm run build && electron app",
-    "package": "./node_modules/electron-packager/cli.js app App --platform=win32 --arch=all --out=dist --overwrite --version='1.2.5'",
-    "pack-linux": "electron-packager . --asar --asar-unpack=protocol-link.html --overwrite --platform=linux --arch=x64 --prune=true --out=out",
-    "test": "mocha tests"
+    "package": "electron-packager app App --platform=win32 --arch=all --out=dist --overwrite",
+    "pack-linux": "electron-packager . --asar --asar-unpack=protocol-link.html --overwrite --platform=linux --arch=x64 --prune=true --out=out"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.35",
+    "@types/electron": "^1.4.31",
     "@types/node": "^7.0.0",
     "@types/paper": "^0.9.0",
     "@types/q": "0.0.32",
@@ -45,9 +45,7 @@
     "typescript": "^2.1.4",
     "url-loader": "^0.5.7",
     "webpack": "^1.13.1",
-    "webpack-dev-server": "^1.14.1",
-    "webpack-merge": "^0.14.0",
-    "webpack-shell-plugin": "^0.5.0"
+    "webpack-merge": "^0.14.0"
   },
   "dependencies": {
     "@angular/common": "^2.4.2",

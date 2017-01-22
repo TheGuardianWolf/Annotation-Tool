@@ -23,7 +23,6 @@ export class AnnotationControlComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.log(this.ws);
         $.material.init();
     }
 }

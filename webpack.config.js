@@ -28,8 +28,8 @@ var webpackConfig = {
             inject: "body",
         }),
         new CopyWebpackPlugin([
-            { from: './src/main.electron.js', to: './app/electron.js' },
-            { from: './src/package.electron.json', to: './app/package.json' },
+            { from: './src/main.electron.js', to: '../electron.js' },
+            { from: './src/package.electron.json', to: '../package.json' },
             {
                 from: {
                     glob: './build/CameraTool*',

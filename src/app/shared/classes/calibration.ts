@@ -1,4 +1,10 @@
 ﻿import { Point } from './storage';
+import { IWorkspaceVars } from './workspace';
+
+export interface IFlipOrigin {
+    'x': boolean;
+    'y': boolean;
+}
 
 export class Calibration {
     private _calibrated: boolean = false;
@@ -29,6 +35,10 @@ export class Calibration {
     }
 
     private _imageOrigin: Point = new Point(null, null);
+    set imageOrigin(point) {
+        this._imageOrigin = point;
+        this.checkCalibrated();
+    }
     get imageOriginX() {
         return this._imageOrigin.x;
     }
@@ -44,7 +54,7 @@ export class Calibration {
         this.checkCalibrated();
     }
 
-    public flipOrigin: Object = {
+    public flipOrigin: IFlipOrigin = {
         'x': false,
         'y': false
     };
@@ -53,10 +63,19 @@ export class Calibration {
 
     public roomSize: Point = new Point(6000, 4000);
 
-    constructor() {
+    constructor(vars?: IWorkspaceVars) {
+        if (vars) {
+            if (vars.lensCalibrationFile) this._lensCalibrationFile = vars.lensCalibrationFile;
+            if (vars.perspectiveCalibrationFile) this._perspectiveCalibrationFile = vars.perspectiveCalibrationFile;
+            if (vars.imageOrigin) this._imageOrigin = vars.imageOrigin;
+            if (vars.flipOrigin) this.flipOrigin = vars.flipOrigin;
+            if (vars.switchOrigin) this.switchOrigin = vars.switchOrigin;
+
+            this.checkCalibrated();
+        }        
     }
 
-    public checkCalibrated(): boolean {
+    private checkCalibrated(): boolean {
         let match = new RegExp('/\\.xml$/', 'i');
         this._calibrated = match.test(this._lensCalibrationFile) &&
             match.test(this._perspectiveCalibrationFile) &&
