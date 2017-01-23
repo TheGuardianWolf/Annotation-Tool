@@ -31,11 +31,12 @@ var webpackConfig = {
             { from: './src/main.electron.js', to: '../electron.js' },
             { from: './src/package.electron.json', to: '../package.json' },
             {
+				context: './build',
                 from: {
-                    glob: './build/CameraTool*',
+                    glob: 'CameraTool*',
                     dot: false
                 },
-                to: './native'
+                to: './native',
             }
         ],
             {
@@ -134,7 +135,9 @@ var defaultConfig = {
     },
 
     node: {
-        global: 1,
+        __filename: false,
+        __dirname: false,
+        global: true,
         crypto: 'empty',
         module: 0,
         Buffer: 0,

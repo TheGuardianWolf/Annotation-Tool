@@ -12,7 +12,7 @@ import * as Q from 'q';
  */
 @Injectable()
 export class ImageToolService {
-    private cameraToolPath: string = 'build/native/CameraTool'
+    private cameraToolPath: string = path.join('build', 'native', 'CameraTool');
 
     constructor() {
 
@@ -20,7 +20,7 @@ export class ImageToolService {
 
     public extractImages(src: string, dst: string) {
         let cmd = [this.cameraToolPath, '-E', src, dst];
-        return Q.denodeify(ChildProcess.exec)(path.join(__dirname, '..', cmd.join(' ')))
+        return Q.denodeify(ChildProcess.exec)(path.join(__dirname, cmd.join(' ')))
     }
 
     public readImageDir(src: string) {

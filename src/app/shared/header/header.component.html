@@ -8,6 +8,12 @@
                     </button>
                 </div>
                 <span class="navbar-brand">UoA Annotation Tool</span>
+                {{ws.workspace.busy}}
+                <div *ngIf="ws.workspace.busy" class="btn-group pull-right" role="group">
+                    <button id="async" type="button" class="btn btn-default">
+                        <span class="glyphicon glyphicon-repeat"></span>
+                    </button>
+                </div>
             </div>
         </div><!-- /.container-fluid -->
     </nav>

@@ -13,6 +13,10 @@ import 'q';
 import 'jquery';
 import 'bootstrap-material-design';
 
+import 'paper';
+import 'openseadragon';
+import 'openseadragon-paperjs-overlay';
+
 
 // RxJS 5
 // import 'rxjs/Rx';

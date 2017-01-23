@@ -2,7 +2,19 @@
 import * as fs from 'fs';
 import { remote } from 'electron';
 
-export class Point {
+export interface IPoint {
+    x: number;
+    y: number;
+}
+
+export interface IBoundingBox {
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+}
+
+export class Point implements IPoint {
     public x: number;
     public y: number;
 
@@ -21,24 +33,30 @@ export class Point {
             'y': this.y
         };
     }
+
+    static parse(point) {
+        return new Point(point.x, point.y);
+    }
 }
 
 export class Person {
     public id: number;
     public obscured: boolean;
-    public boundingBox: {
-        left: number;
-        right: number;
-        top: number;
-        bottom: number;
-    };
+    public boundingBox: IBoundingBox;
     public location: {
         virtual: Point;
         real: Point;
         segment: String;
     };
 
-    constructor(id, obscured, boundingBox, virtualPoint, realPoint, segment) {
+    constructor(
+        id: number,
+        obscured: boolean,
+        boundingBox: IBoundingBox,
+        virtualPoint: Point,
+        realPoint: Point,
+        segment: String
+    ) {
         this.id = id;
         this.obscured = obscured;
         this.boundingBox = boundingBox;
@@ -92,12 +110,12 @@ export class Frame {
     public frameNumber: number;
     public people: Array<Person>;
 
-    constructor(frameNumber) {
+    constructor(frameNumber: number) {
         this.frameNumber = frameNumber;
         this.people = [];
     }
 
-    public addPerson(person) {
+    public addPerson(person: Person) {
         this.people.push(person);
     }
 
@@ -129,7 +147,7 @@ export class Video {
     public camera: number;
     public frames: Array<Frame>;
 
-    constructor(number, name, increment, camera) {
+    constructor(number: number, name: string, increment: string, camera: number) {
         this.number = number;
         this.name = name;
         this.increment = increment;
@@ -182,7 +200,7 @@ export class Video {
         );
     }
 
-    static parse(video: Video) {
+    static parse(video) {
         let v = new Video(video.number, video.name, video.increment, video.camera);
         video.frames.forEach((frame) => {
             if (frame) {

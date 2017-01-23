@@ -15,7 +15,8 @@
             <div class="form-group is-fileinput">
                 <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
                 <div class="col-xs-8">
-                    <FileElectron inputId="perspectiveCalibrationFile"
+                    <FileElectron [(ngModel)]="ws.workspace.calibration.perspectiveCalibrationFile"
+                                  inputId="perspectiveCalibrationFile"
                                   name="perspectiveCalibrationFile"
                                   placeholder="Select file..."
                                   webkitdirectory="false"></FileElectron>
@@ -27,6 +28,7 @@
                     <label class="col-xs-4 control-label" for="imageOriginX">X</label>
                     <div class="col-xs-8">
                         <input [(ngModel)]="ws.workspace.calibration.imageOriginX"
+                               name="imageOriginX"
                                class="form-control" type="number" id="imageOriginX" />
                     </div>
                 </div>
@@ -34,6 +36,7 @@
                     <label class="col-xs-4 control-label" for="imageOriginY">Y</label>
                     <div class="col-xs-8">
                         <input [(ngModel)]="ws.workspace.calibration.imageOriginY"
+                               name="imageOriginY"
                                class="form-control" type="number" id="imageOriginY" />
                     </div>
                 </div>
@@ -47,6 +50,7 @@
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="ws.workspace.calibration.flipOrigin.x"
+                                   name="flipOriginX"
                                    type="checkbox" id="flipOriginX" /> Flip X
                         </label>
                     </div>
@@ -55,6 +59,7 @@
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="ws.workspace.calibration.flipOrigin.y"
+                                   name="flipOriginY"
                                    type="checkbox" id="flipOriginY" /> Flip Y
                         </label>
                     </div>
@@ -63,6 +68,7 @@
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="ws.workspace.calibration.switchOrigin"
+                                   name="switchOrigin"
                                    type="checkbox" id="switchOrigin" /> Switch X-Y
                         </label>
                     </div>

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Http } from '@angular/http';
+import { WorkspaceService } from '../../shared/workspace/workspace.service';
 
 /**
  * This class represents the lazy loaded HubStartComponent.
@@ -11,10 +12,12 @@ import { Http } from '@angular/http';
 })
 
 export class ControlPanelComponent {
+    private ws;
     public currentControl: string = 'calibration';
 
-    constructor(
-    ) { }
+    constructor(_ws: WorkspaceService) {
+        this.ws = _ws;
+    }
 
     public changeControls(event) {
         event.preventDefault();

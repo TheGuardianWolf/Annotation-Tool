@@ -67,7 +67,7 @@ export class Calibration {
         if (vars) {
             if (vars.lensCalibrationFile) this._lensCalibrationFile = vars.lensCalibrationFile;
             if (vars.perspectiveCalibrationFile) this._perspectiveCalibrationFile = vars.perspectiveCalibrationFile;
-            if (vars.imageOrigin) this._imageOrigin = vars.imageOrigin;
+            if (vars.imageOrigin) this._imageOrigin = Point.parse(vars.imageOrigin);
             if (vars.flipOrigin) this.flipOrigin = vars.flipOrigin;
             if (vars.switchOrigin) this.switchOrigin = vars.switchOrigin;
 
@@ -76,10 +76,11 @@ export class Calibration {
     }
 
     private checkCalibrated(): boolean {
-        let match = new RegExp('/\\.xml$/', 'i');
+        let match = /\.xml$/i;
         this._calibrated = match.test(this._lensCalibrationFile) &&
             match.test(this._perspectiveCalibrationFile) &&
             this._imageOrigin.isValid();
+        
         return this._calibrated;
     }
 }

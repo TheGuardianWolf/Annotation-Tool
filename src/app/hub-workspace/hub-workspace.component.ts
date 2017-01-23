@@ -44,19 +44,25 @@ export class HubWorkspaceComponent implements OnInit {
 
     initWorkspace(event: Event, create: boolean) {
         event.preventDefault();
+        let promise: Q.Promise<{}>;
         if (create) {
-            this.ws.init({
+            promise = this.ws.init({
                 directory: this.createForm.get('directory').value,
                 video: this.createForm.get('video').value,
                 annotation: this.createForm.get('annotation').value
             });
         }
         else {
-            this.ws.init({
+            promise = this.ws.init({
                 directory: this.loadForm.get('directory').value,
                 annotation: this.loadForm.get('annotation').value
             });
         }
-        this.router.navigate(['/annotator']);
+
+        promise.done(() => {
+            this.router.navigate(['/annotator']);
+        }, (err) => {
+            throw err;
+        });
     }
 }

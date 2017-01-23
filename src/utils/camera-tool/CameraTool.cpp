@@ -21,6 +21,8 @@ void extractImages(string src, string dst)
     {
         Mat frame;
         int frameCount = 0;
+		
+		auto fps = video.get(CAP_PROP_FPS);
 
         if
         (
@@ -37,7 +39,6 @@ void extractImages(string src, string dst)
             if (!frame.empty())
             {
                 frameCount++;
-                cout << "\r" << "Exporting frame " << frameCount << flush;
 
                 string filename = to_string(frameCount);
                 imwrite(dst + filename + ".jpg", frame);
@@ -48,7 +49,7 @@ void extractImages(string src, string dst)
             }
         }
 
-        cout << endl;
+        cout << "{\"fps\":" << fps << "}" << endl;
     }
 }
 

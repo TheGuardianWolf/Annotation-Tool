@@ -83,7 +83,7 @@ export class FileElectronComponent implements ControlValueAccessor, OnChanges, O
         if (value !== this._path) {
             this._path = value;
             this.fileInputDisplay.nativeElement.value =
-                value ? this._path.split(path.delimiter) : null;
+                value ? path.parse(this._path).base : null;
         }
     }
 

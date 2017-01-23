@@ -6,7 +6,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as Q from 'q';
 
-import { Point, Person, Frame, Video } from './storage';
+import { IPoint, Point, Person, Frame, Video } from './storage';
 import { Canvas } from './canvas';
 import { Calibration, IFlipOrigin } from './calibration';
 
@@ -21,7 +21,7 @@ export interface IWorkspaceVars {
     };
     'lensCalibrationFile': string;
     'perspectiveCalibrationFile': string;
-    'imageOrigin': Point;
+    'imageOrigin': IPoint;
     'flipOrigin': IFlipOrigin;
     'switchOrigin': boolean;
 }
@@ -37,24 +37,11 @@ export class Workspace {
 
     public canvas: Canvas = new Canvas();
 
-    public imageList: Array<HTMLImageElement> = [];
-
     public videoAnnotation: Video = new Video(null, null, null, null);
 
     public calibration: Calibration = new Calibration();
 
     constructor() {
-    }
-
-    public loadImageFiles(dir: string, filenames: Array<string>) {
-        let imageList = [];
-        filenames.forEach((filename) => {
-            let newImage = new Image();
-            newImage.src = path.join(dir, filename);
-
-            imageList.push(newImage);
-        });
-        this.imageList = imageList;
     }
 
     public selectImageOrigin() {
@@ -65,6 +52,12 @@ export class Workspace {
             (file) => {
                 let workspaceVars: IWorkspaceVars = JSON.parse(file as string);
                 this.calibration = new Calibration(workspaceVars);
+                this.videoAnnotation = new Video(
+                    workspaceVars.sequence.number,
+                    workspaceVars.sequence.name,
+                    workspaceVars.video.increment,
+                    workspaceVars.video.camera
+                );
             }
         );
     }
