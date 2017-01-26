@@ -153,6 +153,11 @@ html, body, .viewport {
 .annotator .image-panel {
     display: flex;
     flex-direction: column;
+
+    .image-canvas-wrapper {
+        flex-grow: 1;
+        height: 100%;
+    }
 }
 
 .annotator .image-canvas-wrapper .image-canvas {

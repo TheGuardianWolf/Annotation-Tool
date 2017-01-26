@@ -69,6 +69,7 @@ export class WorkspaceService {
     }
 
     private getVideoContext() {
+        console.log(this.videoFile);
         let videoBasename = path.basename(this.videoFile, '.mkv').split('_');
         let sequenceNumber = parseInt(videoBasename[0].substr(-1));
         let sequenceName = videoBasename[1];
@@ -88,22 +89,24 @@ export class WorkspaceService {
         this.videoFile = config.video;
         this.annotationFile = config.annotation;
 
-        // Reload the workspace and get context
-        this.workspace = new Workspace();
-        this.getVideoContext();
-
-        let initWorkspace = (filenames) => {
-            this.workspace.canvas.loadTileSources(
+        // Function to load canvas images
+        let loadCanvasImages = (filenames) => {
+            return this.workspace.canvas.loadImages(
                 this.workspaceDir,
                 filenames as Array<string>
             );
-            // TODO: Find a way to pass HTML5 Canvas into this method.
-            this.workspace.canvas.init();
         }
+
+        // Load fresh workspace
+        this.workspace = new Workspace();
 
         let promiseChain;
 
         if (this.videoFile) {
+            // Get context from input video
+            this.getVideoContext();
+
+            // Write workspace
             this.workspace.toFile(path.join(this.workspaceDir, 'workspace.json'));
 
             // If there's a video file, extract the images and read in image paths
@@ -111,13 +114,13 @@ export class WorkspaceService {
                 .then(() => {
                     return this.its.readImageDir(this.workspaceDir);
                 })
-                .then(initWorkspace);
+                .then(loadCanvasImages);
         }
         else {
             // Otherwise just read in image paths and the workspace file
             promiseChain = Q.all([
                 this.its.readImageDir(this.workspaceDir)
-                .then(initWorkspace).done(),
+                    .then(loadCanvasImages).done(),
                 this.workspace.fromFile(path.join(this.workspaceDir, 'workspace.json'))
             ]);
         }

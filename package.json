@@ -10,7 +10,7 @@
     "build": "webpack --inline --colors --progress --display-error-details --display-cached",
     "build:prod": "webpack --progress --profile --colors --display-error-details --display-cached --optimize-occurence-order --optimize-dedupe",
     "build:dist": "npm run build:prod && npm run electron",
-    "start": "electron app",
+    "start": "./node_modules/.bin/webpack-dev-server --inline --colors --progress --display-error-details --display-cached --port 3333  --content-base app",
     "electron": "npm run build && electron app",
     "package": "electron-packager app App --platform=win32 --arch=all --out=dist --overwrite",
     "pack-linux": "electron-packager . --asar --asar-unpack=protocol-link.html --overwrite --platform=linux --arch=x64 --prune=true --out=out"
@@ -62,7 +62,7 @@
     "core-js": "^2.4.0",
     "jquery": "^3.1.1",
     "openseadragon": "^2.2.1",
-    "openseadragon-paperjs-overlay": "github:eriksjolund/OpenSeadragonPaperjsOverlay",
+    "openseadragon-paperjs-overlay": "github:theguardianwolf/OpenSeadragonPaperjsOverlay",
     "paper": "^0.10.2",
     "q": "^1.4.1",
     "rxjs": "^5.0.3",

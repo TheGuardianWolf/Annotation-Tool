@@ -58,9 +58,15 @@ export class HubWorkspaceComponent implements OnInit {
                 annotation: this.loadForm.get('annotation').value
             });
         }
-
+        
         promise.done(() => {
-            this.router.navigate(['/annotator']);
+            // The following does not work due to an angular bug, 
+            // issue reported at https://github.com/angular/angular/issues/13953
+
+            // this.router.navigate(['/annotator']);
+
+            // location.href used as workaround
+            location.href = __filename + '#/annotator'
         }, (err) => {
             throw err;
         });

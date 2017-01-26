@@ -114,6 +114,7 @@ var defaultConfig = {
                     path.join(__dirname, 'node_modules', 'rxjs'),
                     path.join(__dirname, 'node_modules', '@angular2-material'),
                     path.join(__dirname, 'node_modules', 'bootstrap-material-design'),
+                    path.join(__dirname, 'node_modules', 'paper'),
                 ]
             }
         ],
@@ -121,6 +122,7 @@ var defaultConfig = {
             path.join(__dirname, 'node_modules', 'zone.js', 'dist'),
             path.join(__dirname, 'node_modules', '@angular', 'bundles'),
             path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
+            path.join(__dirname, 'node_modules', 'paper', 'dist'),
         ]
     },
 

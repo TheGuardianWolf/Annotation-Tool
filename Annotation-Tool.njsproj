@@ -64,10 +64,8 @@
     <TypeScriptCompile Include="src\vendor.ts" />
     <TypeScriptCompile Include="src\app\app.module.ts" />
     <Content Include="src\styles\style.scss" />
-    <TypeScriptCompile Include="src\app\providers\title.ts" />
     <Content Include="src\app\hub-start\hub-start.component.html" />
     <TypeScriptCompile Include="src\app\hub-start\hub-start.component.ts" />
-    <Content Include="src\app\views\page1\page1.html" />
     <TypeScriptCompile Include="src\app\views\page1\page1.ts" />
     <Content Include="src\app\views\page2\page2.html" />
     <TypeScriptCompile Include="src\app\views\page2\page2.ts" />
@@ -82,7 +80,6 @@
     <Folder Include="src\app\hub-workspace\" />
     <Folder Include="src\app\annotator\" />
     <Folder Include="src\app\shared\" />
-    <Folder Include="src\app\providers" />
     <Folder Include="src\app\shared\header\" />
     <Folder Include="src\app\hub-start\" />
     <Folder Include="src\app\shared\image-tool\" />
@@ -90,7 +87,7 @@
     <Folder Include="src\app\shared\classes\" />
     <Folder Include="src\app\shared\workspace\" />
     <Folder Include="src\app\views\" />
-    <Folder Include="src\app\views\page1" />
+    <Folder Include="src\app\views\page1\" />
     <Folder Include="src\app\views\page2" />
     <Folder Include="src\utils\" />
     <Folder Include="src\utils\includes\" />

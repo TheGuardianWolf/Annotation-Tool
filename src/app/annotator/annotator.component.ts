@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Http } from '@angular/http';
 import { WorkspaceService } from '../shared/workspace/workspace.service';
 import { Router } from '@angular/router';
@@ -13,6 +13,8 @@ import { Router } from '@angular/router';
 })
 
 export class AnnotatorComponent implements OnInit {
+    @ViewChild('canvasContainer') canvasContainer: ElementRef;
+
     private ws: WorkspaceService;
     private router: Router;
 
@@ -24,6 +26,9 @@ export class AnnotatorComponent implements OnInit {
     ngOnInit() {
         if (!this.ws.initialised) {
             this.router.navigate(['/hub', 'workspace']);
+        }
+        else {
+            this.ws.workspace.canvas.bind(this.canvasContainer.nativeElement);
         }
     }
 }
