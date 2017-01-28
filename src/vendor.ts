@@ -9,6 +9,7 @@ import '@angular/http';
 import '@angular/router';
 
 import 'q';
+import 'is';
 
 import 'jquery';
 import 'bootstrap-material-design';

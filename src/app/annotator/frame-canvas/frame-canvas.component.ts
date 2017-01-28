@@ -36,6 +36,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         return this.images.length;
     }
 
+    private tileCache: Array<any> = [];
+
     private _currentFrame: number;
     get currentFrame() {
         return this._currentFrame;
@@ -44,11 +46,16 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         let index = value - 1;
         if (index >= 0 && index < this.imagesCount) {
             this._currentFrame = value;
-            this.viewer.open(
-                new osd.ImageTileSource({
-                    'url': this.images[index].src
-                })
-            );
+            if (this.tileCache[index]) {
+                this.viewer.open(this.tileCache[index]);
+            }
+            else {
+                this.viewer.open(
+                    new osd.ImageTileSource({
+                        'url': this.images[index].src
+                    })
+                );
+            }
         }
     }
 
@@ -90,17 +97,17 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     public on(event: string, name: string, handler: Function) {
         if (this.eventHandlers[event]) {
-            this.eventHandlers[event].name = handler;
+            this.eventHandlers[event][name] = handler;
         }
     }
 
     public off(event: string, name: string, handler: Function) {
-        if (this.eventHandlers[event] && this.eventHandlers[event].name) {
-            delete this.eventHandlers[event].name;
+        if (this.eventHandlers[event] && this.eventHandlers[event][name]) {
+            delete this.eventHandlers[event][name];
         }
     }
 
-    @HostListener('window:keydown', ['$event'])
+    @HostListener('document:keydown', ['$event'])
     private keyDownBinding(event: KeyboardEvent) {
         let handler = this.eventHandlers.keyDown[event.key];
         if (is.function(handler)) {
@@ -108,7 +115,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         }
     }
 
-    @HostListener('window:keyup', ['$event'])
+    @HostListener('document:keyup', ['$event'])
     private keyUpBinding(event: KeyboardEvent) {
         let handler = this.eventHandlers.keyUp[event.key];
         if (is.function(handler)) {
@@ -176,21 +183,30 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private loadImages(dir: string, filenames: Array<string>): Q.Promise<{}> {
         let promises: Array<Q.Promise<{}>> = [];
 
-        this.images = filenames.map((filename) => {
+        this.images = filenames.map((filename, index) => {
             // Set up deferred object to represent the 'image loaded' event
             let deferred: Q.Deferred<{}> = Q.defer();
             promises.push(deferred.promise);
 
             let image = new Image();
+            let imageSrc = image.src = path.join(dir, filename);
+
+            let cacheTile = async () => {
+                this.tileCache[index] = new osd.ImageTileSource({
+                    'url': imageSrc
+                })
+            };
+
             image.onload = () => {
                 deferred.resolve(image.src);
+                cacheTile();
             };
             image.onerror = (err) => {
                 deferred.reject(err);
             }
 
             // Add image to imageSrc array
-            image.src = path.join(dir, filename);
+            image.src = imageSrc;
             return image;
         });
 

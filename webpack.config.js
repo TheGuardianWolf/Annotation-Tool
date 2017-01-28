@@ -30,6 +30,7 @@ var webpackConfig = {
         new CopyWebpackPlugin([
             { from: './src/main.electron.js', to: './electron.js' },
             { from: './src/package.electron.json', to: './package.json' },
+            { from: './node_modules/openseadragon/build/openseadragon/openseadragon.min.js', to: './webworker/scripts/' },
             {
 				context: './build',
                 from: {
