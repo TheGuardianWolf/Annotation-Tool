@@ -1,13 +1,12 @@
-﻿//import { Observable } from 'rxjs/Observable';
-//import { Subject } from 'rxjs/Subject';
-//import { BehaviorSubject } from 'rxjs/Rx';
+﻿import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/Rx';
 
 import * as path from 'path';
 import * as fs from 'fs';
 import * as Q from 'q';
 
 import { IPoint, Point, Person, Frame, Video } from './storage';
-import { Canvas } from './canvas';
 import { Calibration, IFlipOrigin } from './calibration';
 
 export interface IWorkspaceVars {
@@ -30,16 +29,17 @@ export interface IWorkspaceVars {
  * Backend state store for the workspace service
  */
 export class Workspace {
-    private _busy: boolean = false;
-    get busy() {
-        return this._busy;
-    }
-
-    public canvas: Canvas = new Canvas();
-
     public videoAnnotation: Video = new Video(null, null, null, null);
 
     public calibration: Calibration = new Calibration();
+
+    private _images: BehaviorSubject<Array<string>> = new BehaviorSubject([]);
+    get images(): Observable<Array<string>> {
+        return this._images.asObservable();
+    }
+    public setImages(value: Array<string>) {
+        this._images.next(value);
+    }
 
     constructor() {
     }

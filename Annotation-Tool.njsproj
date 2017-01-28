@@ -22,18 +22,16 @@
   <ItemGroup>
     <Content Include="package.json" />
     <Content Include="src\app\annotator\annotator.component.html" />
-    <Content Include="src\app\annotator\annotator.component.scss" />
     <Content Include="src\app\annotator\control-panel\control-panel.component.html" />
     <Content Include="src\app\annotator\control-panel\settings-control\settings-control.component.html" />
     <Content Include="src\app\annotator\control-panel\calibration-control\calibration-control.component.html" />
     <Content Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.html" />
+    <Content Include="src\app\annotator\frame-canvas\frame-canvas.component.html" />
     <Content Include="src\app\app.component.html" />
-    <Content Include="src\app\hub-start\hub-start.component.scss" />
     <Content Include="src\app\hub-workspace\hub-workspace.component.html" />
-    <Content Include="src\app\hub-workspace\hub-workspace.component.scss" />
     <Content Include="src\app\index.ejs" />
+    <Content Include="src\app\shared\file-electron\file-electron.component.html" />
     <Content Include="src\app\shared\header\header.component.html" />
-    <Content Include="src\app\shared\header\header.component.scss" />
     <Content Include="tsconfig.json" />
     <Content Include="README.md" />
     <Compile Include="webpack.config.js" />
@@ -43,6 +41,8 @@
     <TypeScriptCompile Include="src\app\annotator\control-panel\calibration-control\calibration-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\settings-control\settings-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.ts" />
+    <TypeScriptCompile Include="src\app\annotator\frame-canvas\frame-canvas.module.ts" />
+    <TypeScriptCompile Include="src\app\shared\notifications\busy.service.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\workspace.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.module.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.component.ts" />
@@ -57,7 +57,7 @@
     <TypeScriptCompile Include="src\app\shared\header\header.component.ts" />
     <TypeScriptCompile Include="src\app\shared\shared.module.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\calibration.ts" />
-    <TypeScriptCompile Include="src\app\shared\classes\canvas.ts" />
+    <TypeScriptCompile Include="src\app\annotator\frame-canvas\frame-canvas.component.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\settings.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\storage.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
@@ -77,6 +77,7 @@
     <Folder Include="src\app\annotator\control-panel\annotation-control\" />
     <Folder Include="src\app\annotator\control-panel\calibration-control\" />
     <Folder Include="src\app\annotator\control-panel\settings-control\" />
+    <Folder Include="src\app\annotator\frame-canvas\" />
     <Folder Include="src\app\hub-workspace\" />
     <Folder Include="src\app\annotator\" />
     <Folder Include="src\app\shared\" />
@@ -85,6 +86,7 @@
     <Folder Include="src\app\shared\image-tool\" />
     <Folder Include="src\app\shared\file-electron\" />
     <Folder Include="src\app\shared\classes\" />
+    <Folder Include="src\app\shared\notifications\" />
     <Folder Include="src\app\shared\workspace\" />
     <Folder Include="src\app\views\" />
     <Folder Include="src\app\views\page1\" />

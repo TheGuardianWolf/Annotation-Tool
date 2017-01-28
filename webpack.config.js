@@ -13,7 +13,7 @@ var webpackConfig = {
     },
 
     output: {
-        path: 'app/build',
+        path: 'app',
     },
 
     plugins: [
@@ -24,12 +24,12 @@ var webpackConfig = {
         }),
         new HtmlWebpackPlugin({
             title: "UoA Annotation Tool",
-            template: "./src/app/index.ejs",
+            template: "./src/index.ejs",
             inject: "body",
         }),
         new CopyWebpackPlugin([
-            { from: './src/main.electron.js', to: '../electron.js' },
-            { from: './src/package.electron.json', to: '../package.json' },
+            { from: './src/main.electron.js', to: './electron.js' },
+            { from: './src/package.electron.json', to: './package.json' },
             {
 				context: './build',
                 from: {
@@ -80,7 +80,7 @@ var webpackConfig = {
 
     devServer: {
         contentBase: 'app',
-        publicPath: '/build',
+        publicPath: '',
     },
 
     target: 'electron-renderer',
@@ -121,7 +121,7 @@ var defaultConfig = {
         noParse: [
             path.join(__dirname, 'node_modules', 'zone.js', 'dist'),
             path.join(__dirname, 'node_modules', '@angular', 'bundles'),
-            path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
+            //path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
             path.join(__dirname, 'node_modules', 'paper', 'dist'),
         ]
     },

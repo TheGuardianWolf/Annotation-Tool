@@ -1,0 +1,39 @@
+<div #osdBinding class="well os-binding">
+    <!--<canvas #canvas id="canvas" class="well image-canvas"></canvas>-->
+</div>
+<div class="bottom-toolbar">
+    <div class="btn-toolbar" role="toolbar">
+        <div class="btn-group mouse-position" role="group">
+            <button type="button" class="btn btn-default x">x</button>
+            <button type="button" class="btn btn-default y">y</button>
+        </div>
+        <div class="btn-group frame-navigator" role="group">
+            <div class="col-xs-6 form-group current-frame">
+                <input (change)="currentFrame = $event.target.value"
+                       [ngModel]="currentFrame"
+                       type="number" id="frame-navigator" name="frame-navigator" class="form-control" />
+            </div>
+            <div class="col-xs-6 btn btn-default total-frames">
+                out of <span>{{imagesCount}}</span>
+            </div>
+        </div>
+        <div class="btn-group" role="group">
+            <button id="previous-image" type="button" class="btn btn-default"
+                    (click)="currentFrame = currentFrame - 1">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button id="zoom-in" type="button" class="btn btn-default"
+                    (click)="zoom = zoom * 2">
+                <span class="glyphicon glyphicon-zoom-in"></span>
+            </button>
+            <button id="zoom-out" type="button" class="btn btn-default"
+                    (click)="zoom = zoom / 2">
+                <span class="glyphicon glyphicon-zoom-out"></span>
+            </button>
+            <button id="next-image" type="button" class="btn btn-default"
+                    (click)="currentFrame = currentFrame + 1">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+    </div>
+</div>

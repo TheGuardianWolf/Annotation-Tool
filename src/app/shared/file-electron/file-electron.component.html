@@ -1,0 +1,8 @@
+﻿<input #fileInput
+       type="file"
+       [attr.id]="inputId"
+       class="form-control"
+       [attr.name]="name"
+       [attr.webkitdirectory]="webkitdirectory === 'true' ? true : null"
+       (change)="fileChanged($event)">
+<input #fileInputDisplay readonly="" class="form-control" [attr.placeholder]="placeholder" type="text">

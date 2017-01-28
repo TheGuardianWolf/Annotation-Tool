@@ -1,5 +1,6 @@
 ﻿import * as Q from 'q';
 import * as fs from 'fs';
+import * as is from 'is';
 import { remote } from 'electron';
 
 export interface IPoint {
@@ -24,7 +25,7 @@ export class Point implements IPoint {
     }
 
     public isValid() {
-        return typeof this.x === 'number' && typeof this.y === 'number';
+        return is.number(this.x) && is.number(this.y);
     }
 
     public toObject() {
@@ -156,7 +157,7 @@ export class Video {
     }
 
     public addFrame(frame, index?) {
-        if (typeof index === 'number') {
+        if (is.number(index)) {
             this.frames[index] = frame;
         }
         else {

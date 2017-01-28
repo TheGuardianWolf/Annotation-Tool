@@ -10,41 +10,7 @@
         </div>
     </div>
     <div class="image-display row">
-        <div class="image-panel col-xs-8">
-            <div #canvasContainer class="image-canvas-wrapper">
-                <!--<canvas #canvas id="canvas" class="well image-canvas"></canvas>-->
-            </div>
-            <div class="bottom-toolbar">
-                <div class="btn-toolbar" role="toolbar">
-                    <div class="btn-group mouse-position" role="group">
-                        <button type="button" class="btn btn-default x">x</button>
-                        <button type="button" class="btn btn-default y">y</button>
-                    </div>
-                    <div class="btn-group frame-navigator" role="group">
-                        <div class="col-xs-6 form-group current-frame">
-                            <input type="number" id="frame-navigator" class="form-control"/>
-                        </div>
-                        <div class="col-xs-6 btn btn-default total-frames">
-                            out of <span>0</span>
-                        </div>
-                    </div>
-                    <div class="btn-group" role="group">
-                        <button id="previous-image" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-chevron-left"></span>
-                        </button>
-                        <button id="zoom-in" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-zoom-in"></span>
-                        </button>
-                        <button id="zoom-out" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-zoom-out"></span>
-                        </button>
-                        <button id="next-image" type="button" class="btn btn-default">
-                            <span class="glyphicon glyphicon-chevron-right"></span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <frame-canvas class="frame-canvas col-xs-8"></frame-canvas>
         <control-panel class="control-panel panel col-xs-4"></control-panel>
     </div>
 </div>

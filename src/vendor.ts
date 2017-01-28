@@ -19,7 +19,9 @@ import 'openseadragon-paperjs-overlay';
 
 
 // RxJS 5
-// import 'rxjs/Rx';
+import 'rxjs/Rx';
+import 'rxjs/Observable';
+import 'rxjs/Subject';
 
 
 // For vendors for example jQuery, Lodash, angular2-jwt import them here

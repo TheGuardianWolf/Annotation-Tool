@@ -6,7 +6,7 @@ const $ = require('jquery');
  * This class represents the lazy loaded HubStartComponent.
  */
 @Component({
-    selector: 'HubStart',
+    selector: 'hub-start',
     templateUrl: './hub-start.component.html',
     //styleUrls: ['./hub-start.component.scss'],
 })

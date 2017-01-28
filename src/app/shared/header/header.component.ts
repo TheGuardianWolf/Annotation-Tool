@@ -8,8 +8,7 @@ import { WorkspaceService } from '../workspace/workspace.service';
  */
 @Component({
   selector: 'at-header',
-  template: require('./header.component.html'),
-  //styleUrls: ['./header.component.scss'],
+  templateUrl: './header.component.html',
 })
 export class HeaderComponent {
     private location: Location;

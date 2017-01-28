@@ -18,18 +18,8 @@ export function createFileElectronValidator(extension) {
 }
 
 @Component({
-    selector: 'FileElectron',
-    template: `
-        <input #fileInput
-            type="file" 
-            [attr.id]="inputId" 
-            class="form-control" 
-            [attr.name]="name" 
-            [attr.webkitdirectory]="webkitdirectory === 'true' ? true : null"
-            (change)="fileChanged($event)"
-            >
-        <input #fileInputDisplay readonly="" class="form-control" [attr.placeholder]="placeholder" type="text">
-    `,
+    selector: 'file-electron',
+    templateUrl: './file-electron.component.html',
     providers: [
         { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => FileElectronComponent), multi: true },
         { provide: NG_VALIDATORS, useExisting: forwardRef(() => FileElectronComponent), multi: true }

@@ -12,7 +12,7 @@ import * as Q from 'q';
  */
 @Injectable()
 export class ImageToolService {
-    private cameraToolPath: string = path.join('build', 'native', 'CameraTool');
+    private cameraToolPath: string = path.join('native', 'CameraTool');
 
     constructor() {
 

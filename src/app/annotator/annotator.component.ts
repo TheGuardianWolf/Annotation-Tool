@@ -1,20 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { Http } from '@angular/http';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WorkspaceService } from '../shared/workspace/workspace.service';
 import { Router } from '@angular/router';
 
 /**
- * This class represents the lazy loaded HubStartComponent.
+ * This class represents the lazy loaded AnnotatorComponent.
  */
 @Component({
-    selector: 'Annotator',
+    selector: 'annotator',
     templateUrl: './annotator.component.html',
-    //styleUrls: ['./annotator.component.scss'],
 })
 
-export class AnnotatorComponent implements OnInit {
-    @ViewChild('canvasContainer') canvasContainer: ElementRef;
-
+export class AnnotatorComponent implements OnInit, OnDestroy {
     private ws: WorkspaceService;
     private router: Router;
 
@@ -23,12 +19,17 @@ export class AnnotatorComponent implements OnInit {
         this.router = _router;
     }
 
-    ngOnInit() {
-        if (!this.ws.initialised) {
-            this.router.navigate(['/hub', 'workspace']);
+    public ngOnInit() {
+        if (this.ws.initialised) {
         }
         else {
-            this.ws.workspace.canvas.bind(this.canvasContainer.nativeElement);
+            this.router.navigate(['/hub', 'workspace']);
+        }
+    }
+
+    public ngOnDestroy() {
+        if (this.ws.initialised) {
+            window.onresize = undefined;
         }
     }
 }

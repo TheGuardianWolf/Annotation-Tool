@@ -13,30 +13,30 @@
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="extractDirectory">Workspace Directory</label>
                             <div class="col-xs-9">
-                                <FileElectron formControlName="directory" 
+                                <file-electron formControlName="directory" 
                                               inputId="extractDirectory" 
                                               name="extractDirectory" 
                                               placeholder="Select directory..." 
-                                              webkitdirectory="true"></FileElectron>
+                                              webkitdirectory="true"></file-electron>
                             </div>
                         </div>
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="videoFile">Video File</label>
                             <div class="col-xs-9">
-                                <FileElectron formControlName="video"
+                                <file-electron formControlName="video"
                                               inputId="videoFile" 
                                               name="videoFile" 
                                               placeholder="Select file..."
-                                              extension="mkv"></FileElectron>
+                                              extension="mkv"></file-electron>
                             </div>
                         </div>
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="annotationFileCW">Annotation File</label>
                             <div class="col-xs-9">
-                                <FileElectron formControlName="annotation"
+                                <file-electron formControlName="annotation"
                                               inputId="annotationFileCW"
                                               name="annotationFileCW"
-                                              placeholder="Select file..."></FileElectron>
+                                              placeholder="Select file..."></file-electron>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-default btn-primary" [disabled]="!createForm.valid">Submit</button>
@@ -57,20 +57,20 @@
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="loadDirectory">Workspace Directory</label>
                             <div class="col-xs-9">
-                                <FileElectron formControlName="directory"
+                                <file-electron formControlName="directory"
                                               inputId="loadDirectory" 
                                               name="loadDirectory" 
                                               placeholder="Select directory..." 
-                                              webkitdirectory="true"></FileElectron>
+                                              webkitdirectory="true"></file-electron>
                             </div>
                         </div>
                         <div class="form-group is-fileinput">
                             <label class="control-label col-xs-3" for="annotationFileLW">Annotation File</label>
                             <div class="col-xs-9">
-                                <FileElectron formControlName="annotation"
+                                <file-electron formControlName="annotation"
                                               inputId="annotationFileLW" 
                                               name="annotationFileLW" 
-                                              placeholder="Select file..."></FileElectron>
+                                              placeholder="Select file..."></file-electron>
                             </div>
                         </div>
                         <button type="submit" class="btn btn-default btn-primary" [disabled]="!loadForm.valid">Submit</button>

@@ -22,7 +22,7 @@ export class WorkspaceService {
     private _busy: boolean;
     private _busyChain: Q.Promise<any>;
     get busy() {
-        return this._busy || this.workspace.busy;
+        return this._busy;
     }
 
     private chainBusy(promises: Array<Q.Promise<any>>) {
@@ -89,18 +89,20 @@ export class WorkspaceService {
         this.videoFile = config.video;
         this.annotationFile = config.annotation;
 
-        // Function to load canvas images
-        let loadCanvasImages = (filenames) => {
-            return this.workspace.canvas.loadImages(
-                this.workspaceDir,
-                filenames as Array<string>
-            );
-        }
-
         // Load fresh workspace
         this.workspace = new Workspace();
 
         let promiseChain;
+
+        let setWorkspaceImages = (images) => {
+            this.workspace.setImages(images);
+        };
+
+        let getVideoAnnotations = () => {
+            if (this.annotationFile) {
+                return Video.fromFile(this.annotationFile);
+            }
+        }
 
         if (this.videoFile) {
             // Get context from input video
@@ -110,17 +112,20 @@ export class WorkspaceService {
             this.workspace.toFile(path.join(this.workspaceDir, 'workspace.json'));
 
             // If there's a video file, extract the images and read in image paths
-            promiseChain = this.its.extractImages(this.videoFile, this.workspaceDir)
-                .then(() => {
-                    return this.its.readImageDir(this.workspaceDir);
-                })
-                .then(loadCanvasImages);
+            promiseChain = Q.all([
+                this.its.extractImages(this.videoFile, this.workspaceDir)
+                    .then(() => {
+                        return this.its.readImageDir(this.workspaceDir);
+                    })
+                    .done(setWorkspaceImages),
+                
+            ]);
         }
         else {
             // Otherwise just read in image paths and the workspace file
             promiseChain = Q.all([
                 this.its.readImageDir(this.workspaceDir)
-                    .then(loadCanvasImages).done(),
+                    .done(setWorkspaceImages),
                 this.workspace.fromFile(path.join(this.workspaceDir, 'workspace.json'))
             ]);
         }

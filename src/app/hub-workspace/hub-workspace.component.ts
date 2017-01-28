@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Http } from '@angular/http';
 import { Location } from '@angular/common';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +11,7 @@ import { IWorkspaceConfig, WorkspaceService } from '../shared/workspace/workspac
  * This class represents the lazy loaded HubWorkspaceComponent.
  */
 @Component({
-    selector: 'HubWorkspace',
+    selector: 'hub-workspace',
     templateUrl: './hub-workspace.component.html',
     //styleUrls: ['./hub-start.component.scss'],
 })
@@ -27,6 +26,7 @@ export class HubWorkspaceComponent implements OnInit {
     constructor(_fb: FormBuilder, _ws: WorkspaceService, _router: Router) {
         this.router = _router;
         this.ws = _ws;
+
         this.createForm = _fb.group({
             'directory': [null, Validators.required],
             'video': [null, Validators.required],
