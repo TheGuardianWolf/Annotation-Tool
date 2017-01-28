@@ -29,16 +29,54 @@ export interface IWorkspaceVars {
  * Backend state store for the workspace service
  */
 export class Workspace {
-    public videoAnnotation: Video = new Video(null, null, null, null);
+    public annotation: Video = new Video(null, null, null, null);
 
     public calibration: Calibration = new Calibration();
 
+    // Array of images from the workspace directory
     private _images: BehaviorSubject<Array<string>> = new BehaviorSubject([]);
-    get images(): Observable<Array<string>> {
+    get imagesObs(): Observable<Array<string>> {
         return this._images.asObservable();
     }
-    public setImages(value: Array<string>) {
+    get images() {
+        return this._images.value;
+    }
+    set images(value: Array<string>) {
         this._images.next(value);
+    }
+    get imagesCount() {
+        return this._images.value.length;
+    }
+
+    // The current annotation frame
+    private _currentFrame: BehaviorSubject<number> = new BehaviorSubject(null);
+    get currentFrameObs() {
+        return this._currentFrame.asObservable();
+    }
+    get currentFrame() {
+        return this._currentFrame.value;
+    }
+    get currentFrameIndex() {
+        return this.currentFrame - 1;
+    }
+    set currentFrame(value: number) {
+        let index = value - 1;
+        if (index >= 0 && index < this.imagesCount) {
+            this._currentFrame.next(value)
+        }
+    }
+
+    private _currentPerson: BehaviorSubject<number> = new BehaviorSubject(null);
+    get currentPersoneObs() {
+        return this._currentPerson.asObservable();
+    }
+    get currentPerson() {
+        return this._currentPerson.value;
+    }
+    set currentPerson(value: number) {
+        if (value >= 0 && this.currentFrameIndex && value < this.annotation.frames[this.currentFrameIndex].people.length) {
+            this._currentPerson.next(value)
+        }
     }
 
     constructor() {
@@ -52,7 +90,7 @@ export class Workspace {
             (file) => {
                 let workspaceVars: IWorkspaceVars = JSON.parse(file as string);
                 this.calibration = new Calibration(workspaceVars);
-                this.videoAnnotation = new Video(
+                this.annotation = new Video(
                     workspaceVars.sequence.number,
                     workspaceVars.sequence.name,
                     workspaceVars.video.increment,
@@ -66,19 +104,19 @@ export class Workspace {
         return Q.denodeify(fs.writeFile)(
             file,
             JSON.stringify({
-            'sequence': {
-                'number': this.videoAnnotation.number,
-                'name': this.videoAnnotation.name
-            },
-            'video': {
-                'increment': this.videoAnnotation.increment,
-                'camera': this.videoAnnotation.camera
-            },
-            'lensCalibrationFile': this.calibration.lensCalibrationFile,
-            'perspectiveCalibrationFile': this.calibration.perspectiveCalibrationFile,
-            'imageOrigin': this.calibration.imageOrigin,
-            'flipOrigin': this.calibration.flipOrigin,
-            'switchOrigin': this.calibration.switchOrigin
-        }, null, 4));
+                'sequence': {
+                    'number': this.annotation.number,
+                    'name': this.annotation.name
+                },
+                'video': {
+                    'increment': this.annotation.increment,
+                    'camera': this.annotation.camera
+                },
+                'lensCalibrationFile': this.calibration.lensCalibrationFile,
+                'perspectiveCalibrationFile': this.calibration.perspectiveCalibrationFile,
+                'imageOrigin': this.calibration.imageOrigin,
+                'flipOrigin': this.calibration.flipOrigin,
+                'switchOrigin': this.calibration.switchOrigin
+            }, null, 4));
     }
 }

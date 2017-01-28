@@ -156,7 +156,7 @@ export class Video {
         this.frames = [];
     }
 
-    public addFrame(frame, index?) {
+    public addFrame(frame: Frame, index?: number) {
         if (is.number(index)) {
             this.frames[index] = frame;
         }

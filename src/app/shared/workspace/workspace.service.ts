@@ -1,6 +1,6 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
 import { Workspace } from '../classes/workspace';
-import { Video } from '../classes/storage';
+import { Video, Frame } from '../classes/storage';
 import { ImageToolService } from '../image-tool/image-tool.service';
 
 import * as Q from 'q';
@@ -75,7 +75,7 @@ export class WorkspaceService {
         let videoIncrement = videoBasename[2];
         let videoCamera = parseInt(videoBasename[3].substr(-1));
 
-        this.workspace.videoAnnotation = new Video(
+        this.workspace.annotation = new Video(
             sequenceNumber,
             sequenceName,
             videoIncrement,
@@ -94,8 +94,14 @@ export class WorkspaceService {
         let promiseChain;
 
         let setWorkspaceImages = (images) => {
-            this.workspace.setImages(images);
+            this.workspace.images = images;
         };
+
+        let fillAnnotationFrames = () => {
+            for (let i = 0; i < this.workspace.imagesCount; i++) {
+                this.workspace.annotation.addFrame(new Frame(i + 1));
+            }
+        }
 
         let getVideoAnnotations = () => {
             if (this.annotationFile) {
@@ -116,7 +122,8 @@ export class WorkspaceService {
                     .then(() => {
                         return this.its.readImageDir(this.workspaceDir);
                     })
-                    .done(setWorkspaceImages),
+                    .then(setWorkspaceImages)
+                    .done(fillAnnotationFrames),
                 
             ]);
         }
@@ -126,7 +133,7 @@ export class WorkspaceService {
                 this.its.readImageDir(this.workspaceDir)
                     .done(setWorkspaceImages),
                 this.workspace.fromFile(path.join(this.workspaceDir, 'workspace.json'))
-            ]);
+            ]).then(fillAnnotationFrames);
         }
 
         // Put this promise chain into the busy chain

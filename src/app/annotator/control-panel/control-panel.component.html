@@ -4,10 +4,12 @@
         <li><a id="annotationTab" data-toggle="tab" data-control="annotation" href="#/annotator" (click)="changeControls($event)">Annotation</a></li>
         <li><a id="settingsTab" data-toggle="tab" data-control="settings" href="#/annotator" (click)="changeControls($event)">Settings</a></li>
     </ul>
-    <div class="alert alert-warning text-center">
+    <div [hidden]="ws.workspace.calibration.calibrated" class="alert alert-warning text-center">
         <h4>Not calibrated. Auto infer real location not functional.</h4>
     </div>
-    <calibration-control *ngIf="currentControl === 'calibration'"></calibration-control>
-    <annotation-control *ngIf="currentControl === 'annotation'"></annotation-control>
-    <settings-control *ngIf="currentControl === 'settings'"></settings-control>
+    <div class="controls">
+        <calibration-control *ngIf="currentControl === 'calibration'"></calibration-control>
+        <annotation-control *ngIf="currentControl === 'annotation'"></annotation-control>
+        <settings-control *ngIf="currentControl === 'settings'"></settings-control>
+    </div>
 </div>

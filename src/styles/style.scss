@@ -9,7 +9,7 @@ html, body, .viewport {
     min-width: 800px;
 }
 
-#main {
+.main {
     height: calc(100% - 60px);
 }
 
@@ -21,6 +21,10 @@ html, body, .viewport {
 
 .navbar {
     margin-bottom: 0;
+
+    .navbar-header {
+        float: none;
+    }
 }
 
 .hub {
@@ -84,7 +88,6 @@ html, body, .viewport {
     }
 
     .toolbar {
-        height: 60px;
         margin-bottom: 0;
 
         .btn-toolbar {
@@ -170,4 +173,8 @@ html, body, .viewport {
             justify-content: space-around;
         }
     }
+}
+
+.os-binding {
+    background: rgb(0, 0, 0);
 }

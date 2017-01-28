@@ -38,27 +38,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private tileCache: Array<any> = [];
 
-    private _currentFrame: number;
-    get currentFrame() {
-        return this._currentFrame;
-    }
-    set currentFrame(value: number) {
-        let index = value - 1;
-        if (index >= 0 && index < this.imagesCount) {
-            this._currentFrame = value;
-            if (this.tileCache[index]) {
-                this.viewer.open(this.tileCache[index]);
-            }
-            else {
-                this.viewer.open(
-                    new osd.ImageTileSource({
-                        'url': this.images[index].src
-                    })
-                );
-            }
-        }
-    }
-
     private _zoom: Number = 1;
     get zoom() {
         return this._zoom;
@@ -93,6 +72,22 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     constructor(_ws: WorkspaceService) {
         this.ws = _ws;
+    }
+
+    public changeFrame = (frameNumber) => {
+        if (frameNumber) {
+            let index = frameNumber - 1;
+            if (this.tileCache[index]) {
+                this.viewer.open(this.tileCache[index]);
+            }
+            else {
+                this.viewer.open(
+                    new osd.ImageTileSource({
+                        'url': this.images[index].src
+                    })
+                );
+            }
+        }
     }
 
     public on(event: string, name: string, handler: Function) {
@@ -131,7 +126,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'visibilityRatio': 1.0,
             'constrainDuringPan': true,
             'showNavigator': true,
-            'zoomPerScroll': 1.8
+            'zoomPerScroll': 1.8,
+            'preserveViewport': true,
         });
         this._overlay = this.viewer.paperjsOverlay();
 
@@ -171,12 +167,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private bindKeys() {
         // Previous frame
         this.on('keyDown', 'z', (event) => {
-            this.currentFrame--;
+            this.ws.workspace.currentFrame--;
         });
 
         // Next frame
         this.on('keyDown', 'x', (event) => {
-            this.currentFrame++;
+            this.ws.workspace.currentFrame++;
         });
     }
 
@@ -227,15 +223,18 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
             let imagesLoaded: Q.Promise<{}>;
 
-            this.ws.workspace.images.subscribe(
+            this.ws.workspace.imagesObs.subscribe(
                 (imageList) => {
                     imagesLoaded = this.loadImages(this.ws.workspaceDir, imageList);
+                    imagesLoaded.done(() => {
+                        if (!this.ws.workspace.currentFrame) {
+                            this.ws.workspace.currentFrame = 1;
+                        }
+                    });
                 }
             );
 
-            imagesLoaded.done(() => {
-                this.currentFrame = 1;
-            });
+            this.ws.workspace.currentFrameObs.subscribe(this.changeFrame);
         }
     }
 
