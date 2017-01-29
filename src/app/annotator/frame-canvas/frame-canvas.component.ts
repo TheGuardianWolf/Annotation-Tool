@@ -4,9 +4,11 @@ import { WorkspaceService } from '../../shared/workspace/workspace.service';
 import * as path from 'path';
 import * as Q from 'q';
 import * as is from 'is';
+import * as noUiSlider from 'nouislider';
 
 const paper = require('paper');
 const osd = require('openseadragon');
+const multiqueue = require('multiqueue');
 
 interface IEventHandlers {
     click: Object;
@@ -123,11 +125,16 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'element': this.osdBinding.nativeElement,
             'prefixUrl': "https://openseadragon.github.io/openseadragon/images/",
             'debugMode': false,
-            'visibilityRatio': 1.0,
+            'visibilityRatio': 0.95,
             'constrainDuringPan': true,
             'showNavigator': true,
-            'zoomPerScroll': 1.8,
+            'zoomPerScroll': 1.3,
+            'zoomPerClick': 1.8,
             'preserveViewport': true,
+			'minZoomImageRatio': 0.8,
+			'maxZoomPixelRatio': 2.5,
+			'minZoomLevel': 0.8,
+			'maxZoomLevel':  2.5
         });
         this._overlay = this.viewer.paperjsOverlay();
 
@@ -178,6 +185,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private loadImages(dir: string, filenames: Array<string>): Q.Promise<{}> {
         let promises: Array<Q.Promise<{}>> = [];
+        multiqueue.create('cacheTiles', 17);
 
         this.images = filenames.map((filename, index) => {
             // Set up deferred object to represent the 'image loaded' event
@@ -187,7 +195,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             let image = new Image();
             let imageSrc = image.src = path.join(dir, filename);
 
-            let cacheTile = async () => {
+            let cacheTile = () => {
                 this.tileCache[index] = new osd.ImageTileSource({
                     'url': imageSrc
                 })
@@ -195,7 +203,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
             image.onload = () => {
                 deferred.resolve(image.src);
-                cacheTile();
+                multiqueue.add(
+                    cacheTile,
+                    (data) => {
+                    },
+                    'cacheTiles'
+                );
             };
             image.onerror = (err) => {
                 deferred.reject(err);

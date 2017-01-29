@@ -1,7 +1,6 @@
 ﻿import * as Q from 'q';
 import * as fs from 'fs';
 import * as is from 'is';
-import { remote } from 'electron';
 
 export interface IPoint {
     x: number;
@@ -13,6 +12,17 @@ export interface IBoundingBox {
     right: number;
     top: number;
     bottom: number;
+}
+
+export class BoundingBox implements IBoundingBox {
+    public left: number;
+    public right: number;
+    public top: number;
+    public bottom: number;
+    static autoflow(start: IBoundingBox, end: IBoundingBox) {
+    }
+    static parse(boundingBox: IBoundingBox) {
+    }
 }
 
 export class Point implements IPoint {
@@ -35,7 +45,7 @@ export class Point implements IPoint {
         };
     }
 
-    static parse(point) {
+    static parse(point: IPoint) {
         return new Point(point.x, point.y);
     }
 }
@@ -189,14 +199,9 @@ export class Video {
         );
     }
 
-    static toFile(video: Video, defaultPath?: string) {
-        let saveOptions: any = {
-            'title': 'Save annotation file'
-        };
-        if (defaultPath) saveOptions.defaultPath = defaultPath;
-
+    static toFile(path: string, video: Video) {
         return Q.denodeify(fs.writeFile)(
-            remote.dialog.showSaveDialog(saveOptions),
+            path,
             JSON.stringify(video, null, 4)
         );
     }

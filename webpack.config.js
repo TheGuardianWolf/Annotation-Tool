@@ -30,7 +30,6 @@ var webpackConfig = {
         new CopyWebpackPlugin([
             { from: './src/main.electron.js', to: './electron.js' },
             { from: './src/package.electron.json', to: './package.json' },
-            { from: './node_modules/openseadragon/build/openseadragon/openseadragon.min.js', to: './webworker/scripts/' },
             {
 				context: './build',
                 from: {
@@ -50,6 +49,7 @@ var webpackConfig = {
         loaders: [
             {
                 test: /\.ts$/,
+				exclude: /\.worker\..+$/,
                 loader: 'awesome-typescript-loader!angular2-template-loader?keepUrl=true'
             },
             {
@@ -66,7 +66,7 @@ var webpackConfig = {
             },
             //{
             //    test: /\.(eot|woff|woff2|ttf|svg|png|jpg|jpeg|fs)$/,
-            //    loader: "url-loader?limit=10000"
+            //    loader: "url-loader?limit=1000000"
             //},
             {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
@@ -122,7 +122,7 @@ var defaultConfig = {
         noParse: [
             path.join(__dirname, 'node_modules', 'zone.js', 'dist'),
             path.join(__dirname, 'node_modules', '@angular', 'bundles'),
-            //path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
+            path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
             path.join(__dirname, 'node_modules', 'paper', 'dist'),
         ]
     },

@@ -32,8 +32,11 @@
     <Content Include="src\app\index.ejs" />
     <Content Include="src\app\shared\file-electron\file-electron.component.html" />
     <Content Include="src\app\shared\header\header.component.html" />
+    <Content Include="src\index.ejs" />
+    <Content Include="src\package.electron.json" />
     <Content Include="tsconfig.json" />
     <Content Include="README.md" />
+    <Compile Include="src\main.electron.js" />
     <Compile Include="webpack.config.js" />
     <TypeScriptCompile Include="src\app\annotator\annotator.route.ts" />
     <TypeScriptCompile Include="src\app\annotator\annotator.component.ts" />
@@ -42,7 +45,7 @@
     <TypeScriptCompile Include="src\app\annotator\control-panel\settings-control\settings-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\frame-canvas\frame-canvas.module.ts" />
-    <TypeScriptCompile Include="src\app\shared\notifications\busy.service.ts" />
+    <TypeScriptCompile Include="src\app\shared\status\status.service.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\workspace.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.module.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.component.ts" />
@@ -60,6 +63,7 @@
     <TypeScriptCompile Include="src\app\annotator\frame-canvas\frame-canvas.component.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\settings.ts" />
     <TypeScriptCompile Include="src\app\shared\classes\storage.ts" />
+    <TypeScriptCompile Include="src\main.renderer.ts" />
     <TypeScriptCompile Include="src\polyfills.ts" />
     <TypeScriptCompile Include="src\vendor.ts" />
     <TypeScriptCompile Include="src\app\app.module.ts" />
@@ -86,13 +90,12 @@
     <Folder Include="src\app\shared\image-tool\" />
     <Folder Include="src\app\shared\file-electron\" />
     <Folder Include="src\app\shared\classes\" />
-    <Folder Include="src\app\shared\notifications\" />
+    <Folder Include="src\app\shared\status\" />
     <Folder Include="src\app\shared\workspace\" />
     <Folder Include="src\app\views\" />
     <Folder Include="src\app\views\page1\" />
     <Folder Include="src\app\views\page2" />
     <Folder Include="src\utils\" />
-    <Folder Include="src\utils\includes\" />
     <Folder Include="src\styles" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />

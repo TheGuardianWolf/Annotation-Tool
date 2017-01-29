@@ -1,7 +1,8 @@
-﻿import { Injectable, OnInit } from '@angular/core';
+﻿import { Injectable } from '@angular/core';
 import { Workspace } from '../classes/workspace';
 import { Video, Frame } from '../classes/storage';
 import { ImageToolService } from '../image-tool/image-tool.service';
+import { remote } from 'electron';
 
 import * as Q from 'q';
 import * as path from 'path';
@@ -146,6 +147,14 @@ export class WorkspaceService {
 
     public save() {
         if (!this._busy) {
+            let saveOptions: any = {
+                'title': 'Save annotation file'
+            };
+            if (path) saveOptions.defaultPath = path;
+            Video.toFile(
+                remote.dialog.showSaveDialog(saveOptions),
+                this.workspace.annotation
+            );
         }
     }
 }

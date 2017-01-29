@@ -39,19 +39,118 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label" for="frameNumber">Number</label>
                 <div class="col-xs-8">
-                    <input [(ngModel)]="ws.workspace.annotation.frames[ws.workspace.currentFrameIndex].frameNumber"
+                    <input [(ngModel)]="currentFrame.frameNumber"
                            name="frameNumber"
                            type="number" class="form-control" id="frameNumber" />
                 </div>
             </div>
-            <h4>Person</h4>
-            <div class="people">
+            <div *ngIf="currentFrameHasPeople" class="person">
+                <h4>Person</h4>
+                <div class="person-select">
+                </div>
+                <div class="person" [attr.data-index]="currentPersonIndex">
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="personId">Id</label>
+                        <div class="col-xs-8">
+                            <input [(ngModel)]="currentFrame.person[currentPersonIndex].id"
+                                   name="personId"
+                                   type="text" class="form-control" id="personId" />
+                        </div>
+                    </div>
+                    <div class="coordinates row">
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personBoxLeft">Box Left</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personBoxLeft" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personBoxRight">Box Right</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personBoxRight" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="coordinates row">
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personBoxTop">Box Top</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personBoxTop" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personBoxBottom">Box Bottom</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personBoxBottom" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-5">
+                        <button id="personDrawBox" type="button" class="btn btn-default">Draw Box</button>
+                    </div>
+                    <div class="col-xs-5">
+                        <button id="personAutoflow" type="button" class="btn btn-default">Autoflow</button>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-10 form-group">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" id="personObscured" /> Obscured
+                            </label>
+                        </div>
+                    </div>
+                    <div class="coordinates row">
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personLocationPxX">Location X (px)</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personLocationPxX" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personLocationPxY">Location Y (px)</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personLocationPxY" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-10">
+                        <button id="personSelectCoordinate" type="button" class="btn btn-default">Select</button>
+                    </div>
+                    <div class="coordinates row">
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personLocationReX">Location X (mm)</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personLocationReX" />
+                            </div>
+                        </div>
+                        <div class="col-xs-6 form-group">
+                            <label class="col-xs-4 control-label" for="personLocationReY">Location Y (mm)</label>
+                            <div class="col-xs-8">
+                                <input class="form-control" type="number" id="personLocationReY" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-4 control-label" for="personSegment">Segment</label>
+                        <div class="col-xs-8">
+                            <select class="form-control text-center" id="personSegment">
+                                <option value="">N/A</option>
+                                <option value="A">A</option>
+                                <option value="B">B</option>
+                                <option value="C">C</option>
+                                <option value="D">D</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-xs-offset-2 col-xs-10">
+                        <button id="personAutoCoordinate" type="button" class="btn btn-default">Auto</button>
+                    </div>
+                </div>
             </div>
             <div class="col-xs-6">
-                <button id="addPerson" type="button" class="btn btn-default">Add Person</button>
+                <button (click)="addPerson()" id="addPerson" type="button" class="btn btn-default">Add Person</button>
             </div>
             <div class="col-xs-6">
-                <button id="removePerson" type="button" class="btn btn-default">Remove Person</button>
+                <button (click)="removePerson()" id="removePerson" type="button" class="btn btn-default">Remove Person</button>
             </div>
         </fieldset>
     </form>

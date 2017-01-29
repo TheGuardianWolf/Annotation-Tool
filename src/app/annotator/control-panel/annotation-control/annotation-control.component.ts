@@ -17,6 +17,28 @@ declare var $;
 export class AnnotationControlComponent implements OnInit {
     public ws: WorkspaceService;
 
+    // Shortcut accessors for template binding
+    get annotation() {
+        return this.ws.workspace.annotation;
+    }
+
+    get currentFrame() {
+        return this.ws.workspace.annotation.frames[this.ws.workspace.currentFrameIndex];
+    }
+
+    get currentFrameHasPeople() {
+        return this.currentFrame.people.length > 0;
+    }
+    // End of shortcut accessors
+
+    private currentPersonIndex: number = 0;
+
+    private addPerson() {
+    }
+
+    private removePerson() {
+    }
+
     constructor(_ws: WorkspaceService) {
         this.ws = _ws;
     }
