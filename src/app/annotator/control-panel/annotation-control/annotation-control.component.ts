@@ -43,19 +43,19 @@ export class AnnotationControlComponent implements OnInit {
     private addPerson() {
         // TODO: Add paper bounding box
         this.frame.addPerson(
-            new Person(0, false, new BoundingBox(null, null, null, null), new Point(null, null), new Point(null, null), null)
+            new Person(null, false, new BoundingBox(null, null, null, null), new Point(null, null), new Point(null, null), null)
         );
         this.ws.annotation.currentPerson = this.frame.people.length - 1
     }
 
     private removePerson() {
         // TODO: Remove paper bounding box
-        if (this.ws.annotation.currentPerson === this.frame.people.length - 1) {
-            this.ws.annotation.currentPerson--;
-        }
         let newPeople = this.frame.people;
         newPeople.splice(this.ws.annotation.currentPerson, 1);
         this.frame.people = newPeople;
+        if (this.ws.annotation.currentPerson >= this.frame.people.length) {
+            this.ws.annotation.currentPerson--;
+        }
     }
 
     private nextPerson() {

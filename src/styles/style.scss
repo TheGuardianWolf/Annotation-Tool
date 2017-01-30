@@ -125,10 +125,12 @@ html, body, .viewport {
         display: flex;
         flex-direction: column;
 
-        .controls {
-            padding: 0 20px;
-            flex-grow: 1;
-            overflow-y: auto;
+        fieldset {
+            margin-top: 30px;
+        }
+
+        .checkbox label {
+            text-align: left;
         }
 
         .form-horizontal .form-group {
@@ -140,6 +142,10 @@ html, body, .viewport {
         }
 
         .controls {
+            padding: 0 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+
             input {
                 box-sizing: border-box;
             }

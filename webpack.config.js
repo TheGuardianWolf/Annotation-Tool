@@ -37,6 +37,14 @@ var webpackConfig = {
                     dot: false
                 },
                 to: './native',
+            },
+            {
+                context: './src/app/assets',
+                from: {
+                    glob: '**/*',
+                    dot: false
+                },
+                to: './assets',
             }
         ],
             {

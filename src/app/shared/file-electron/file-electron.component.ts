@@ -1,4 +1,4 @@
-import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, ViewChild, ElementRef, ChangeDetectorRef } from '@angular/core';
 import { FormControl, ControlValueAccessor, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 import * as path from 'path';
 
@@ -55,6 +55,10 @@ export class FileElectronComponent implements ControlValueAccessor, OnChanges, O
 
     constructor(private ref: ChangeDetectorRef) {
         this.fileChange = new EventEmitter();
+    }
+
+    onBlur() {
+        this.onTouched();
     }
 
     fileChanged(event) {

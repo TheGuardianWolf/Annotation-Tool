@@ -3,38 +3,40 @@
         <fieldset>
             <h4>Calibration Files</h4>
             <div class="form-group is-fileinput">
-                <label class="col-xs-4 control-label" for="lensCalibrationFile">Lens Calibration</label>
-                <div class="col-xs-8">
+                <label class="col-xs-2 control-label" for="lensCalibrationFile">Lens Calibration</label>
+                <div class="col-xs-10">
                     <file-electron [(ngModel)]="calibration.lensCalibrationFile"
-                                  inputId="lensCalibrationFile"
-                                  name="lensCalibrationFile"
-                                  placeholder="Select file..."
-                                  webkitdirectory="false"></file-electron>
+                                   inputId="lensCalibrationFile"
+                                   name="lensCalibrationFile"
+                                   placeholder="Select file..."
+                                   webkitdirectory="false"></file-electron>
                 </div>
             </div>
             <div class="form-group is-fileinput">
-                <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
-                <div class="col-xs-8">
+                <label class="col-xs-2 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
+                <div class="col-xs-10">
                     <file-electron [(ngModel)]="calibration.perspectiveCalibrationFile"
-                                  inputId="perspectiveCalibrationFile"
-                                  name="perspectiveCalibrationFile"
-                                  placeholder="Select file..."
-                                  webkitdirectory="false"></file-electron>
+                                   inputId="perspectiveCalibrationFile"
+                                   name="perspectiveCalibrationFile"
+                                   placeholder="Select file..."
+                                   webkitdirectory="false"></file-electron>
                 </div>
             </div>
+        </fieldset>
+        <fieldset>
             <h4>Image Origin</h4>
             <div class="coordinates row">
-                <div class="col-xs-6 form-group">
-                    <label class="col-xs-4 control-label" for="imageOriginX">X</label>
-                    <div class="col-xs-8">
+                <div class="col-sm-6 form-group">
+                    <label class="col-xs-2 control-label" for="imageOriginX">X</label>
+                    <div class="col-xs-10">
                         <input [(ngModel)]="calibration.imageOriginX"
                                name="imageOriginX"
                                class="form-control" type="number" id="imageOriginX" />
                     </div>
                 </div>
-                <div class="col-xs-6 form-group">
-                    <label class="col-xs-4 control-label" for="imageOriginY">Y</label>
-                    <div class="col-xs-8">
+                <div class="col-sm-6 form-group">
+                    <label class="col-xs-2 control-label" for="imageOriginY">Y</label>
+                    <div class="col-xs-10">
                         <input [(ngModel)]="calibration.imageOriginY"
                                name="imageOriginY"
                                class="form-control" type="number" id="imageOriginY" />
@@ -42,11 +44,15 @@
                 </div>
                 <div class="col-xs-offset-2 col-xs-10">
                     <button (click)="calibration.selectImageOrigin()"
-                            id="selectImageOrigin" type="button" class="btn btn-default">Select</button>
+                            id="selectImageOrigin" type="button" class="btn btn-default">
+                        Select
+                    </button>
                 </div>
             </div>
             <div class="coordinates row">
-                <div class="col-xs-4 form-group">
+                <div class="col-sm-2">
+                </div>
+                <div class="col-sm-3 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="calibration.flipOrigin.x"
@@ -55,7 +61,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-xs-4 form-group">
+                <div class="col-sm-3 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="calibration.flipOrigin.y"
@@ -64,7 +70,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-xs-4 form-group">
+                <div class="col-sm-3 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="calibration.switchOrigin"

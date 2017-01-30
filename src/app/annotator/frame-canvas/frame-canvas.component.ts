@@ -132,7 +132,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private bindCanvas() {
         this._viewer = osd({
             'element': this.osdBinding.nativeElement,
-            'prefixUrl': "https://openseadragon.github.io/openseadragon/images/",
+            'prefixUrl': "assets/osd-icons/images/",
             'debugMode': false,
             'visibilityRatio': 0.95,
             'constrainDuringPan': true,

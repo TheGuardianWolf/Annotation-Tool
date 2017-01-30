@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { HeaderComponent } from './header/header.component';
 import { FileElectronComponent } from './file-electron/file-electron.component';
+import { MaterialCheckboxComponent } from './material-checkbox/material-checkbox.component';
 import { WorkspaceService } from './workspace/workspace.service';
 import { ImageToolService } from './image-tool/image-tool.service';
 import { StatusService } from './status/status.service';
@@ -14,9 +15,9 @@ import { StatusService } from './status/status.service';
  */
 
 @NgModule({
-    imports: [CommonModule, RouterModule],
-    declarations: [HeaderComponent, FileElectronComponent],
-    exports: [HeaderComponent, FileElectronComponent,
+    imports: [CommonModule, RouterModule, FormsModule],
+    declarations: [HeaderComponent, FileElectronComponent, MaterialCheckboxComponent],
+    exports: [HeaderComponent, FileElectronComponent, MaterialCheckboxComponent,
         CommonModule, FormsModule, RouterModule]
 })
 export class SharedModule {
