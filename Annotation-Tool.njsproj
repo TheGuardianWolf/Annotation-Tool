@@ -45,8 +45,8 @@
     <TypeScriptCompile Include="src\app\annotator\control-panel\settings-control\settings-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\annotation-control\annotation-control.component.ts" />
     <TypeScriptCompile Include="src\app\annotator\frame-canvas\frame-canvas.module.ts" />
+    <TypeScriptCompile Include="src\app\shared\classes\annotation.ts" />
     <TypeScriptCompile Include="src\app\shared\status\status.service.ts" />
-    <TypeScriptCompile Include="src\app\shared\classes\workspace.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.module.ts" />
     <TypeScriptCompile Include="src\app\annotator\control-panel\control-panel.component.ts" />
     <TypeScriptCompile Include="src\app\app.route.ts" />

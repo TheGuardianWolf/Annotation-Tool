@@ -5,7 +5,7 @@
             <div class="form-group is-fileinput">
                 <label class="col-xs-4 control-label" for="lensCalibrationFile">Lens Calibration</label>
                 <div class="col-xs-8">
-                    <file-electron [(ngModel)]="ws.workspace.calibration.lensCalibrationFile"
+                    <file-electron [(ngModel)]="calibration.lensCalibrationFile"
                                   inputId="lensCalibrationFile"
                                   name="lensCalibrationFile"
                                   placeholder="Select file..."
@@ -15,7 +15,7 @@
             <div class="form-group is-fileinput">
                 <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
                 <div class="col-xs-8">
-                    <file-electron [(ngModel)]="ws.workspace.calibration.perspectiveCalibrationFile"
+                    <file-electron [(ngModel)]="calibration.perspectiveCalibrationFile"
                                   inputId="perspectiveCalibrationFile"
                                   name="perspectiveCalibrationFile"
                                   placeholder="Select file..."
@@ -27,7 +27,7 @@
                 <div class="col-xs-6 form-group">
                     <label class="col-xs-4 control-label" for="imageOriginX">X</label>
                     <div class="col-xs-8">
-                        <input [(ngModel)]="ws.workspace.calibration.imageOriginX"
+                        <input [(ngModel)]="calibration.imageOriginX"
                                name="imageOriginX"
                                class="form-control" type="number" id="imageOriginX" />
                     </div>
@@ -35,13 +35,13 @@
                 <div class="col-xs-6 form-group">
                     <label class="col-xs-4 control-label" for="imageOriginY">Y</label>
                     <div class="col-xs-8">
-                        <input [(ngModel)]="ws.workspace.calibration.imageOriginY"
+                        <input [(ngModel)]="calibration.imageOriginY"
                                name="imageOriginY"
                                class="form-control" type="number" id="imageOriginY" />
                     </div>
                 </div>
                 <div class="col-xs-offset-2 col-xs-10">
-                    <button (click)="ws.workspace.selectImageOrigin()"
+                    <button (click)="calibration.selectImageOrigin()"
                             id="selectImageOrigin" type="button" class="btn btn-default">Select</button>
                 </div>
             </div>
@@ -49,7 +49,7 @@
                 <div class="col-xs-4 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
-                            <input [(ngModel)]="ws.workspace.calibration.flipOrigin.x"
+                            <input [(ngModel)]="calibration.flipOrigin.x"
                                    name="flipOriginX"
                                    type="checkbox" id="flipOriginX" /> Flip X
                         </label>
@@ -58,7 +58,7 @@
                 <div class="col-xs-4 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
-                            <input [(ngModel)]="ws.workspace.calibration.flipOrigin.y"
+                            <input [(ngModel)]="calibration.flipOrigin.y"
                                    name="flipOriginY"
                                    type="checkbox" id="flipOriginY" /> Flip Y
                         </label>
@@ -67,7 +67,7 @@
                 <div class="col-xs-4 form-group">
                     <div class="checkbox">
                         <label class="col-xs-12">
-                            <input [(ngModel)]="ws.workspace.calibration.switchOrigin"
+                            <input [(ngModel)]="calibration.switchOrigin"
                                    name="switchOrigin"
                                    type="checkbox" id="switchOrigin" /> Switch X-Y
                         </label>

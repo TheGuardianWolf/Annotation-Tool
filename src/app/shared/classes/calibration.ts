@@ -83,4 +83,7 @@ export class Calibration {
         
         return this._calibrated;
     }
+
+    public selectImageOrigin() {
+    }
 }

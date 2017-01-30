@@ -1,16 +1,35 @@
 ﻿import { Injectable } from '@angular/core';
-import { Workspace } from '../classes/workspace';
-import { Video, Frame } from '../classes/storage';
 import { ImageToolService } from '../image-tool/image-tool.service';
-import { remote } from 'electron';
+
+import { Annotation } from '../classes/annotation';
+import { IPoint, Point, Person, Frame, Video } from '../classes/storage';
+import { Calibration, IFlipOrigin } from '../classes/calibration';
+import { Settings } from '../classes/settings';
 
 import * as Q from 'q';
 import * as path from 'path';
+import * as fs from 'fs';
 
 export interface IWorkspaceConfig {
     directory: string;
     video?: string;
     annotation?: string;
+}
+
+export interface IWorkspaceVars {
+    'sequence': {
+        'number': number;
+        'name': string;
+    };
+    'video': {
+        'increment': string;
+        'camera': number;
+    };
+    'lensCalibrationFile': string;
+    'perspectiveCalibrationFile': string;
+    'imageOrigin': IPoint;
+    'flipOrigin': IFlipOrigin;
+    'switchOrigin': boolean;
 }
 
 /**
@@ -20,45 +39,16 @@ export interface IWorkspaceConfig {
 export class WorkspaceService {
     private its: ImageToolService;
 
-    private _busy: boolean;
-    private _busyChain: Q.Promise<any>;
-    get busy() {
-        return this._busy;
-    }
+    public annotation: Annotation = new Annotation();
 
-    private chainBusy(promises: Array<Q.Promise<any>>) {
-        this._busy = true;
+    public calibration: Calibration = new Calibration();
 
-        let setBusy = () => {
-            this._busy = true;
-        }
-
-        let setFree = () => {
-            this._busy = false;
-        }
-
-        if (!this._busyChain || this._busyChain.isFulfilled) {
-            if (this._busyChain) {
-                this._busyChain.done();
-            }
-            this._busyChain = Q.allSettled([...promises])
-                .then(setFree);
-        }
-        else {
-            this._busyChain
-                .then(setBusy).done();
-            this._busyChain = Q.allSettled<Q.Promise<any>>([...promises, this._busyChain])
-                .then(setFree);
-        }
-    }
+    public settings: Settings = new Settings();
 
     private _initialised: boolean = false;
     get initialised() {
         return this._initialised;
     }
-
-    // Workspace reference
-    public workspace: Workspace = new Workspace();
 
     // Inputs
     public videoFile: string;
@@ -76,12 +66,10 @@ export class WorkspaceService {
         let videoIncrement = videoBasename[2];
         let videoCamera = parseInt(videoBasename[3].substr(-1));
 
-        this.workspace.annotation = new Video(
-            sequenceNumber,
-            sequenceName,
-            videoIncrement,
-            videoCamera
-        );
+        this.annotation.data.number = sequenceNumber;
+        this.annotation.data.name = sequenceName;
+        this.annotation.data.increment = videoIncrement;
+        this.annotation.data.camera = videoCamera;
     }
 
     public init(config: IWorkspaceConfig): Q.Promise<{}> {
@@ -89,25 +77,37 @@ export class WorkspaceService {
         this.videoFile = config.video;
         this.annotationFile = config.annotation;
 
-        // Load fresh workspace
-        this.workspace = new Workspace();
+        // Load fresh annotation
+        this.annotation = new Annotation();
 
         let promiseChain;
 
-        let setWorkspaceImages = (images) => {
-            this.workspace.images = images;
+        let setAnnotationImages = (images) => {
+            this.annotation.images = images;
         };
 
         let fillAnnotationFrames = () => {
-            for (let i = 0; i < this.workspace.imagesCount; i++) {
-                this.workspace.annotation.addFrame(new Frame(i + 1));
+            for (let i = 0; i < this.annotation.imagesCount; i++) {
+                this.annotation.data.addFrame(new Frame(i + 1));
             }
         }
 
-        let getVideoAnnotations = () => {
+        let getVideoAnnotations = (workspaceVars?: IWorkspaceVars) => {
+            let deferred = Q.defer();
             if (this.annotationFile) {
-                return Video.fromFile(this.annotationFile);
+                this.annotation.fromFile(this.annotationFile, workspaceVars).then(
+                    () => {
+                        deferred.resolve();
+                    },
+                    (err) => {
+                        deferred.reject(err);
+                    }
+                );
             }
+            else {
+                deferred.resolve();
+            }
+            return deferred.promise;
         }
 
         if (this.videoFile) {
@@ -115,7 +115,7 @@ export class WorkspaceService {
             this.getVideoContext();
 
             // Write workspace
-            this.workspace.toFile(path.join(this.workspaceDir, 'workspace.json'));
+            this.toFile(path.join(this.workspaceDir, 'workspace.json'));
 
             // If there's a video file, extract the images and read in image paths
             promiseChain = Q.all([
@@ -123,39 +123,59 @@ export class WorkspaceService {
                     .then(() => {
                         return this.its.readImageDir(this.workspaceDir);
                     })
-                    .then(setWorkspaceImages)
-                    .done(fillAnnotationFrames),
-                
-            ]);
+                    .done(setAnnotationImages),
+                getVideoAnnotations().done()
+            ]).done(fillAnnotationFrames);
         }
         else {
             // Otherwise just read in image paths and the workspace file
             promiseChain = Q.all([
                 this.its.readImageDir(this.workspaceDir)
-                    .done(setWorkspaceImages),
-                this.workspace.fromFile(path.join(this.workspaceDir, 'workspace.json'))
+                    .done(setAnnotationImages),
+                this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
+                    .done(getVideoAnnotations)
             ]).then(fillAnnotationFrames);
         }
 
-        // Put this promise chain into the busy chain
-        this.chainBusy([promiseChain]);
+        // Set status to blocking
 
         this._initialised = true;
 
         return promiseChain;
     }
 
-    public save() {
-        if (!this._busy) {
-            let saveOptions: any = {
-                'title': 'Save annotation file'
-            };
-            if (path) saveOptions.defaultPath = path;
-            Video.toFile(
-                remote.dialog.showSaveDialog(saveOptions),
-                this.workspace.annotation
-            );
-        }
+    public fromFile(file) {
+        return Q.denodeify(fs.readFile)(file).then(
+            (file) => {
+                let workspaceVars: IWorkspaceVars = JSON.parse(file as string);
+                this.calibration = new Calibration(workspaceVars);
+                this.annotation.data.number = workspaceVars.sequence.number;
+                this.annotation.data.name = workspaceVars.sequence.name;
+                this.annotation.data.increment = workspaceVars.video.increment;
+                this.annotation.data.camera = workspaceVars.video.camera;
+                return workspaceVars;
+            }
+        );
+    }
+
+    public toFile(file) {
+        return Q.denodeify(fs.writeFile)(
+            file,
+            JSON.stringify({
+                'sequence': {
+                    'number': this.annotation.data.number,
+                    'name': this.annotation.data.name
+                },
+                'video': {
+                    'increment': this.annotation.data.increment,
+                    'camera': this.annotation.data.camera
+                },
+                'lensCalibrationFile': this.calibration.lensCalibrationFile,
+                'perspectiveCalibrationFile': this.calibration.perspectiveCalibrationFile,
+                'imageOrigin': this.calibration.imageOrigin,
+                'flipOrigin': this.calibration.flipOrigin,
+                'switchOrigin': this.calibration.switchOrigin
+            }, null, 4));
     }
 }
 

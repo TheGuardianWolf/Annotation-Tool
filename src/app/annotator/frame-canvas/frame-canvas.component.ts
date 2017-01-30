@@ -174,12 +174,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private bindKeys() {
         // Previous frame
         this.on('keyDown', 'z', (event) => {
-            this.ws.workspace.currentFrame--;
+            this.ws.annotation.currentFrame--;
         });
 
         // Next frame
         this.on('keyDown', 'x', (event) => {
-            this.ws.workspace.currentFrame++;
+            this.ws.annotation.currentFrame++;
         });
     }
 
@@ -236,18 +236,18 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
             let imagesLoaded: Q.Promise<{}>;
 
-            this.ws.workspace.imagesObs.subscribe(
+            this.ws.annotation.imagesObs.subscribe(
                 (imageList) => {
                     imagesLoaded = this.loadImages(this.ws.workspaceDir, imageList);
                     imagesLoaded.done(() => {
-                        if (!this.ws.workspace.currentFrame) {
-                            this.ws.workspace.currentFrame = 1;
+                        if (!this.ws.annotation.currentFrame) {
+                            this.ws.annotation.currentFrame = 1;
                         }
                     });
                 }
             );
 
-            this.ws.workspace.currentFrameObs.subscribe(this.changeFrame);
+            this.ws.annotation.currentFrameObs.subscribe(this.changeFrame);
         }
     }
 

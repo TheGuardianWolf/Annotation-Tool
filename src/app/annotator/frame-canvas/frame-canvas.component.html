@@ -9,8 +9,8 @@
         </div>
         <div class="btn-group frame-navigator" role="group">
             <div class="col-xs-6 form-group current-frame">
-                <input (change)="ws.workspace.currentFrame = $event.target.value"
-                       [ngModel]="ws.workspace.currentFrame"
+                <input (change)="ws.annotation.currentFrame = $event.target.value"
+                       [ngModel]="ws.annotation.currentFrame"
                        type="number" id="frame-navigator" name="frame-navigator" class="form-control" />
             </div>
             <div class="col-xs-6 btn btn-default total-frames">

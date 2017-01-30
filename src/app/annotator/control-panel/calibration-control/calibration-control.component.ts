@@ -16,6 +16,9 @@ declare var $;
 export class CalibrationControlComponent implements OnInit {
     public ws: WorkspaceService;
     public currentPerson: Number = 0;
+    get calibration() {
+        return this.ws.calibration;
+    }
 
     constructor(_ws: WorkspaceService) {
         this.ws = _ws;

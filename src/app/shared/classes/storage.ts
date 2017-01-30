@@ -1,6 +1,4 @@
-﻿import * as Q from 'q';
-import * as fs from 'fs';
-import * as is from 'is';
+﻿import * as is from 'is';
 
 export interface IPoint {
     x: number;
@@ -19,8 +17,14 @@ export class BoundingBox implements IBoundingBox {
     public right: number;
     public top: number;
     public bottom: number;
-    static autoflow(start: IBoundingBox, end: IBoundingBox) {
+
+    constructor(left: number, right: number, top: number, bottom: number) {
+        this.left = left;
+        this.right = right;
+        this.top = top;
+        this.bottom = bottom;
     }
+
     static parse(boundingBox: IBoundingBox) {
     }
 }
@@ -29,7 +33,7 @@ export class Point implements IPoint {
     public x: number;
     public y: number;
 
-    constructor(x, y) {
+    constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
     }
@@ -189,21 +193,6 @@ export class Video {
 
     public toJSON() {
         return JSON.stringify(this.toObject())
-    }
-
-    static fromFile(file) {
-        return Q.denodeify(fs.readFile)(file).then(
-            (contents) => {
-                return Video.parse(JSON.parse(contents as string))
-            }
-        );
-    }
-
-    static toFile(path: string, video: Video) {
-        return Q.denodeify(fs.writeFile)(
-            path,
-            JSON.stringify(video, null, 4)
-        );
     }
 
     static parse(video) {

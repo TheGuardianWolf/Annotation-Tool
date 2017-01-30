@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 
+import { Person, Point, BoundingBox } from '../../../shared/classes/storage';
 import { WorkspaceService } from '../../../shared/workspace/workspace.service';
 
 declare var $;
@@ -18,12 +19,12 @@ export class AnnotationControlComponent implements OnInit {
     public ws: WorkspaceService;
 
     // Shortcut accessors for template binding
-    get annotation() {
-        return this.ws.workspace.annotation;
+    get data() {
+        return this.ws.annotation.data;
     }
 
     get currentFrame() {
-        return this.ws.workspace.annotation.frames[this.ws.workspace.currentFrameIndex];
+        return this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex];
     }
 
     get currentFrameHasPeople() {
@@ -33,14 +34,20 @@ export class AnnotationControlComponent implements OnInit {
 
     private currentPersonIndex: number = 0;
 
+    constructor(_ws: WorkspaceService) {
+        this.ws = _ws;
+    }
+
     private addPerson() {
+        // TODO: Add paper bounding box
+        this.currentFrame.addPerson(
+            new Person(0, false, new BoundingBox(null, null, null, null), new Point(null, null), new Point(null, null), null)
+        );
     }
 
     private removePerson() {
-    }
-
-    constructor(_ws: WorkspaceService) {
-        this.ws = _ws;
+        // TODO: Remove paper bounding box
+        this.currentFrame.people.splice(this.currentPersonIndex, 1);
     }
 
     ngOnInit() {
