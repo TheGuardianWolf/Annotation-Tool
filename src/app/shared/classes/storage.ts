@@ -1,4 +1,8 @@
-﻿import * as is from 'is';
+﻿import { Observable } from 'rxjs/Observable';
+import { Subject } from 'rxjs/Subject';
+import { BehaviorSubject } from 'rxjs/Rx';
+
+import * as is from 'is';
 
 export interface IPoint {
     x: number;
@@ -123,7 +127,17 @@ export class Person {
 
 export class Frame {
     public frameNumber: number;
-    public people: Array<Person>;
+
+    private _people: BehaviorSubject<Array<Person>> = new BehaviorSubject([]);
+    get peopleObs(): Observable<Array<Person>> {
+        return this._people.asObservable();
+    }
+    get people() {
+        return this._people.value;
+    }
+    set people(value: Array<Person>) {
+        this._people.next(value);
+    }
 
     constructor(frameNumber: number) {
         this.frameNumber = frameNumber;
@@ -131,7 +145,9 @@ export class Frame {
     }
 
     public addPerson(person: Person) {
-        this.people.push(person);
+        let newPeople = this.people;
+        newPeople.push(person);
+        this.people = newPeople;
     }
 
     public toObject() {
@@ -160,22 +176,35 @@ export class Video {
     public name: string;
     public increment: string;
     public camera: number;
-    public frames: Array<Frame>;
+
+    private _frames: BehaviorSubject<Array<Frame>> = new BehaviorSubject([]);
+    get framesObs(): Observable<Array<Frame>> {
+        return this._frames.asObservable();
+    }
+    get frames() {
+        return this._frames.value;
+    }
+    set frames(value: Array<Frame>) {
+        this._frames.next(value);
+    }
 
     constructor(number: number, name: string, increment: string, camera: number) {
         this.number = number;
         this.name = name;
         this.increment = increment;
         this.camera = camera;
-        this.frames = [];
     }
 
     public addFrame(frame: Frame, index?: number) {
         if (is.number(index)) {
-            this.frames[index] = frame;
+            let newFrames = this.frames;
+            newFrames[index] = frame;
+            this.frames = newFrames;
         }
         else {
-            this.frames.push(frame);
+            let newFrames = this.frames;
+            newFrames.push(frames);
+            this.frames = newFrames;
         }
     }
 
