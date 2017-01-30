@@ -40,16 +40,23 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private tileCache: Array<any> = [];
 
-    private _zoom: Number = 1;
-    get zoom() {
-        return this._zoom;
-    }
-    set zoom(value) {
-        if (value > 0) {
-            this._zoom = value;
-            this.viewer.viewport.zoomTo(value, this.viewer.viewport.getCenter());
-        }
-    }
+    //private _zoom: Number = 1;
+    //get zoom() {
+    //    return this._zoom;
+    //}
+    //set zoom(value) {
+    //    if (value <= 0.8) {
+    //        value = 0.8
+    //    }
+    //    else if (value >= 2.5) {
+    //        value = 2.5;  
+    //    }
+
+    //    if (this._zoom !== value) {
+    //        this._zoom = value;
+    //        this.viewer.viewport.zoomTo(this._zoom, this.viewer.viewport.getCenter());
+    //    }
+    //}
 
     private _viewer;
     get viewer() {
@@ -60,6 +67,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     get overlay() {
         return this._overlay;
     }
+
+    private boundingBoxes: Array<any> = [];
 
     private eventHandlers: IEventHandlers = {
         'click': {},
@@ -133,8 +142,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'preserveViewport': true,
 			'minZoomImageRatio': 0.8,
 			'maxZoomPixelRatio': 2.5,
-			'minZoomLevel': 0.8,
-			'maxZoomLevel':  2.5
         });
         this._overlay = this.viewer.paperjsOverlay();
 

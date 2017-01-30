@@ -39,20 +39,40 @@
             <div class="form-group">
                 <label class="col-xs-4 control-label" for="frameNumber">Number</label>
                 <div class="col-xs-8">
-                    <input [(ngModel)]="currentFrame.frameNumber"
+                    <input [(ngModel)]="frame.frameNumber"
                            name="frameNumber"
                            type="number" class="form-control" id="frameNumber" />
                 </div>
             </div>
-            <div *ngIf="currentFrameHasPeople" class="person">
+            <div class="form-group">
+                <div class="col-xs-offset-2 col-xs-10 checkbox">
+                    <label>
+                        <input [(ngModel)]="frame.keyframe"
+                               name="keyframe"
+                               type="checkbox" id="keyframe" /> Keyframe
+                    </label>
+                </div>
+            </div>
+            <div *ngIf="frameHasPeople" class="person">
                 <h4>Person</h4>
-                <div class="person-select">
+                <div class="person-select clearfix">
+                    <div class="col-xs-5">
+                        <button (click)="previousPerson()" id="removePerson" type="button" class="btn btn-default">Previous</button>
+                    </div>
+                    <div class="form-group col-xs-2">
+                        <input [ngModel]="ws.annotation.currentPerson"
+                               name="currentPerson"
+                               type="number" class="form-control" id="currentPerson" readonly />
+                    </div>
+                    <div class="col-xs-5">
+                        <button (click)="nextPerson()" id="addPerson" type="button" class="btn btn-default">Next</button>
+                    </div>
                 </div>
                 <div class="person" [attr.data-index]="currentPersonIndex">
                     <div class="form-group">
                         <label class="col-xs-4 control-label" for="personId">Id</label>
                         <div class="col-xs-8">
-                            <input [(ngModel)]="currentFrame.person[currentPersonIndex].id"
+                            <input [(ngModel)]="person.id"
                                    name="personId"
                                    type="text" class="form-control" id="personId" />
                         </div>
@@ -61,13 +81,17 @@
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personBoxLeft">Box Left</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personBoxLeft" />
+                                <input [(ngModel)]="person.boundingBox.left"
+                                       name="personBoxLeft"
+                                       class="form-control" type="number" id="personBoxLeft" />
                             </div>
                         </div>
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personBoxRight">Box Right</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personBoxRight" />
+                                <input [(ngModel)]="person.boundingBox.right"
+                                       name="personBoxRight"
+                                       class="form-control" type="number" id="personBoxRight" />
                             </div>
                         </div>
                     </div>
@@ -75,13 +99,17 @@
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personBoxTop">Box Top</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personBoxTop" />
+                                <input [(ngModel)]="person.boundingBox.top"
+                                       name="personBoxTop"
+                                       class="form-control" type="number" id="personBoxTop" />
                             </div>
                         </div>
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personBoxBottom">Box Bottom</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personBoxBottom" />
+                                <input [(ngModel)]="person.boundingBox.bottom"
+                                       name="personBoxBottom"
+                                       class="form-control" type="number" id="personBoxBottom" />
                             </div>
                         </div>
                     </div>
@@ -91,10 +119,12 @@
                     <div class="col-xs-5">
                         <button id="personAutoflow" type="button" class="btn btn-default">Autoflow</button>
                     </div>
-                    <div class="col-xs-offset-2 col-xs-10 form-group">
-                        <div class="checkbox">
+                    <div class="form-group">
+                        <div class="col-xs-offset-2 col-xs-10 checkbox">
                             <label>
-                                <input type="checkbox" id="personObscured" /> Obscured
+                                <input [(ngModel)]="person.obscured"
+                                       name="personObscured"
+                                       type="checkbox" id="personObscured" /> Obscured
                             </label>
                         </div>
                     </div>
@@ -102,13 +132,17 @@
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personLocationPxX">Location X (px)</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personLocationPxX" />
+                                <input [(ngModel)]="person.location.virtual.x"
+                                       name="personLocationPxX"
+                                       class="form-control" type="number" id="personLocationPxX" />
                             </div>
                         </div>
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personLocationPxY">Location Y (px)</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personLocationPxY" />
+                                <input [(ngModel)]="person.location.virtual.y"
+                                       name="personLocationPxY"
+                                       class="form-control" type="number" id="personLocationPxY" />
                             </div>
                         </div>
                     </div>
@@ -119,20 +153,26 @@
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personLocationReX">Location X (mm)</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personLocationReX" />
+                                <input [(ngModel)]="person.location.real.x"
+                                       name="personLocationReX"
+                                       class="form-control" type="number" id="personLocationReX" />
                             </div>
                         </div>
                         <div class="col-xs-6 form-group">
                             <label class="col-xs-4 control-label" for="personLocationReY">Location Y (mm)</label>
                             <div class="col-xs-8">
-                                <input class="form-control" type="number" id="personLocationReY" />
+                                <input [(ngModel)]="person.location.real.y"
+                                       name="personLocationReY"
+                                       class="form-control" type="number" id="personLocationReY" />
                             </div>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-4 control-label" for="personSegment">Segment</label>
                         <div class="col-xs-8">
-                            <select class="form-control text-center" id="personSegment">
+                            <select [(ngModel)]="person.location.segment"
+                                    name="personSegment"
+                                    class="form-control text-center" id="personSegment">
                                 <option value="">N/A</option>
                                 <option value="A">A</option>
                                 <option value="B">B</option>

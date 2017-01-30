@@ -44,20 +44,25 @@ export class Annotation {
     }
     set currentFrame(value: number) {
         let index = value - 1;
+
         if (index >= 0 && index < this.imagesCount) {
             this._currentFrame.next(value)
         }
     }
 
     private _currentPerson: BehaviorSubject<number> = new BehaviorSubject(null);
-    get currentPersoneObs() {
+    get currentPersonObs() {
         return this._currentPerson.asObservable();
     }
     get currentPerson() {
+        // Verify that the current person index does not exceed people array size for current frame
+        if (this._currentPerson.value >= this._data.frames[this.currentFrameIndex].people.length) {
+            this._currentPerson.next(this._data.frames[this.currentFrameIndex].people.length - 1);
+        }
         return this._currentPerson.value;
     }
     set currentPerson(value: number) {
-        if (value >= 0 && this.currentFrameIndex && value < this._data.frames[this.currentFrameIndex].people.length) {
+        if (value >= 0 && this._currentFrame.value && value < this._data.frames[this.currentFrameIndex].people.length) {
             this._currentPerson.next(value)
         }
     }

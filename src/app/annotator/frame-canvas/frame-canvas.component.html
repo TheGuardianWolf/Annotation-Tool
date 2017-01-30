@@ -19,19 +19,19 @@
         </div>
         <div class="btn-group" role="group">
             <button id="previous-image" type="button" class="btn btn-default"
-                    (click)="currentFrame = currentFrame - 1">
+                    (click)="ws.annotation.currentFrame = ws.annotation.currentFrame - 1">
                 <span class="glyphicon glyphicon-chevron-left"></span>
             </button>
-            <button id="zoom-in" type="button" class="btn btn-default"
-                    (click)="zoom = zoom * 2">
+            <!--<button id="zoom-in" type="button" class="btn btn-default"
+                    (click)="zoom = zoom + 0.5">
                 <span class="glyphicon glyphicon-zoom-in"></span>
             </button>
             <button id="zoom-out" type="button" class="btn btn-default"
-                    (click)="zoom = zoom / 2">
+                    (click)="zoom = zoom - 0.5">
                 <span class="glyphicon glyphicon-zoom-out"></span>
-            </button>
+            </button>-->
             <button id="next-image" type="button" class="btn btn-default"
-                    (click)="currentFrame = currentFrame + 1">
+                    (click)="ws.annotation.currentFrame = ws.annotation.currentFrame + 1">
                 <span class="glyphicon glyphicon-chevron-right"></span>
             </button>
         </div>

@@ -23,16 +23,18 @@ export class AnnotationControlComponent implements OnInit {
         return this.ws.annotation.data;
     }
 
-    get currentFrame() {
+    get frame() {
         return this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex];
     }
 
-    get currentFrameHasPeople() {
-        return this.currentFrame.people.length > 0;
+    get frameHasPeople() {
+        return this.frame.people.length > 0;
+    }
+
+    get person() {
+        return this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex].people[this.ws.annotation.currentPerson];
     }
     // End of shortcut accessors
-
-    private currentPersonIndex: number = 0;
 
     constructor(_ws: WorkspaceService) {
         this.ws = _ws;
@@ -40,14 +42,28 @@ export class AnnotationControlComponent implements OnInit {
 
     private addPerson() {
         // TODO: Add paper bounding box
-        this.currentFrame.addPerson(
+        this.frame.addPerson(
             new Person(0, false, new BoundingBox(null, null, null, null), new Point(null, null), new Point(null, null), null)
         );
+        this.ws.annotation.currentPerson = this.frame.people.length - 1
     }
 
     private removePerson() {
         // TODO: Remove paper bounding box
-        this.currentFrame.people.splice(this.currentPersonIndex, 1);
+        if (this.ws.annotation.currentPerson === this.frame.people.length - 1) {
+            this.ws.annotation.currentPerson--;
+        }
+        let newPeople = this.frame.people;
+        newPeople.splice(this.ws.annotation.currentPerson, 1);
+        this.frame.people = newPeople;
+    }
+
+    private nextPerson() {
+        this.ws.annotation.currentPerson++;
+    }
+
+    private previousPerson() {
+        this.ws.annotation.currentPerson--;
     }
 
     ngOnInit() {

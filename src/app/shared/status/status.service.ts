@@ -1,5 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
 
+import * as Q from 'q';
+
 @Injectable()
 export class StatusService {
     private _blocking: boolean = false;

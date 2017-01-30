@@ -7,6 +7,7 @@ import { HeaderComponent } from './header/header.component';
 import { FileElectronComponent } from './file-electron/file-electron.component';
 import { WorkspaceService } from './workspace/workspace.service';
 import { ImageToolService } from './image-tool/image-tool.service';
+import { StatusService } from './status/status.service';
 
 /**
  * Do not specify providers for modules that might be imported by a lazy loaded module.
@@ -22,7 +23,7 @@ export class SharedModule {
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: SharedModule,
-            providers: [WorkspaceService, ImageToolService]
+            providers: [WorkspaceService, ImageToolService, StatusService]
         };
     }
 }

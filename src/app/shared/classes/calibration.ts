@@ -1,5 +1,5 @@
 ﻿import { Point } from './storage';
-import { IWorkspaceVars } from './workspace';
+import { IWorkspaceVars } from '../workspace/workspace.service';
 
 export interface IFlipOrigin {
     'x': boolean;

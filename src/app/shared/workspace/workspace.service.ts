@@ -1,5 +1,6 @@
 ﻿import { Injectable } from '@angular/core';
 import { ImageToolService } from '../image-tool/image-tool.service';
+import { StatusService } from '../status/status.service';
 
 import { Annotation } from '../classes/annotation';
 import { IPoint, Point, Person, Frame, Video } from '../classes/storage';
@@ -38,6 +39,7 @@ export interface IWorkspaceVars {
 @Injectable()
 export class WorkspaceService {
     private its: ImageToolService;
+    private ss: StatusService;
 
     public annotation: Annotation = new Annotation();
 
@@ -55,8 +57,9 @@ export class WorkspaceService {
     public annotationFile: string;
     public workspaceDir: string;
 
-    constructor(its: ImageToolService) {
-        this.its = its;
+    constructor(_its: ImageToolService, _ss: StatusService) {
+        this.ss = _ss;
+        this.its = _its;
     }
 
     private getVideoContext() {
@@ -87,8 +90,9 @@ export class WorkspaceService {
         };
 
         let fillAnnotationFrames = () => {
-            for (let i = 0; i < this.annotation.imagesCount; i++) {
-                this.annotation.data.addFrame(new Frame(i + 1));
+            for (let i = this.annotation.data.frames.length; i < this.annotation.imagesCount; i++) {
+                let newFrame = new Frame(i + 1);
+                this.annotation.data.addFrame(newFrame);
             }
         }
 
@@ -123,17 +127,17 @@ export class WorkspaceService {
                     .then(() => {
                         return this.its.readImageDir(this.workspaceDir);
                     })
-                    .done(setAnnotationImages),
-                getVideoAnnotations().done()
+                    .then(setAnnotationImages),
+                getVideoAnnotations()
             ]).done(fillAnnotationFrames);
         }
         else {
             // Otherwise just read in image paths and the workspace file
             promiseChain = Q.all([
                 this.its.readImageDir(this.workspaceDir)
-                    .done(setAnnotationImages),
+                    .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
-                    .done(getVideoAnnotations)
+                    .then(getVideoAnnotations)
             ]).then(fillAnnotationFrames);
         }
 

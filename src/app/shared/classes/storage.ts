@@ -99,9 +99,15 @@ export class Person {
             'location': {
                 'virtual': this.location.virtual.toObject(),
                 'real': this.location.real.toObject(),
-                'segment': this.location.segment
+                'segment': null
             }
         };
+        if (person.location.segment === 'A' ||
+            person.location.segment === 'B' ||
+            person.location.segment === 'C' ||
+            person.location.segment === 'D') {
+            person.location.segment = this.location.segment;
+        }
 
         return person;
     }
@@ -119,14 +125,21 @@ export class Person {
             boundingBox,
             new Point(person.location.virtual.x, person.location.virtual.y),
             new Point(person.location.real.x, person.location.real.y),
-            person.location.segment
+            ''
         );
+        if (p.location.segment === 'A' ||
+            p.location.segment === 'B' ||
+            p.location.segment === 'C' ||
+            p.location.segment === 'D') {
+            p.location.segment = person.location.segment;
+        }
         return p;
     }
 }
 
 export class Frame {
     public frameNumber: number;
+    public keyframe: boolean = false;
 
     private _people: BehaviorSubject<Array<Person>> = new BehaviorSubject([]);
     get peopleObs(): Observable<Array<Person>> {
@@ -141,7 +154,6 @@ export class Frame {
 
     constructor(frameNumber: number) {
         this.frameNumber = frameNumber;
-        this.people = [];
     }
 
     public addPerson(person: Person) {
@@ -203,7 +215,7 @@ export class Video {
         }
         else {
             let newFrames = this.frames;
-            newFrames.push(frames);
+            newFrames.push(frame);
             this.frames = newFrames;
         }
     }
