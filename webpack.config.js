@@ -39,7 +39,7 @@ var webpackConfig = {
                 to: './native',
             },
             {
-                context: './src/app/assets',
+                context: './src/assets',
                 from: {
                     glob: '**/*',
                     dot: false
