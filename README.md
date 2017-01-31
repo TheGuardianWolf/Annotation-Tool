@@ -1,8 +1,6 @@
-
-[![Build Status](https://travis-ci.org/xelfe/angular2-electron-starter.svg?branch=master)](https://travis-ci.org/xelfe/angular2-electron-starter)
-[![Dependency Status](https://david-dm.org/xelfe/angular2-electron-starter.svg)](https://david-dm.org/xelfe/angular2-electron-starter)
 # UoA Annotation Tool
-forked from [angular2-webpack-starter](https://github.com/AngularClass/angular2-webpack-starter)
+
+Use of this tool is licenced under the Artistic Licence 2.0. Libraries used are licenced under their respective licences.
 
 ## Commands
 

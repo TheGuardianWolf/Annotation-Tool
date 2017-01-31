@@ -29,7 +29,20 @@ export class BoundingBox implements IBoundingBox {
         this.bottom = bottom;
     }
 
+    public isValid() {
+        let validate = (n) => {
+            return is.number(n) && n >= 0;
+        }
+        return validate(this.left) && validate(this.right) && validate(this.top) && validate(this.bottom);
+    }
+
     static parse(boundingBox: IBoundingBox) {
+        return new BoundingBox(
+            boundingBox.left,
+            boundingBox.right,
+            boundingBox.top,
+            boundingBox.bottom
+        );
     }
 }
 
@@ -61,7 +74,7 @@ export class Point implements IPoint {
 export class Person {
     public id: number;
     public obscured: boolean;
-    public boundingBox: IBoundingBox;
+    public boundingBox: BoundingBox;
     public location: {
         virtual: Point;
         real: Point;
@@ -71,7 +84,7 @@ export class Person {
     constructor(
         id: number,
         obscured: boolean,
-        boundingBox: IBoundingBox,
+        boundingBox: BoundingBox,
         virtualPoint: Point,
         realPoint: Point,
         segment: String
@@ -113,12 +126,12 @@ export class Person {
     }
 
     static parse(person) {
-        let boundingBox = {
+        let boundingBox = BoundingBox.parse({
             'left': person.box.topLeft.x,
             'right': person.box.bottomRight.x,
             'top': person.box.topLeft.y,
             'bottom': person.box.bottomRight.y
-        }
+        });
         let p = new Person(
             person.id,
             person.obscured,

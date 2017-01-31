@@ -20,6 +20,7 @@
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
   <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
   <ItemGroup>
+    <Content Include="LICENSE.txt" />
     <Content Include="package.json" />
     <Content Include="src\app\annotator\annotator.component.html" />
     <Content Include="src\app\annotator\control-panel\control-panel.component.html" />
@@ -168,6 +169,7 @@
     <Folder Include="src\app\shared\material-checkbox\" />
     <Folder Include="src\app\shared\status\" />
     <Folder Include="src\app\shared\workspace\" />
+    <Folder Include="src\app\views\" />
     <Folder Include="src\app\views\page2" />
     <Folder Include="src\assets\" />
     <Folder Include="src\assets\osd-icons\" />

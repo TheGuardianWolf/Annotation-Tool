@@ -59,6 +59,10 @@ export class Annotation {
         if (this._currentPerson.value >= this._data.frames[this.currentFrameIndex].people.length) {
             this._currentPerson.next(this._data.frames[this.currentFrameIndex].people.length - 1);
         }
+        // Verify that the current person index is 0 or higher if there is a person in frame.
+        else if ((this._currentPerson.value <= 0 || is.not.number(this._currentPerson.value)) && this._data.frames[this.currentFrameIndex].people.length > 0) {
+            this._currentPerson.next(0);
+        }
         return this._currentPerson.value;
     }
     set currentPerson(value: number) {
