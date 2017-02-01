@@ -9,7 +9,7 @@
         </div>
         <div class="btn-group frame-navigator" role="group">
             <div class="col-xs-6 form-group current-frame">
-                <input (change)="ws.annotation.currentFrame = $event.target.value"
+                <input (change)="frameNavigatorChange($event)"
                        [ngModel]="ws.annotation.currentFrame"
                        type="number" id="frame-navigator" name="frame-navigator" class="form-control" />
             </div>

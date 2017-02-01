@@ -71,6 +71,10 @@ export class Annotation {
         }
     }
 
+    get currentPersonObject() {
+        return this.currentFrame[this.currentPerson];
+    }
+
     constructor() {
     }
 

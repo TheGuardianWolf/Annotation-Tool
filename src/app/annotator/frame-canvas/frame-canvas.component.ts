@@ -102,21 +102,44 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         this.ws = _ws;
     }
 
+    private frameNavigatorChange(event) {
+        this.ws.annotation.currentFrame = parseInt(event.target.value);
+    }
+
     private drawVisuals = (frameNumber: number, personIndex?: number) => {
+        let frameIndex = frameNumber - 1;
         // Fill array with paper paths representing the bounding boxes of people in current frame
         let newVisuals: Array<IVisualAnnotation> = [];
 
         // Remove current visuals
         this.visualAnnotation.forEach((visual) => {
-            visual.boundingBox.shape.remove();
-            visual.location.shape.remove();
+            if (visual.boundingBox) {
+                if (visual.boundingBox && visual.boundingBox.shape) {
+                    visual.boundingBox.shape.remove();
+                }
+                if (visual.boundingBox.subscription) {
+                    visual.boundingBox.subscription.unsubscribe();
+                }
+            }
+
+            if (visual.location) {
+                if (visual.location.shape) {
+                    visual.location.shape.remove();
+                }
+                if (visual.location.subscription) {
+                    visual.location.subscription.unsubscribe();
+                }
+            }
         });
 
         // Create new visuals
-        let people = this.ws.annotation.data.frames[frameNumber].people;
+        let people = this.ws.annotation.data.frames[frameIndex].people;
 
         let createVisuals = (person: Person, index: number) => {
-            let newVisualAnnotation: IVisualAnnotation;
+            let newVisualAnnotation: IVisualAnnotation = {
+                'boundingBox': null,
+                'location': null
+            };
 
             // Determine color based on index
             let color = new paper.Color({
@@ -128,25 +151,31 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             // Draw new visuals from annotation data
             if (person.boundingBox.isValid()) {
                 this.layers.boundingBox.activate();
-                newVisualAnnotation.boundingBox.shape = paper.Shape.Rectangle(
-                    new paper.Point(person.boundingBox.top, person.boundingBox.left),
-                    new paper.Point(person.boundingBox.bottom, person.boundingBox.right)
-                )
-                newVisualAnnotation.boundingBox.shape.strokeColor = color;
-                newVisualAnnotation.boundingBox.shape.fillColor = color;
-                newVisualAnnotation.boundingBox.shape.fillColor.alpha = 0.1;
+                let boundingBox: IPaperShape = {
+                    'shape': paper.Shape.Rectangle(
+                        new paper.Point(person.boundingBox.left, person.boundingBox.top),
+                        new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
+                    ),
+                    'subscription': null
+                };
+                boundingBox.shape.strokeColor = color;
+                boundingBox.shape.fillColor = color;
+                boundingBox.shape.fillColor.alpha = 0.1;
+                newVisualAnnotation.boundingBox = boundingBox;
             }
-            
             if (person.location.virtual.isValid()) {
                 this.layers.location.activate();
-                newVisualAnnotation.location.shape = paper.Shape.Circle(
-                    new paper.Point(person.location.virtual.x, person.location.virtual.y),
-                    5
-                )
-                newVisualAnnotation.location.shape.fillColor = color;
-                newVisualAnnotation.location.shape.fillColor.alpha = 0.7;
+                let location: IPaperShape = {
+                    'shape': paper.Shape.Circle(
+                        new paper.Point(person.location.virtual.x, person.location.virtual.y),
+                        5
+                    ),
+                    'subscription': null
+                };
+                location.shape.fillColor = color;
+                location.shape.fillColor.alpha = 0.7;
+                newVisualAnnotation.location = location;
             }
-            console.log(newVisualAnnotation);
             return newVisualAnnotation;
         }
 
@@ -156,6 +185,16 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         }
         else {
             this.visualAnnotation = people.map(createVisuals);
+        }
+    }
+
+    private selectPerson(personIndex: number) {
+        if (
+            this.visualAnnotation[personIndex] &&
+            this.visualAnnotation[personIndex].boundingBox &&
+            this.visualAnnotation[personIndex].boundingBox.shape
+        ) {
+            this.visualAnnotation[personIndex].boundingBox.shape.selected = true;
         }
     }
 
@@ -177,6 +216,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
 
             this.drawVisuals(frameNumber);
+            this.selectPerson(this.ws.annotation.currentPerson);
         }
     }
 
@@ -263,9 +303,11 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         // Create the paper layers
         Object.keys(this.layers).forEach((key) => {
-            this.layers[key] = new paper.Layer();
+            this.layers[key] = new paper.Layer({
+                'name': key
+            });
         });
-        this.layers.location.bringToFront();
+        //this.layers.location.bringToFront();
 
         // Create the paper tools
         Object.keys(this.tools).forEach((key) => {
