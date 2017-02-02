@@ -122,31 +122,32 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         // Fill array with paper paths representing the bounding boxes of people in current frame
         let newVisuals: Array<IVisualAnnotation> = [];
 
-        // Remove current visuals
-        this.visualAnnotation.forEach((visual) => {
-            if (visual.boundingBox) {
-                if (visual.boundingBox && visual.boundingBox.shape) {
-                    visual.boundingBox.shape.remove();
+        let removeVisual = (visual: IVisualAnnotation, index?: number) => {
+            if (visual) {
+                if (visual.boundingBox) {
+                    if (visual.boundingBox && visual.boundingBox.shape) {
+                        visual.boundingBox.shape.remove();
+                    }
+                    if (visual.boundingBox.subscription) {
+                        visual.boundingBox.subscription.unsubscribe();
+                    }
                 }
-                if (visual.boundingBox.subscription) {
-                    visual.boundingBox.subscription.unsubscribe();
-                }
-            }
 
-            if (visual.location) {
-                if (visual.location.shape) {
-                    visual.location.shape.remove();
-                }
-                if (visual.location.subscription) {
-                    visual.location.subscription.unsubscribe();
+                if (visual.location) {
+                    if (visual.location.shape) {
+                        visual.location.shape.remove();
+                    }
+                    if (visual.location.subscription) {
+                        visual.location.subscription.unsubscribe();
+                    }
                 }
             }
-        });
+        }
 
         // Create new visuals
         let people = this.ws.annotation.data.frames[frameIndex].people;
 
-        let createVisuals = (person: Person, index: number) => {
+        let createVisual = (person: Person, index: number) => {
             let newVisualAnnotation: IVisualAnnotation = {
                 'boundingBox': null,
                 'location': null
@@ -154,7 +155,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
             // Determine color based on index
             let color = new paper.Color({
-                'hue': (10 * index) % 360,
+                'hue': ((180 * index) + 10 * index) % 360,
                 'saturation': 1,
                 'brightness': 1
             });
@@ -193,11 +194,13 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         }
 
         if (is.number(personIndex)) {
-            let newPerson = people[personIndex]
-            this.visualAnnotation[personIndex] = createVisuals(newPerson, personIndex);
+            let newPerson = people[personIndex];
+            removeVisual(this.visualAnnotation[personIndex]);
+            this.visualAnnotation[personIndex] = createVisual(newPerson, personIndex);
         }
         else {
-            this.visualAnnotation = people.map(createVisuals);
+            this.visualAnnotation.forEach(removeVisual);
+            this.visualAnnotation = people.map(createVisual);
         }
 
         this.ws.annotation.redrawVisuals = false;
@@ -210,6 +213,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             this.visualAnnotation[personIndex].boundingBox &&
             this.visualAnnotation[personIndex].boundingBox.shape
         ) {
+            this.visualAnnotation.filter((visual) => {
+                return visual.boundingBox.shape.selected === true;
+            })
+                .forEach((visual) => {
+                    visual.boundingBox.shape.selected = false;
+                });
             this.visualAnnotation[personIndex].boundingBox.shape.selected = true;
         }
     }
@@ -391,7 +400,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         this.ws.annotation.currentPerson = selectedPersonIndex;
                     }
                 }
-                console.log(event.hitTest);
             }
             else if (this.ws.settings.annotationMode === 'location') {
                 this.ws.annotation.currentFrame++;

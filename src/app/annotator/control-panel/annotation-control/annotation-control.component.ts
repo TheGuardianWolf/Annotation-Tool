@@ -51,7 +51,8 @@ export class AnnotationControlComponent implements OnInit {
         this.frame.addPerson(
             new Person(null, false, new BoundingBox(null, null, null, null), new Point(null, null), new Point(null, null), null)
         );
-        this.ws.annotation.currentPerson = this.frame.people.length - 1
+        this.ws.annotation.currentPerson = this.frame.people.length - 1;
+        this.ws.annotation.redrawVisuals = true;
     }
 
     private removePerson() {
@@ -62,6 +63,7 @@ export class AnnotationControlComponent implements OnInit {
         if (this.ws.annotation.currentPerson >= this.frame.people.length) {
             this.ws.annotation.currentPerson--;
         }
+        this.ws.annotation.redrawVisuals = true;
     }
 
     private nextPerson() {

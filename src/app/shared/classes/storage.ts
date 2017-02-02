@@ -95,7 +95,7 @@ export class Person {
         this.location = {
             'virtual': virtualPoint,
             'real': realPoint,
-            'segment': segment
+            'segment': segment ? segment : ''
         };
     }
 
