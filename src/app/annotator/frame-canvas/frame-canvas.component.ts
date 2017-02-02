@@ -156,7 +156,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         new paper.Point(person.boundingBox.left, person.boundingBox.top),
                         new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
                     ),
-                    'subscription': null
+                    'subscription': null // TODO: Implement subscriptions to person.
                 };
                 boundingBox.shape.strokeColor = color;
                 boundingBox.shape.fillColor = color;
@@ -186,6 +186,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         else {
             this.visualAnnotation = people.map(createVisuals);
         }
+
+        this.ws.annotation.redrawVisuals = false;
     }
 
     private selectPerson(personIndex: number) {
@@ -307,7 +309,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 'name': key
             });
         });
-        //this.layers.location.bringToFront();
+        this.layers.location.bringToFront();
 
         // Create the paper tools
         Object.keys(this.tools).forEach((key) => {
@@ -400,6 +402,14 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             this.ws.annotation.currentFrameObs.subscribe(
                 (frameNumber) => {
                     this.changeFrame(frameNumber);
+                }
+            );
+
+            this.ws.annotation.redrawVisualsObs.filter((value) => {
+                return value === true;
+            })
+                .subscribe((value) => {
+                    this.drawVisuals(this.ws.annotation.currentFrame, this.ws.annotation.currentPerson);
                 });
         }
     }

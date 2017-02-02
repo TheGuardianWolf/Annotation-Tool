@@ -40,6 +40,10 @@ export class AnnotationControlComponent implements OnInit {
         this.ws = _ws;
     }
 
+    private visualPropertyChange() {
+        this.ws.annotation.redrawVisuals = true
+    }
+
     private addPerson() {
         // TODO: Add paper bounding box
         this.frame.addPerson(

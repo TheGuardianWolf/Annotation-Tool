@@ -43,10 +43,26 @@ export class Annotation {
         return this.currentFrame - 1;
     }
     set currentFrame(value: number) {
-        let index = value - 1;
+        if (this._currentFrame.value !== value) {
 
-        if (index >= 0 && index < this.imagesCount) {
-            this._currentFrame.next(value)
+            let index = value - 1;
+
+            if (index >= 0 && index < this.imagesCount) {
+                this._currentFrame.next(value)
+            }
+        }
+    }
+
+    private _redrawVisuals: BehaviorSubject<boolean> = new BehaviorSubject(false);
+    get redrawVisualsObs() {
+        return this._redrawVisuals.asObservable();
+    }
+    get redrawVisuals() {
+        return this._redrawVisuals.value;
+    }
+    set redrawVisuals(value) {
+        if (value !== this._redrawVisuals.value) {
+            this._redrawVisuals.next(value);
         }
     }
 
@@ -66,7 +82,11 @@ export class Annotation {
         return this._currentPerson.value;
     }
     set currentPerson(value: number) {
-        if (value >= 0 && this._currentFrame.value && value < this._data.frames[this.currentFrameIndex].people.length) {
+        if (
+            value >= 0 &&
+            this._currentPerson.value !== value &&
+            this._currentFrame.value && value < this._data.frames[this.currentFrameIndex].people.length
+        ) {
             this._currentPerson.next(value)
         }
     }

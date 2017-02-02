@@ -92,6 +92,7 @@
                             <label class="col-xs-2 control-label" for="personBoxLeft">Box Left</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.boundingBox.left"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personBoxLeft"
                                        class="form-control" type="number" id="personBoxLeft" />
                             </div>
@@ -100,6 +101,7 @@
                             <label class="col-xs-2 control-label" for="personBoxRight">Box Right</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.boundingBox.right"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personBoxRight"
                                        class="form-control" type="number" id="personBoxRight" />
                             </div>
@@ -110,6 +112,7 @@
                             <label class="col-xs-2 control-label" for="personBoxTop">Box Top</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.boundingBox.top"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personBoxTop"
                                        class="form-control" type="number" id="personBoxTop" />
                             </div>
@@ -118,6 +121,7 @@
                             <label class="col-xs-2 control-label" for="personBoxBottom">Box Bottom</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.boundingBox.bottom"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personBoxBottom"
                                        class="form-control" type="number" id="personBoxBottom" />
                             </div>
@@ -143,6 +147,7 @@
                             <label class="col-xs-2 control-label" for="personLocationPxX">Location X (px)</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.location.virtual.x"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personLocationPxX"
                                        class="form-control" type="number" id="personLocationPxX" />
                             </div>
@@ -151,6 +156,7 @@
                             <label class="col-xs-2 control-label" for="personLocationPxY">Location Y (px)</label>
                             <div class="col-xs-10">
                                 <input [(ngModel)]="person.location.virtual.y"
+                                       (ngModelChange)="visualPropertyChange()"
                                        name="personLocationPxY"
                                        class="form-control" type="number" id="personLocationPxY" />
                             </div>
