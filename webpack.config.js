@@ -72,10 +72,6 @@ var webpackConfig = {
                 test: /\.css$/,
                 loader: ExtractTextPlugin.extract('style-loader', 'css-loader?sourceMap!resolve-url')
             },
-            //{
-            //    test: /\.(eot|woff|woff2|ttf|svg|png|jpg|jpeg|fs)$/,
-            //    loader: "url-loader?limit=1000000"
-            //},
             {
                 test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
                 loader: 'file-loader?name=./emitted/[name]-[hash].[ext]'
@@ -124,6 +120,9 @@ var defaultConfig = {
                     path.join(__dirname, 'node_modules', '@angular2-material'),
                     path.join(__dirname, 'node_modules', 'bootstrap-material-design'),
                     path.join(__dirname, 'node_modules', 'paper'),
+                    path.join(__dirname, 'node_modules', 'openseadragon'),
+                    path.join(__dirname, 'node_modules', 'openseadragon-paperjs-overlay'),
+                    path.join(__dirname, 'node_modules', 'multiqueue'),
                 ]
             }
         ],
@@ -131,7 +130,10 @@ var defaultConfig = {
             path.join(__dirname, 'node_modules', 'zone.js', 'dist'),
             path.join(__dirname, 'node_modules', '@angular', 'bundles'),
             path.join(__dirname, 'node_modules', 'bootstrap-material-design', 'dist'),
-            path.join(__dirname, 'node_modules', 'paper', 'dist'),
+            path.join(__dirname, 'node_modules', 'paper', 'dist', 'paper-full.js'),
+            path.join(__dirname, 'node_modules', 'openseadragon', 'build'),
+            path.join(__dirname, 'node_modules', 'openseadragon-paperjs-overlay'),
+            path.join(__dirname, 'node_modules', 'multiqueue'),
         ]
     },
 

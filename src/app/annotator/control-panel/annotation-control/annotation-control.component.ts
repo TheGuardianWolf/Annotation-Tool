@@ -4,6 +4,8 @@ import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms'
 import { Person, Point, BoundingBox } from '../../../shared/classes/storage';
 import { WorkspaceService } from '../../../shared/workspace/workspace.service';
 
+import * as is from 'is';
+
 declare var $;
 
 /**
