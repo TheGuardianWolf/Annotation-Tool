@@ -5,6 +5,7 @@ import { remote } from 'electron';
 
 import * as Q from 'q';
 import * as fs from 'fs';
+import * as is from 'is';
 
 import { IPoint, Point, Person, Frame, Video } from './storage';
 import { IWorkspaceVars } from '../workspace/workspace.service';
@@ -71,15 +72,18 @@ export class Annotation {
         return this._currentPerson.asObservable();
     }
     get currentPerson() {
-        // Verify that the current person index does not exceed people array size for current frame
-        if (this._currentPerson.value >= this._data.frames[this.currentFrameIndex].people.length) {
-            this._currentPerson.next(this._data.frames[this.currentFrameIndex].people.length - 1);
+        if (this._data.frames[this.currentFrameIndex]) {
+            // Verify that the current person index does not exceed people array size for current frame
+            if (this._currentPerson.value >= this._data.frames[this.currentFrameIndex].people.length) {
+                this._currentPerson.next(this._data.frames[this.currentFrameIndex].people.length - 1);
+            }
+            // Ensure that the current person index is 0 or higher if there is a person in frame.
+            else if ((this._currentPerson.value < 0 || !is.number(this._currentPerson.value)) && this._data.frames[this.currentFrameIndex].people.length > 0) {
+                this._currentPerson.next(0);
+            }
+            return this._currentPerson.value;
         }
-        // Verify that the current person index is 0 or higher if there is a person in frame.
-        else if ((this._currentPerson.value <= 0 || is.not.number(this._currentPerson.value)) && this._data.frames[this.currentFrameIndex].people.length > 0) {
-            this._currentPerson.next(0);
-        }
-        return this._currentPerson.value;
+        return null;
     }
     set currentPerson(value: number) {
         if (
