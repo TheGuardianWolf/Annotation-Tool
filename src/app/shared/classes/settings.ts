@@ -2,5 +2,6 @@
     public copyBox: boolean = true;
     public copyLocation: boolean = true;
     public autoflow: boolean = true;
-    public annotationMode: string = 'mixed'; // 'mixed' or 'location'.
+    public mode: string = 'mixed'; // 'mixed' or 'location'.
+    public tool: string = 'pointer'; // 'pointer' or 'box' or 'location'
 }

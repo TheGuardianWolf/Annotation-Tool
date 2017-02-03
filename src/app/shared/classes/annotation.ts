@@ -72,7 +72,7 @@ export class Annotation {
         return this._currentPerson.asObservable();
     }
     get currentPerson() {
-        if (this._data.frames[this.currentFrameIndex]) {
+        if (this._data.frames && this._data.frames[this.currentFrameIndex]) {
             // Verify that the current person index does not exceed people array size for current frame
             if (this._currentPerson.value >= this._data.frames[this.currentFrameIndex].people.length) {
                 this._currentPerson.next(this._data.frames[this.currentFrameIndex].people.length - 1);

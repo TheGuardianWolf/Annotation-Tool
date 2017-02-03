@@ -96,7 +96,8 @@ var webpackConfig = {
 
     resolve: {
         alias: {
-            jquery: "jquery/src/jquery"
+            jquery: "jquery/src/jquery",
+			paper: "paper/dist/paper-full"
         }
     }
 };

@@ -38,14 +38,9 @@ interface IPaperLayers {
     location: paper.Layer;
 }
 
-interface IPaperShape {
-    shape: paper.Shape;
-    subscription: any;
-}
-
 interface IVisualAnnotation {
-    boundingBox: IPaperShape;
-    location: IPaperShape;
+    boundingBox: paper.Shape;
+    location: paper.Shape;
 }
 
 /**
@@ -79,19 +74,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private mousePosition: paper.Point = new paper.Point(0, 0);
 
-    private _visualAnnotation: BehaviorSubject<Array<IVisualAnnotation>> = new BehaviorSubject([]);
-
-    get visualAnnotationObs(): Observable<Array<IVisualAnnotation>> {
-        return this._visualAnnotation.asObservable();
-    }
-    get visualAnnotation() {
-        return this._visualAnnotation.value;
-    }
-    set visualAnnotation(value: Array<IVisualAnnotation>) {
-        if (value !== this._visualAnnotation.value) {
-            this._visualAnnotation.next(value);
-        }
-    }
+    private visualAnnotation: Array<IVisualAnnotation> = [];
 
     private layers: IPaperLayers = {
         'boundingBox': null,
@@ -125,20 +108,14 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         let removeVisual = (visual: IVisualAnnotation, index?: number) => {
             if (visual) {
                 if (visual.boundingBox) {
-                    if (visual.boundingBox && visual.boundingBox.shape) {
-                        visual.boundingBox.shape.remove();
-                    }
-                    if (visual.boundingBox.subscription) {
-                        visual.boundingBox.subscription.unsubscribe();
+                    if (visual.boundingBox) {
+                        visual.boundingBox.remove();
                     }
                 }
 
                 if (visual.location) {
-                    if (visual.location.shape) {
-                        visual.location.shape.remove();
-                    }
-                    if (visual.location.subscription) {
-                        visual.location.subscription.unsubscribe();
+                    if (visual.location) {
+                        visual.location.remove();
                     }
                 }
             }
@@ -163,31 +140,26 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             // Draw new visuals from annotation data
             if (person.boundingBox.isValid()) {
                 this.layers.boundingBox.activate();
-                let boundingBox: IPaperShape = {
-                    'shape': paper.Shape.Rectangle(
-                        new paper.Point(person.boundingBox.left, person.boundingBox.top),
-                        new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
-                    ),
-                    'subscription': null // TODO: Implement subscriptions to person.
-                };
-                boundingBox.shape.name = `bbx-${index}`;
-                boundingBox.shape.strokeColor = color;
-                boundingBox.shape.fillColor = color;
-                boundingBox.shape.fillColor.alpha = 0.1;
+                let boundingBox = paper.Shape.Rectangle(
+                    new paper.Point(person.boundingBox.left, person.boundingBox.top),
+                    new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
+                );
+                boundingBox.name = `bbx-${index}`;
+                boundingBox.strokeColor = color;
+                boundingBox.strokeScaling = false;
+                boundingBox.fillColor = color;
+                boundingBox.fillColor.alpha = 0.1;
                 newVisualAnnotation.boundingBox = boundingBox;
             }
             if (person.location.virtual.isValid()) {
                 this.layers.location.activate();
-                let location: IPaperShape = {
-                    'shape': paper.Shape.Circle(
-                        new paper.Point(person.location.virtual.x, person.location.virtual.y),
-                        5
-                    ),
-                    'subscription': null
-                };
-                location.shape.name = `loc-${index}`;
-                location.shape.fillColor = color;
-                location.shape.fillColor.alpha = 0.7;
+                let location = paper.Shape.Circle(
+                    new paper.Point(person.location.virtual.x, person.location.virtual.y),
+                    5
+                )
+                location.name = `loc-${index}`;
+                location.fillColor = color;
+                location.fillColor.alpha = 0.7;
                 newVisualAnnotation.location = location;
             }
             return newVisualAnnotation;
@@ -210,16 +182,40 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private selectPerson(personIndex: number) {
         if (
             this.visualAnnotation[personIndex] &&
-            this.visualAnnotation[personIndex].boundingBox &&
-            this.visualAnnotation[personIndex].boundingBox.shape
+            this.visualAnnotation[personIndex].boundingBox
         ) {
             this.visualAnnotation.filter((visual) => {
-                return visual.boundingBox.shape.selected === true;
+                return visual.boundingBox.selected === true;
             })
                 .forEach((visual) => {
-                    visual.boundingBox.shape.selected = false;
+                    visual.boundingBox.selected = false;
                 });
-            this.visualAnnotation[personIndex].boundingBox.shape.selected = true;
+            this.visualAnnotation[personIndex].boundingBox.selected = true;
+        }
+    }
+
+    private pushVisualData(personIndex: number) {
+        let visual = this.visualAnnotation[personIndex];
+        let personData = this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex].people[personIndex];
+
+        if (visual && personData) {
+            if (visual.boundingBox) {
+                let shapeBounds = visual.boundingBox.bounds;
+                Object.keys(personData.boundingBox).forEach((key) => {
+                    if (shapeBounds[key] && personData.boundingBox[key] !== shapeBounds[key]) {
+                        personData.boundingBox[key] = Math.floor(shapeBounds[key]);
+                    }
+                });
+            }
+
+            if (visual.location) {
+                let shapeLocation = visual.boundingBox.position;
+                Object.keys(personData.location.virtual).forEach((key) => {
+                    if (shapeLocation[key] && personData.location.virtual[key] !== shapeLocation[key]) {
+                        personData.location.virtual[key] = Math.floor(shapeLocation[key]);
+                    }
+                });
+            }
         }
     }
 
@@ -235,7 +231,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             else {
                 this.viewer.open(
                     new osd.ImageTileSource({
-                        'url': this.images[index].src
+                        'url': this.images[index].src,
+                        'buildPyramid': false
                     })
                 );
             }
@@ -277,7 +274,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'element': this.osdBinding.nativeElement,
             'prefixUrl': "assets/osd-icons/images/",
             'debugMode': false,
-            'visibilityRatio': 0.95,
+            'visibilityRatio': 0.8,
             'constrainDuringPan': true,
             'showNavigator': true,
             'zoomPerScroll': 1.3,
@@ -303,7 +300,10 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             let hitTest = paper.project.hitTest(imagePoint, {
                 'tolerance': 5,
                 'fill': true,
-                'bounds': true
+                'bounds': true,
+                'stroke': false,
+                'segments': false,
+                'handles': false
             });
             event.hitTest = hitTest;
             return event;
@@ -318,23 +318,24 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             },
             pressHandler: (event) => {
                 let modEvent = performHitTest(event);
+                if (modEvent.hitTest) {
+                    this._viewer.setMouseNavEnabled(false);
+                }
                 callEventHandlers(modEvent, 'mouseDown');
             },
             releaseHandler: (event) => {
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'mouseUp');
+                this._viewer.setMouseNavEnabled(true);
             },
             dragHandler: (event) => {
                 let modEvent = performHitTest(event);
-                if (modEvent.hitTest) {
-                    this._viewer.setMouseNavEnabled(false);
-                }
                 callEventHandlers(modEvent, 'drag');
+                paper.view.draw();
             },
             dragEndHandler: (event) => {
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'dragEnd');
-                this._viewer.setMouseNavEnabled(true);
             }
         }).setTracking(true);
 
@@ -358,12 +359,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             });
         });
         this.layers.location.bringToFront();
-
-        // Create the paper tools
-        //Object.keys(this.tools).forEach((key) => {
-        //    this.tools[key] = new paper.Tool();
-        //});
-        //this.tools.mouse.activate();
     }
 
     private bindEvents() {
@@ -391,25 +386,107 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         })
 
         // Select paper objects
-        this.on('click', 'mouseClick', (event) => {
-            if (this.ws.settings.annotationMode === 'mixed') {
-                if (event.hitTest && event.hitTest.item) {
-                    let itemName = event.hitTest.item.name.split('-');
-                    if (itemName[0] === 'bbx') {
-                        let selectedPersonIndex = parseInt(itemName[1]);
-                        this.ws.annotation.currentPerson = selectedPersonIndex;
+        this.on('click', 'objectClick', (event) => {
+            // TODO: Set bounding box interpolation key
+            if (event.hitTest && event.hitTest.item) {
+                let hitTest = event.hitTest as paper.HitResult;
+
+                let itemName = event.hitTest.item.name.split('-');
+                let selectedPersonIndex = parseInt(itemName[1]);
+
+                if (this.ws.settings.mode === 'mixed') {
+                    if (this.ws.settings.tool === 'pointer') {
+                        if (itemName[0] === 'bbx') {
+                            this.ws.annotation.currentPerson = selectedPersonIndex;
+                        }
+                    }
+                }
+
+                else if (this.ws.settings.mode === 'location') {
+                    if (this.ws.settings.tool === 'location') {
+                        this.ws.annotation.currentFrame++;
                     }
                 }
             }
-            else if (this.ws.settings.annotationMode === 'location') {
-                this.ws.annotation.currentFrame++;
+        });
+
+        let originalHitTest: paper.HitResult = null;
+
+        // Drag paper objects
+        this.on('drag', 'objectDrag', (event) => {
+            let hitTest: paper.HitResult = null;
+            if (originalHitTest && originalHitTest.item) {
+                hitTest = originalHitTest;
+            }
+            else if (event.hitTest && event.hitTest.item) {
+                hitTest = event.hitTest as paper.HitResult;
+                originalHitTest = hitTest;
+            }
+
+            if (hitTest) {
+                let itemName = hitTest.item.name.split('-');
+                let selectedPersonIndex = parseInt(itemName[1]);
+
+                if (this.ws.settings.mode === 'mixed') {
+                    if (this.ws.settings.tool === 'pointer') {
+                        if (itemName[0] === 'bbx') {
+                            let delta = (paper.view.viewToProject(
+                                new paper.Point(event.delta.x, event.delta.y)
+                            ) as any)
+                                .subtract(paper.view.viewToProject(
+                                    new paper.Point(0, 0)
+                                ));
+
+                            if (hitTest.type === 'fill' || !hitTest.item.selected) {
+                                let newPosition = new paper.Point(
+                                    hitTest.item.position.x + delta.x,
+                                    hitTest.item.position.y + delta.y
+                                );
+                                // TODO: Check item bounds.
+                                if (newPosition.x >= 0 && newPosition.y >= 0 &&
+                                    newPosition.x <= this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1 &&
+                                    newPosition.y <= this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1) {
+                                    hitTest.item.position = newPosition;
+                                }
+                            }
+                            else if (hitTest.type === 'bounds') {
+                                let nameArray = hitTest.name.split('-');
+                                nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
+                                let name = nameArray.join('');
+
+                                let newPosition = new paper.Point(
+                                    hitTest.item.bounds[name].x + delta.x,
+                                    hitTest.item.bounds[name].y + delta.y
+                                );
+
+                                if (newPosition.x >= 0 && newPosition.y >= 0 &&
+                                    newPosition.x <= this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1 &&
+                                    newPosition.y <= this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1) {
+                                    hitTest.item.bounds[name] =  newPosition;
+                                }
+                            }
+
+                            this.ws.annotation.currentPerson = selectedPersonIndex;
+                            this.pushVisualData(selectedPersonIndex);
+                        }
+                    }
+                }
+            }
+        });
+
+        // After dragging paper objects
+        this.on('dragEnd', 'objectDragEnd', (event) => {
+            if (this.ws.settings.mode === 'mixed') {
+                if (this.ws.settings.tool === 'pointer') {
+                    originalHitTest = null;
+                }
             }
         });
     }
 
     private loadImages(dir: string, filenames: Array<string>): Q.Promise<{}> {
         let promises: Array<Q.Promise<{}>> = [];
-        multiqueue.create('cacheTiles', 17);
+        multiqueue.create('cacheTiles', 18);
 
         this.images = filenames.map((filename, index) => {
             // Set up deferred object to represent the 'image loaded' event
@@ -421,7 +498,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
             let cacheTile = () => {
                 this.tileCache[index] = new osd.ImageTileSource({
-                    'url': imageSrc
+                    'url': imageSrc,
+                    'buildPyramid': false
                 })
             };
 
@@ -475,33 +553,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                     this.selectPerson(index);
                 }
             );
-
-            //this.visualAnnotationObs.subscribe(
-            //    (visuals) => {
-            //        if (this.ws.annotation.currentPerson) {
-            //            let visual = visuals[this.ws.annotation.currentPerson];
-            //            let personData = this.ws.annotation.data.frames[this.ws.annotation.currentFrame].people[this.ws.annotation.currentPerson];
-
-            //            if (visual.boundingBox) {
-            //                let shapeBounds = visual.boundingBox.shape.bounds;
-            //                Object.keys(personData.boundingBox).forEach((key) => {
-            //                    if (shapeBounds[key] && personData.boundingBox[key] !== shapeBounds[key]) {
-            //                        personData.boundingBox[key] = shapeBounds[key];
-            //                    }
-            //                });
-            //            }
-
-            //            if (visual.location) {
-            //                let shapeLocation = visual.boundingBox.shape.position;
-            //                Object.keys(personData.location.virtual).forEach((key) => {
-            //                    if (shapeLocation[key] && personData.location.virtual[key] !== shapeLocation[key]) {
-            //                        personData.location.virtual[key] = shapeLocation[key];
-            //                    }
-            //                });
-            //            }
-            //        }
-            //    }
-            //);
 
             this.ws.annotation.redrawVisualsObs.filter(
                 (value) => {
