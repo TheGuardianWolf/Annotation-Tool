@@ -370,6 +370,15 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             return newPoint;
         }
 
+        let itemInsideImage = (item: paper.Item) => {
+            return item.isInside(new paper.Rectangle(
+                new paper.Point(0, 0), new paper.Size(
+                    this.images[this.ws.annotation.currentFrameIndex].naturalWidth,
+                    this.images[this.ws.annotation.currentFrameIndex].naturalHeight
+                )
+            ));
+        }
+
         // Previous frame
         this.on('keyDown', 'z', (event) => {
             this.ws.annotation.currentFrame--;
@@ -438,15 +447,13 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                                 ));
 
                             if (hitTest.type === 'fill' || !hitTest.item.selected) {
-                                let newPosition = new paper.Point(
+                                let oldPosition = new paper.Point(hitTest.item.position);
+                                hitTest.item.position = new paper.Point(
                                     hitTest.item.position.x + delta.x,
                                     hitTest.item.position.y + delta.y
                                 );
-                                // TODO: Check item bounds.
-                                if (newPosition.x >= 0 && newPosition.y >= 0 &&
-                                    newPosition.x <= this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1 &&
-                                    newPosition.y <= this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1) {
-                                    hitTest.item.position = newPosition;
+                                if (!itemInsideImage(hitTest.item)) {
+                                    hitTest.item.position = oldPosition;
                                 }
                             }
                             else if (hitTest.type === 'bounds') {
@@ -454,15 +461,14 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                                 nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
                                 let name = nameArray.join('');
 
-                                let newPosition = new paper.Point(
+                                let oldPosition = new paper.Point(hitTest.item.bounds[name]);
+                                hitTest.item.bounds[name] = new paper.Point(
                                     hitTest.item.bounds[name].x + delta.x,
                                     hitTest.item.bounds[name].y + delta.y
                                 );
 
-                                if (newPosition.x >= 0 && newPosition.y >= 0 &&
-                                    newPosition.x <= this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1 &&
-                                    newPosition.y <= this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1) {
-                                    hitTest.item.bounds[name] =  newPosition;
+                                if (!itemInsideImage(hitTest.item)) {
+                                    hitTest.item.bounds[name] = oldPosition;
                                 }
                             }
 
