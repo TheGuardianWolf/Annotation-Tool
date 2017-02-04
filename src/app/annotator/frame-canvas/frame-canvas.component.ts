@@ -1,6 +1,6 @@
 ﻿import { Component, HostListener, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WorkspaceService } from '../../shared/workspace/workspace.service';
-import { Person } from '../../shared/classes/storage';
+import { Person, Point } from '../../shared/classes/storage';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -100,6 +100,41 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         this.ws.annotation.currentFrame = parseInt(event.target.value);
     }
 
+    private createBoundingBox(rectangle: paper.Shape, index: number) {
+        // Determine color based on index
+        let color = new paper.Color({
+            'hue': ((180 * index) + 10 * index) % 360,
+            'saturation': 1,
+            'brightness': 1
+        });
+
+        this.layers.boundingBox.activate();
+        let boundingBox = rectangle;
+        boundingBox.name = `bbx-${index}`;
+        boundingBox.strokeColor = color;
+        boundingBox.strokeScaling = false;
+        boundingBox.fillColor = color;
+        boundingBox.fillColor.alpha = 0.1;
+
+        return boundingBox;
+    }
+
+    private createLocationCircle(circle: paper.Shape, index: number) {
+        // Determine color based on index
+        let color = new paper.Color({
+            'hue': ((180 * index) + 10 * index) % 360,
+            'saturation': 1,
+            'brightness': 1
+        });
+
+        this.layers.location.activate();
+        let location = circle;
+        location.name = `loc-${index}`;
+        location.fillColor = color;
+        location.fillColor.alpha = 0.7;
+        return location;
+    }
+
     private drawVisuals = (frameNumber: number, personIndex?: number) => {
         let frameIndex = frameNumber - 1;
         // Fill array with paper paths representing the bounding boxes of people in current frame
@@ -130,37 +165,18 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 'location': null
             };
 
-            // Determine color based on index
-            let color = new paper.Color({
-                'hue': ((180 * index) + 10 * index) % 360,
-                'saturation': 1,
-                'brightness': 1
-            });
-
             // Draw new visuals from annotation data
             if (person.boundingBox.isValid()) {
-                this.layers.boundingBox.activate();
-                let boundingBox = paper.Shape.Rectangle(
+                newVisualAnnotation.boundingBox = this.createBoundingBox(paper.Shape.Rectangle(
                     new paper.Point(person.boundingBox.left, person.boundingBox.top),
                     new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
-                );
-                boundingBox.name = `bbx-${index}`;
-                boundingBox.strokeColor = color;
-                boundingBox.strokeScaling = false;
-                boundingBox.fillColor = color;
-                boundingBox.fillColor.alpha = 0.1;
-                newVisualAnnotation.boundingBox = boundingBox;
+                ), index);
             }
             if (person.location.virtual.isValid()) {
-                this.layers.location.activate();
-                let location = paper.Shape.Circle(
+                newVisualAnnotation.boundingBox = this.createLocationCircle(paper.Shape.Circle(
                     new paper.Point(person.location.virtual.x, person.location.virtual.y),
                     5
-                )
-                location.name = `loc-${index}`;
-                location.fillColor = color;
-                location.fillColor.alpha = 0.7;
-                newVisualAnnotation.location = location;
+                ), index);
             }
             return newVisualAnnotation;
         }
@@ -373,10 +389,20 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         let itemInsideImage = (item: paper.Item) => {
             return item.isInside(new paper.Rectangle(
                 new paper.Point(0, 0), new paper.Size(
-                    this.images[this.ws.annotation.currentFrameIndex].naturalWidth,
-                    this.images[this.ws.annotation.currentFrameIndex].naturalHeight
+                    this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1,
+                    this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1
                 )
             ));
+        }
+
+        let pointInsideImage = (point: paper.Point) => {
+            let imageSpace = new paper.Rectangle(
+                new paper.Point(0, 0), new paper.Size(
+                    this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1,
+                    this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1
+                )
+            )
+            return imageSpace.contains(point);
         }
 
         // Previous frame
@@ -389,32 +415,91 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             this.ws.annotation.currentFrame++;
         });
 
+        // Pointer
+        this.on('keyDown', 'e', (event) => {
+            if (this.ws.settings.mode === 'mixed') {
+                this.ws.settings.tool = 'pointer';
+            }
+        });
+
+        // Box drawer
+        this.on('keyDown', 'r', (event) => {
+            if (this.ws.settings.mode === 'mixed') {
+                this.ws.settings.tool = 'box';
+            }
+        });
+
+        // Location marker
+        this.on('keyDown', 't', (event) => {
+            if (this.ws.settings.mode === 'mixed') {
+                this.ws.settings.tool = 'location';
+            }
+        });
+
+        // Mixed mode
+        this.on('keyDown', '1', (event) => {
+            this.ws.settings.mode = 'mixed';
+        });
+
+        // Location mode
+        this.on('keyDown', '2', (event) => {
+            this.ws.settings.mode = 'location';
+        });
+
+        // Interpolate bounding box from keyframes
+        this.on('keyDown', 'd', (event) => {
+            // TODO: Interpolate
+        });
+
         // Report mouse position
         this.on('move', 'mousePosition', (event) => {
             this.mousePosition = pointToPixel(event.point);
         })
 
         // Select paper objects
-        this.on('click', 'objectClick', (event) => {
-            // TODO: Set bounding box interpolation key
-            if (event.hitTest && event.hitTest.item) {
-                let hitTest = event.hitTest as paper.HitResult;
+        this.on('click', 'mixed.pointer.click', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
+                if (event.hitTest && event.hitTest.item) {
+                    let hitTest = event.hitTest as paper.HitResult;
 
-                let itemName = event.hitTest.item.name.split('-');
-                let selectedPersonIndex = parseInt(itemName[1]);
+                    let itemName = event.hitTest.item.name.split('-');
+                    let selectedPersonIndex = parseInt(itemName[1]);
 
-                if (this.ws.settings.mode === 'mixed') {
-                    if (this.ws.settings.tool === 'pointer') {
-                        if (itemName[0] === 'bbx') {
-                            this.ws.annotation.currentPerson = selectedPersonIndex;
-                        }
+                    if (itemName[0] === 'bbx') {
+                        this.ws.annotation.currentPerson = selectedPersonIndex;
                     }
                 }
+            }
+        });
 
-                else if (this.ws.settings.mode === 'location') {
-                    if (this.ws.settings.tool === 'location') {
-                        this.ws.annotation.currentFrame++;
-                    }
+        this.on('click', 'mixed.location.click', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
+                let locationPoint = new paper.Point(event.position.x, event.position.y);
+                if (pointInsideImage(locationPoint)) {
+                    let currentPerson = this.ws.annotation.currentPerson;
+                    this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                        locationPoint,
+                        5
+                    ), currentPerson);
+                    this.pushVisualData(currentPerson);
+                    // TODO: Calculate real position
+                }
+                this.ws.settings.tool = 'pointer';
+            }
+        });
+
+        this.on('click', 'location.location.click', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
+                let locationPoint = new paper.Point(event.position.x, event.position.y);
+                if (pointInsideImage(locationPoint)) {
+                    let currentPerson = this.ws.annotation.currentPerson;
+                    this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                        locationPoint,
+                        5
+                    ), currentPerson);
+                    this.pushVisualData(currentPerson);
+                    // TODO: Calculate real position
+                    this.ws.annotation.currentFrame++;
                 }
             }
         });
@@ -422,70 +507,66 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         let originalHitTest: paper.HitResult = null;
 
         // Drag paper objects
-        this.on('drag', 'objectDrag', (event) => {
-            let hitTest: paper.HitResult = null;
-            if (originalHitTest && originalHitTest.item) {
-                hitTest = originalHitTest;
-            }
-            else if (event.hitTest && event.hitTest.item) {
-                hitTest = event.hitTest as paper.HitResult;
-                originalHitTest = hitTest;
-            }
+        this.on('drag', 'mixed.pointer.drag', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
+                let hitTest: paper.HitResult = null;
+                if (originalHitTest && originalHitTest.item) {
+                    hitTest = originalHitTest;
+                }
+                else if (event.hitTest && event.hitTest.item) {
+                    hitTest = event.hitTest as paper.HitResult;
+                    originalHitTest = hitTest;
+                }
 
-            if (hitTest) {
-                let itemName = hitTest.item.name.split('-');
-                let selectedPersonIndex = parseInt(itemName[1]);
+                if (hitTest) {
+                    let itemName = hitTest.item.name.split('-');
+                    let selectedPersonIndex = parseInt(itemName[1]);
 
-                if (this.ws.settings.mode === 'mixed') {
-                    if (this.ws.settings.tool === 'pointer') {
-                        if (itemName[0] === 'bbx') {
-                            let delta = (paper.view.viewToProject(
-                                new paper.Point(event.delta.x, event.delta.y)
-                            ) as any)
-                                .subtract(paper.view.viewToProject(
-                                    new paper.Point(0, 0)
-                                ));
+                    if (itemName[0] === 'bbx') {
+                        let delta = (paper.view.viewToProject(
+                            new paper.Point(event.delta.x, event.delta.y)
+                        ) as any)
+                            .subtract(paper.view.viewToProject(
+                                new paper.Point(0, 0)
+                            ));
 
-                            if (hitTest.type === 'fill' || !hitTest.item.selected) {
-                                let oldPosition = new paper.Point(hitTest.item.position);
-                                hitTest.item.position = new paper.Point(
-                                    hitTest.item.position.x + delta.x,
-                                    hitTest.item.position.y + delta.y
-                                );
-                                if (!itemInsideImage(hitTest.item)) {
-                                    hitTest.item.position = oldPosition;
-                                }
+                        if (hitTest.type === 'fill' || !hitTest.item.selected) {
+                            let oldPosition = new paper.Point(hitTest.item.position);
+                            hitTest.item.position = new paper.Point(
+                                hitTest.item.position.x + delta.x,
+                                hitTest.item.position.y + delta.y
+                            );
+                            if (!itemInsideImage(hitTest.item)) {
+                                hitTest.item.position = oldPosition;
                             }
-                            else if (hitTest.type === 'bounds') {
-                                let nameArray = hitTest.name.split('-');
-                                nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
-                                let name = nameArray.join('');
-
-                                let oldPosition = new paper.Point(hitTest.item.bounds[name]);
-                                hitTest.item.bounds[name] = new paper.Point(
-                                    hitTest.item.bounds[name].x + delta.x,
-                                    hitTest.item.bounds[name].y + delta.y
-                                );
-
-                                if (!itemInsideImage(hitTest.item)) {
-                                    hitTest.item.bounds[name] = oldPosition;
-                                }
-                            }
-
-                            this.ws.annotation.currentPerson = selectedPersonIndex;
-                            this.pushVisualData(selectedPersonIndex);
                         }
+                        else if (hitTest.type === 'bounds') {
+                            let nameArray = hitTest.name.split('-');
+                            nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
+                            let name = nameArray.join('');
+
+                            let oldPosition = new paper.Point(hitTest.item.bounds[name]);
+                            hitTest.item.bounds[name] = new paper.Point(
+                                hitTest.item.bounds[name].x + delta.x,
+                                hitTest.item.bounds[name].y + delta.y
+                            );
+
+                            if (!itemInsideImage(hitTest.item)) {
+                                hitTest.item.bounds[name] = oldPosition;
+                            }
+                        }
+
+                        this.ws.annotation.currentPerson = selectedPersonIndex;
+                        this.pushVisualData(selectedPersonIndex);
                     }
                 }
             }
         });
 
         // After dragging paper objects
-        this.on('dragEnd', 'objectDragEnd', (event) => {
-            if (this.ws.settings.mode === 'mixed') {
-                if (this.ws.settings.tool === 'pointer') {
-                    originalHitTest = null;
-                }
+        this.on('dragEnd', 'mixed.pointer.dragEnd', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
+                originalHitTest = null;
             }
         });
     }
