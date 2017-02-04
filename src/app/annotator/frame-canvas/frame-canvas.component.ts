@@ -592,20 +592,22 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         )) as paper.Point;
 
                     if (!dragged) {
-                        let boundingBox = this.createBoundingBox(
-                            paper.Shape.Rectangle(
-                                start,
-                                new paper.Point(start.x + delta.x, start.y + delta.y)
-                            ),
-                            currentPerson
-                        )
-                        this.visualAnnotation[currentPerson].boundingBox = boundingBox;
-                        dragged = boundingBox;
+                        let end = new paper.Point(start.x + delta.x, start.y + delta.y);
+                        if (pointInsideImage(end)) {
+                            let boundingBox = this.createBoundingBox(
+                                paper.Shape.Rectangle(start, end),
+                                currentPerson
+                            )
+                            this.visualAnnotation[currentPerson].boundingBox = boundingBox;
+                            dragged = boundingBox;
+                        }
                     }
                     else {
                         let boundingBox = dragged as paper.Shape;
-                        (boundingBox.bounds.bottomRight as any)
-                            .add(new paper.Point(delta.x, delta.y));
+                        let end = (boundingBox.bounds.bottomRight as any).add(new paper.Point(delta.x, delta.y));
+                        if (pointInsideImage(end)) {
+                            boundingBox.bounds.bottomRight = end;
+                        }
                     }
                     this.pushVisualData(currentPerson);
                 }
