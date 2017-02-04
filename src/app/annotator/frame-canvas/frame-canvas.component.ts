@@ -382,6 +382,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     }
 
     private bindEvents() {
+        // Event handler shared variables
+        let dragged: any = null;
+
         // Event handler functions
         let pointToPixel = (point: paper.Point) => {
             let newPoint = new paper.Point(
@@ -455,6 +458,93 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         };
 
+        let moveOnDrag = (event) => {
+            let hitTest: paper.HitResult = null;
+            if (dragged && dragged.item) {
+                hitTest = dragged;
+            }
+            else if (event.hitTest && event.hitTest.item) {
+                hitTest = event.hitTest as paper.HitResult;
+                dragged = hitTest;
+            }
+
+            if (hitTest) {
+                let itemName = hitTest.item.name.split('-');
+                let selectedPersonIndex = parseInt(itemName[1]);
+
+                if (itemName[0] === 'bbx') {
+                    this.ws.annotation.currentPerson = selectedPersonIndex;
+                    let delta = (paper.view.viewToProject(
+                        new paper.Point(event.delta.x, event.delta.y)
+                    ) as any)
+                        .subtract(paper.view.viewToProject(
+                            new paper.Point(0, 0)
+                        )) as paper.Point;
+
+                    if (hitTest.type === 'fill' || !hitTest.item.selected) {
+                        let oldPosition = new paper.Point(hitTest.item.position);
+                        hitTest.item.position = new paper.Point(
+                            hitTest.item.position.x + delta.x,
+                            hitTest.item.position.y + delta.y
+                        );
+                        if (!itemInsideImage(hitTest.item)) {
+                            hitTest.item.position = oldPosition;
+                        }
+                    }
+                    else if (hitTest.type === 'bounds') {
+                        let nameArray = hitTest.name.split('-');
+                        nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
+                        let name = nameArray.join('');
+
+                        let oldPosition = new paper.Point(hitTest.item.bounds[name]);
+                        hitTest.item.bounds[name] = new paper.Point(
+                            hitTest.item.bounds[name].x + delta.x,
+                            hitTest.item.bounds[name].y + delta.y
+                        );
+
+                        if (!itemInsideImage(hitTest.item)) {
+                            hitTest.item.bounds[name] = oldPosition;
+                        }
+                    }
+                    this.pushVisualData(selectedPersonIndex);
+                }
+            }
+        }
+
+        let boxOnDrag = (event) => {
+            let start = new paper.Point(event.position.x, event.position.y);
+            if (pointInsideImage(start)) {
+                this.layers.boundingBox.activate();
+                let currentPerson = this.ws.annotation.currentPerson;
+                let delta = (paper.view.viewToProject(
+                    new paper.Point(event.delta.x, event.delta.y)
+                ) as any)
+                    .subtract(paper.view.viewToProject(
+                        new paper.Point(0, 0)
+                    )) as paper.Point;
+
+                if (!dragged) {
+                    let end = new paper.Point(start.x + delta.x, start.y + delta.y);
+                    if (pointInsideImage(end)) {
+                        let boundingBox = this.createBoundingBox(
+                            paper.Shape.Rectangle(start, end),
+                            currentPerson
+                        )
+                        this.visualAnnotation[currentPerson].boundingBox = boundingBox;
+                        dragged = boundingBox;
+                    }
+                }
+                else {
+                    let boundingBox = dragged as paper.Shape;
+                    let end = (boundingBox.bounds.bottomRight as any).add(new paper.Point(delta.x, delta.y));
+                    if (pointInsideImage(end)) {
+                        boundingBox.bounds.bottomRight = end;
+                    }
+                }
+                this.pushVisualData(currentPerson);
+            }
+        }
+
         // Previous frame
         this.on('keyDown', 'z', (event) => {
             this.ws.annotation.currentFrame--;
@@ -515,6 +605,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         });
 
+        // Set location marker
         this.on('click', 'mixed.location.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
                 locationOnClick(event);
@@ -522,103 +613,24 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         });
 
+        // Set location marker in location mode
         this.on('click', 'location.location.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
                 locationOnClick(event, true);
             }
         });
 
-        let dragged: any = null;
-
         // Drag paper objects
         this.on('drag', 'mixed.pointer.drag', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
-                let hitTest: paper.HitResult = null;
-                if (dragged && dragged.item) {
-                    hitTest = dragged;
-                }
-                else if (event.hitTest && event.hitTest.item) {
-                    hitTest = event.hitTest as paper.HitResult;
-                    dragged = hitTest;
-                }
-
-                if (hitTest) {
-                    let itemName = hitTest.item.name.split('-');
-                    let selectedPersonIndex = parseInt(itemName[1]);
-
-                    if (itemName[0] === 'bbx') {
-                        this.ws.annotation.currentPerson = selectedPersonIndex;
-                        let delta = (paper.view.viewToProject(
-                            new paper.Point(event.delta.x, event.delta.y)
-                        ) as any)
-                            .subtract(paper.view.viewToProject(
-                                new paper.Point(0, 0)
-                            )) as paper.Point;
-
-                        if (hitTest.type === 'fill' || !hitTest.item.selected) {
-                            let oldPosition = new paper.Point(hitTest.item.position);
-                            hitTest.item.position = new paper.Point(
-                                hitTest.item.position.x + delta.x,
-                                hitTest.item.position.y + delta.y
-                            );
-                            if (!itemInsideImage(hitTest.item)) {
-                                hitTest.item.position = oldPosition;
-                            }
-                        }
-                        else if (hitTest.type === 'bounds') {
-                            let nameArray = hitTest.name.split('-');
-                            nameArray[1] = nameArray[1].charAt(0).toUpperCase() + nameArray[1].slice(1);
-                            let name = nameArray.join('');
-
-                            let oldPosition = new paper.Point(hitTest.item.bounds[name]);
-                            hitTest.item.bounds[name] = new paper.Point(
-                                hitTest.item.bounds[name].x + delta.x,
-                                hitTest.item.bounds[name].y + delta.y
-                            );
-
-                            if (!itemInsideImage(hitTest.item)) {
-                                hitTest.item.bounds[name] = oldPosition;
-                            }
-                        }
-                        this.pushVisualData(selectedPersonIndex);
-                    }
-                }
+                moveOnDrag(event);
             }
         });
 
+        // Create bounding box via drag
         this.on('drag', 'mixed.box.drag', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'box') {
-                let start = new paper.Point(event.position.x, event.position.y);
-                if (pointInsideImage(start)) {
-                    this.layers.boundingBox.activate();
-                    let currentPerson = this.ws.annotation.currentPerson;
-                    let delta = (paper.view.viewToProject(
-                        new paper.Point(event.delta.x, event.delta.y)
-                    ) as any)
-                        .subtract(paper.view.viewToProject(
-                            new paper.Point(0, 0)
-                        )) as paper.Point;
-
-                    if (!dragged) {
-                        let end = new paper.Point(start.x + delta.x, start.y + delta.y);
-                        if (pointInsideImage(end)) {
-                            let boundingBox = this.createBoundingBox(
-                                paper.Shape.Rectangle(start, end),
-                                currentPerson
-                            )
-                            this.visualAnnotation[currentPerson].boundingBox = boundingBox;
-                            dragged = boundingBox;
-                        }
-                    }
-                    else {
-                        let boundingBox = dragged as paper.Shape;
-                        let end = (boundingBox.bounds.bottomRight as any).add(new paper.Point(delta.x, delta.y));
-                        if (pointInsideImage(end)) {
-                            boundingBox.bounds.bottomRight = end;
-                        }
-                    }
-                    this.pushVisualData(currentPerson);
-                }
+                boxOnDrag(event);
             }
         });
 
