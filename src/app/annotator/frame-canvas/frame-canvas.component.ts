@@ -189,6 +189,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         this.ws.annotation.redrawVisuals = false;
         this.selectPerson(this.ws.annotation.currentPerson);
+        paper.view.draw();
     }
 
     private selectPerson(personIndex: number) {
@@ -204,6 +205,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 });
             this.visualAnnotation[personIndex].boundingBox.selected = true;
         }
+        paper.view.draw();
     }
 
     private pushVisualData(personIndex: number) {
@@ -297,6 +299,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         });
         this._overlay = this.viewer.paperjsOverlay();
 
+        paper.settings.handleSize = 8;
+        paper.settings.hitTolerance = 8;
+
         let callEventHandlers = (event, eventName) => {
             Object.keys(this.eventHandlers[eventName]).forEach(
                 (key) => {
@@ -310,7 +315,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         let performHitTest = (event) => {
             let imagePoint = paper.view.viewToProject(new paper.Point(event.position.x, event.position.y));
             let hitTest = paper.project.hitTest(imagePoint, {
-                'tolerance': 5,
                 'fill': true,
                 'bounds': true,
                 'stroke': false,
@@ -327,6 +331,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             clickHandler: (event) => {
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'click');
+                paper.view.draw();
             },
             pressHandler: (event) => {
                 let modEvent = performHitTest(event);
@@ -334,11 +339,13 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                     this._viewer.setMouseNavEnabled(false);
                 }
                 callEventHandlers(modEvent, 'mouseDown');
+                paper.view.draw();
             },
             releaseHandler: (event) => {
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'mouseUp');
                 this._viewer.setMouseNavEnabled(true);
+                paper.view.draw();
             },
             dragHandler: (event) => {
                 let modEvent = performHitTest(event);
@@ -348,6 +355,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             dragEndHandler: (event) => {
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'dragEnd');
+                paper.view.draw();
             }
         }).setTracking(true);
 
@@ -385,7 +393,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         let itemInsideImage = (item: paper.Item) => {
             return item.isInside(new paper.Rectangle(
-                new paper.Point(0, 0), new paper.Size(
+                new paper.Point(0, 0), new paper.Point(
                     this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1,
                     this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1
                 )
@@ -394,7 +402,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         let pointInsideImage = (point: paper.Point) => {
             let imageSpace = new paper.Rectangle(
-                new paper.Point(0, 0), new paper.Size(
+                new paper.Point(0, 0), new paper.Point(
                     this.images[this.ws.annotation.currentFrameIndex].naturalWidth + 1,
                     this.images[this.ws.annotation.currentFrameIndex].naturalHeight + 1
                 )
