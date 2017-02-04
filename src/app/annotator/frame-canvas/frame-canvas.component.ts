@@ -1,6 +1,7 @@
 ﻿import { Component, HostListener, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WorkspaceService } from '../../shared/workspace/workspace.service';
-import { Person, Point, BoundingBox } from '../../shared/classes/storage';
+import { ImageToolService } from '../../shared/image-tool/image-tool.service';
+import { Person, Point, IPoint, BoundingBox } from '../../shared/classes/storage';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -26,13 +27,6 @@ interface IEventHandlers {
     keyUp: Object;
 }
 
-//interface IPaperTools {
-//    mouse: paper.Tool;
-//    boundingBox: paper.Tool;
-//    location: paper.Tool;
-//    active: string;
-//}
-
 interface IPaperLayers {
     boundingBox: paper.Layer;
     location: paper.Layer;
@@ -54,6 +48,7 @@ interface IVisualAnnotation {
 export class FrameCanvasComponent implements OnInit, OnDestroy {
     @ViewChild('osdBinding') osdBinding: ElementRef;
     private ws: WorkspaceService;
+    private its: ImageToolService;
 
     private images: Array<HTMLImageElement> = [];
     get imagesCount() {
@@ -92,8 +87,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         'keyUp': {}
     }
 
-    constructor(_ws: WorkspaceService) {
+    constructor(_ws: WorkspaceService, _it: ImageToolService) {
         this.ws = _ws;
+        this.its = _it;
     }
 
     private frameNavigatorChange(event) {
@@ -406,7 +402,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             return imageSpace.contains(point);
         }
 
-        let selectWithClick = (event) => {
+        let selectOnClick = (event) => {
             if (event.hitTest && event.hitTest.item) {
                 let hitTest = event.hitTest as paper.HitResult;
 
@@ -418,6 +414,37 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 }
             }
         }
+
+        let locationOnClick = (event, advanceFrame?: boolean) => {
+            let locationPoint = new paper.Point(event.position.x, event.position.y);
+            if (pointInsideImage(locationPoint)) {
+                let currentFrameIndex = this.ws.annotation.currentFrameIndex;
+                let currentPerson = this.ws.annotation.currentPerson;
+                if (!this.visualAnnotation[currentPerson].location) {
+                    this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                        locationPoint,
+                        5
+                    ), currentPerson);
+                }
+                else {
+                    this.visualAnnotation[currentPerson].location.position = locationPoint;
+                }
+                this.pushVisualData(currentPerson);
+                this.its.getRealCoordinates(
+                    locationPoint as IPoint,
+                    this.ws.calibration.imageOrigin,
+                    this.ws.calibration.lensCalibrationFile,
+                    this.ws.calibration.perspectiveCalibrationFile,
+                )
+                    .then((realPosition) => {
+                        this.ws.annotation.data.frames[currentFrameIndex].people[currentPerson].location.real = new Point(realPosition.x, realPosition.y);
+                    });
+
+                if (advanceFrame) {
+                    this.ws.annotation.currentFrame++;
+                }
+            }
+        };
 
         // Previous frame
         this.on('keyDown', 'z', (event) => {
@@ -475,49 +502,20 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         // Select paper objects
         this.on('click', 'mixed.pointer.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
-                selectWithClick(event);
+                selectOnClick(event);
             }
         });
 
         this.on('click', 'mixed.location.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
-                let locationPoint = new paper.Point(event.position.x, event.position.y);
-                if (pointInsideImage(locationPoint)) {
-                    let currentPerson = this.ws.annotation.currentPerson;
-                    if (!this.visualAnnotation[currentPerson].location) {
-                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
-                            locationPoint,
-                            5
-                        ), currentPerson);
-                    }
-                    else {
-                        this.visualAnnotation[currentPerson].location.position = locationPoint;
-                    }
-                    this.pushVisualData(currentPerson);
-                    // TODO: Calculate real position
-                }
+                locationOnClick(event);
                 this.ws.settings.tool = 'pointer';
             }
         });
 
         this.on('click', 'location.location.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
-                let locationPoint = new paper.Point(event.position.x, event.position.y);
-                if (pointInsideImage(locationPoint)) {
-                    let currentPerson = this.ws.annotation.currentPerson;
-                    if (!this.visualAnnotation[currentPerson].location) {
-                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
-                            locationPoint,
-                            5
-                        ), currentPerson);
-                    }
-                    else {
-                        this.visualAnnotation[currentPerson].location.position = locationPoint;
-                    }
-                    this.pushVisualData(currentPerson);
-                    // TODO: Calculate real position
-                    this.ws.annotation.currentFrame++;
-                }
+                locationOnClick(event, true);
             }
         });
 

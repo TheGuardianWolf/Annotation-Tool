@@ -1,6 +1,6 @@
 ﻿import { Injectable, OnInit } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
-import { Point } from '../classes/storage';
+import { IPoint } from '../classes/storage';
 
 import * as fs from 'fs';
 import * as ChildProcess from 'child_process';
@@ -38,8 +38,8 @@ export class ImageToolService {
     }
 
     public getRealCoordinates(
-        point: Point,
-        origin: Point,
+        point: IPoint,
+        origin: IPoint,
         lCalibFile: string, pCalibFile: string
     ) {
         let cmd = [
@@ -50,7 +50,7 @@ export class ImageToolService {
             lCalibFile, pCalibFile
         ];
         return Q.denodeify(ChildProcess.exec)(path.join(process.cwd(), cmd.join(' '))).then((data) => {
-            return JSON.parse(data as string);
+            return JSON.parse(data as string) as IPoint;
         });
     }
 }

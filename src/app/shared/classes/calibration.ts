@@ -35,6 +35,9 @@ export class Calibration {
     }
 
     private _imageOrigin: Point = new Point(null, null);
+    get imageOrigin() {
+        return this._imageOrigin;
+    }
     set imageOrigin(point) {
         this._imageOrigin = point;
         this.checkCalibrated();
