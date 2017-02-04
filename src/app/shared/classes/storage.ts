@@ -44,6 +44,49 @@ export class BoundingBox implements IBoundingBox {
             boundingBox.bottom
         );
     }
+
+    static interpolate(start: BoundingBox, stop: BoundingBox, deltas: number) {
+        let output: Array<BoundingBox> = [];
+        
+        let startWidth = start.right - start.left;
+        let startHeight = start.bottom - start.top;
+        let startLocation = new Point(
+            start.left + (startWidth / 2),
+            start.top + (startHeight / 2)
+        );
+
+        let stopWidth = stop.right - stop.left;
+        let stopHeight = stop.bottom - stop.top;
+        let stopLocation = new Point(
+            stop.left + (stopWidth / 2),
+            stop.top + (stopHeight / 2)
+        );
+        let deltaWidth = (stopWidth - startWidth) / deltas;
+        let deltaHeight = (stopHeight - startHeight) / deltas;
+        let deltaLocation = new Point(
+            (stopLocation.x - startLocation.x) / deltas,
+            (stopLocation.y - startLocation.y) / deltas
+        );
+
+        for (let i = 1; i < deltas; i++) {
+            let newLocation = new Point(
+                startLocation.x + deltaLocation.x * i,
+                startLocation.y + deltaLocation.y * i
+            );
+
+            let newWidth = startWidth + deltaWidth * i;
+            let newHeight = startHeight + deltaHeight * i;
+
+            let left = Math.floor(newLocation.x - newWidth / 2);
+            let top = Math.floor(newLocation.y - newHeight / 2);
+            let right = Math.floor(newLocation.x + newWidth / 2);
+            let bottom = Math.floor(newLocation.y + newHeight / 2);
+
+            output.push(new BoundingBox(left, right, top, bottom));
+        }
+
+        return output;
+    }
 }
 
 export class Point implements IPoint {
@@ -80,6 +123,7 @@ export class Person {
         real: Point;
         segment: String;
     };
+    public keyframe: boolean = false;
 
     constructor(
         id: number,

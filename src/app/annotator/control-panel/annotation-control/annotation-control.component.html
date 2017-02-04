@@ -48,15 +48,6 @@
                            type="number" class="form-control" id="frameNumber" />
                 </div>
             </div>
-            <div class="form-group">
-                <div class="col-xs-offset-2 col-xs-10 checkbox">
-                    <label>
-                        <input [(ngModel)]="frame.keyframe"
-                               name="keyframe"
-                               type="checkbox" id="keyframe" /> Keyframe
-                    </label>
-                </div>
-            </div>
         </fieldset>
         <fieldset>
             <h4>Person</h4>
@@ -134,11 +125,18 @@
                         <button id="personAutoflow" type="button" class="btn btn-default">Autoflow</button>
                     </div>
                     <div class="form-group">
-                        <div class="col-xs-offset-2 col-xs-10 checkbox">
+                        <div class="col-xs-offset-2 col-xs-5 checkbox">
                             <label>
                                 <material-checkbox [(ngModel)]="person.obscured"
                                                    name="personObscured"
                                                    inputId="personObscured"></material-checkbox> Obscured
+                            </label>
+                        </div>
+                        <div class="col-xs-5 checkbox">
+                            <label>
+                                <material-checkbox [(ngModel)]="person.keyframe"
+                                                   name="personKeyframe"
+                                                   inputId="personKeyframe"></material-checkbox> Keyframe
                             </label>
                         </div>
                     </div>

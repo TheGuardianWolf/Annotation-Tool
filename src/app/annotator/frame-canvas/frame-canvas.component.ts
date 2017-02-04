@@ -1,6 +1,6 @@
 ﻿import { Component, HostListener, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WorkspaceService } from '../../shared/workspace/workspace.service';
-import { Person, Point } from '../../shared/classes/storage';
+import { Person, Point, BoundingBox } from '../../shared/classes/storage';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -378,6 +378,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     }
 
     private bindEvents() {
+        // Event handler functions
         let pointToPixel = (point: paper.Point) => {
             let newPoint = new paper.Point(
                 Math.floor(point.x),
@@ -403,6 +404,19 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 )
             )
             return imageSpace.contains(point);
+        }
+
+        let selectWithClick = (event) => {
+            if (event.hitTest && event.hitTest.item) {
+                let hitTest = event.hitTest as paper.HitResult;
+
+                let itemName = event.hitTest.item.name.split('-');
+                let selectedPersonIndex = parseInt(itemName[1]);
+
+                if (itemName[0] === 'bbx') {
+                    this.ws.annotation.currentPerson = selectedPersonIndex;
+                }
+            }
         }
 
         // Previous frame
@@ -448,7 +462,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         // Interpolate bounding box from keyframes
         this.on('keyDown', 'd', (event) => {
-            // TODO: Interpolate
+            if (this.ws.settings.mode === 'mixed') {
+                this.ws.annotation.interpolateToCurrent();
+            }
         });
 
         // Report mouse position
@@ -459,16 +475,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         // Select paper objects
         this.on('click', 'mixed.pointer.click', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
-                if (event.hitTest && event.hitTest.item) {
-                    let hitTest = event.hitTest as paper.HitResult;
-
-                    let itemName = event.hitTest.item.name.split('-');
-                    let selectedPersonIndex = parseInt(itemName[1]);
-
-                    if (itemName[0] === 'bbx') {
-                        this.ws.annotation.currentPerson = selectedPersonIndex;
-                    }
-                }
+                selectWithClick(event);
             }
         });
 

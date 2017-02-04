@@ -7,7 +7,7 @@ import * as Q from 'q';
 import * as fs from 'fs';
 import * as is from 'is';
 
-import { IPoint, Point, Person, Frame, Video } from './storage';
+import { IPoint, Point, BoundingBox, Person, Frame, Video } from './storage';
 import { IWorkspaceVars } from '../workspace/workspace.service';
 
 export class Annotation {
@@ -100,6 +100,39 @@ export class Annotation {
     }
 
     constructor() {
+    }
+
+    public interpolateToCurrent() {
+        let deltas = 0;
+        let replaceIndex;
+        let start;
+        let currentFrameIndex = this.currentFrameIndex;
+        let currentPerson = this.currentPerson;
+
+        let end = this.data.frames[currentFrameIndex].people[currentPerson].boundingBox;
+        for (let i = currentFrameIndex - 1; i >= 0; i--) {
+            deltas++;
+            let person = this.data.frames[i].people[currentPerson];
+            if (person && person.keyframe) {
+                start = person.boundingBox;
+                replaceIndex = i + 1;
+                deltas = currentFrameIndex - i;
+                break;
+            }
+        }
+
+        if (start && end && start.isValid && end.isValid()) {
+            let autoBox = BoundingBox.interpolate(start, end, deltas);
+            autoBox.forEach((newBox, newBoxIndex) => {
+                let replace = replaceIndex + newBoxIndex;
+                if (this.data.frames[replace].people) {
+                    let test = this.data.frames[replace].people[currentPerson];
+                    if (test && !test.keyframe) {
+                        test.boundingBox = newBox;
+                    }
+                }
+            });
+        }
     }
 
     public fromFile(file, match?: IWorkspaceVars) {
