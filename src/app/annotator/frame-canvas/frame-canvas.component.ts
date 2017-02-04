@@ -415,9 +415,10 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         }
 
-        let locationOnClick = (event, advanceFrame?: boolean) => {
+        let locationOnClick = (event, advanceFrame?: boolean) => {    
             let locationPoint = new paper.Point(event.position.x, event.position.y);
             if (pointInsideImage(locationPoint)) {
+                this.layers.location.activate();
                 let currentFrameIndex = this.ws.annotation.currentFrameIndex;
                 let currentPerson = this.ws.annotation.currentPerson;
                 if (!this.visualAnnotation[currentPerson].location) {
@@ -519,18 +520,18 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         });
 
-        let originalHitTest: paper.HitResult = null;
+        let dragged: any = null;
 
         // Drag paper objects
         this.on('drag', 'mixed.pointer.drag', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
                 let hitTest: paper.HitResult = null;
-                if (originalHitTest && originalHitTest.item) {
-                    hitTest = originalHitTest;
+                if (dragged && dragged.item) {
+                    hitTest = dragged;
                 }
                 else if (event.hitTest && event.hitTest.item) {
                     hitTest = event.hitTest as paper.HitResult;
-                    originalHitTest = hitTest;
+                    dragged = hitTest;
                 }
 
                 if (hitTest) {
@@ -538,12 +539,13 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                     let selectedPersonIndex = parseInt(itemName[1]);
 
                     if (itemName[0] === 'bbx') {
+                        this.ws.annotation.currentPerson = selectedPersonIndex;
                         let delta = (paper.view.viewToProject(
                             new paper.Point(event.delta.x, event.delta.y)
                         ) as any)
                             .subtract(paper.view.viewToProject(
                                 new paper.Point(0, 0)
-                            ));
+                            )) as paper.Point;
 
                         if (hitTest.type === 'fill' || !hitTest.item.selected) {
                             let oldPosition = new paper.Point(hitTest.item.position);
@@ -570,8 +572,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                                 hitTest.item.bounds[name] = oldPosition;
                             }
                         }
-
-                        this.ws.annotation.currentPerson = selectedPersonIndex;
                         this.pushVisualData(selectedPersonIndex);
                     }
                 }
@@ -580,14 +580,42 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         this.on('drag', 'mixed.box.drag', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'box') {
-                // TODO: Implement box creation via drag
+                let start = new paper.Point(event.position.x, event.position.y);
+                if (pointInsideImage(start)) {
+                    this.layers.boundingBox.activate();
+                    let currentPerson = this.ws.annotation.currentPerson;
+                    let delta = (paper.view.viewToProject(
+                        new paper.Point(event.delta.x, event.delta.y)
+                    ) as any)
+                        .subtract(paper.view.viewToProject(
+                            new paper.Point(0, 0)
+                        )) as paper.Point;
+
+                    if (!dragged) {
+                        let boundingBox = this.createBoundingBox(
+                            paper.Shape.Rectangle(
+                                start,
+                                new paper.Point(start.x + delta.x, start.y + delta.y)
+                            ),
+                            currentPerson
+                        )
+                        this.visualAnnotation[currentPerson].boundingBox = boundingBox;
+                        dragged = boundingBox;
+                    }
+                    else {
+                        let boundingBox = dragged as paper.Shape;
+                        (boundingBox.bounds.bottomRight as any)
+                            .add(new paper.Point(delta.x, delta.y));
+                    }
+                    this.pushVisualData(currentPerson);
+                }
             }
         });
 
         // After dragging paper objects
         this.on('dragEnd', 'mixed.pointer.dragEnd', (event) => {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
-                originalHitTest = null;
+                dragged = null;
             }
         });
     }
