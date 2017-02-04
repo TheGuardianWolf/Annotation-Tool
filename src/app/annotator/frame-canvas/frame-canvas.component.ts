@@ -477,10 +477,15 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 let locationPoint = new paper.Point(event.position.x, event.position.y);
                 if (pointInsideImage(locationPoint)) {
                     let currentPerson = this.ws.annotation.currentPerson;
-                    this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
-                        locationPoint,
-                        5
-                    ), currentPerson);
+                    if (!this.visualAnnotation[currentPerson].location) {
+                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                            locationPoint,
+                            5
+                        ), currentPerson);
+                    }
+                    else {
+                        this.visualAnnotation[currentPerson].location.position = locationPoint;
+                    }
                     this.pushVisualData(currentPerson);
                     // TODO: Calculate real position
                 }
@@ -493,10 +498,15 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 let locationPoint = new paper.Point(event.position.x, event.position.y);
                 if (pointInsideImage(locationPoint)) {
                     let currentPerson = this.ws.annotation.currentPerson;
-                    this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
-                        locationPoint,
-                        5
-                    ), currentPerson);
+                    if (!this.visualAnnotation[currentPerson].location) {
+                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                            locationPoint,
+                            5
+                        ), currentPerson);
+                    }
+                    else {
+                        this.visualAnnotation[currentPerson].location.position = locationPoint;
+                    }
                     this.pushVisualData(currentPerson);
                     // TODO: Calculate real position
                     this.ws.annotation.currentFrame++;
@@ -560,6 +570,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         this.pushVisualData(selectedPersonIndex);
                     }
                 }
+            }
+        });
+
+        this.on('drag', 'mixed.box.drag', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'box') {
+                // TODO: Implement box creation via drag
             }
         });
 
