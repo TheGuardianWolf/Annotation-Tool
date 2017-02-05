@@ -74,6 +74,7 @@
                         <label class="col-xs-2 control-label" for="personId">Id</label>
                         <div class="col-xs-10">
                             <input [(ngModel)]="person.id"
+                                   (ngModelChange)="visualPropertyChange()"
                                    name="personId"
                                    type="number" class="form-control" id="personId" />
                         </div>
@@ -118,11 +119,19 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-xs-offset-2 col-xs-5">
-                        <button id="personDrawBox" type="button" class="btn btn-default">Draw Box</button>
-                    </div>
-                    <div class="col-xs-5">
-                        <button id="personAutoflow" type="button" class="btn btn-default">Autoflow</button>
+                    <div class="row">
+                        <div class="col-xs-offset-2 col-xs-5">
+                            <button (click)="ws.settings.tool='box'"
+                                    id="personDrawBox" type="button" class="btn btn-default">
+                                Draw Box
+                            </button>
+                        </div>
+                        <div class="col-xs-5">
+                            <button (click)="'ws.interpolateToCurrent()'"
+                                    id="personAutoflow" type="button" class="btn btn-default">
+                                Autoflow
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <div class="col-xs-offset-2 col-xs-5 checkbox">
@@ -161,7 +170,8 @@
                         </div>
                     </div>
                     <div class="col-xs-offset-2 col-xs-10">
-                        <button id="personSelectCoordinate" type="button" class="btn btn-default">Select</button>
+                        <button (click)="ws.settings.tool='location'"
+                                id="personSelectCoordinate" type="button" class="btn btn-default">Select</button>
                     </div>
                     <div class="coordinates row">
                         <div class="col-sm-6 form-group">
@@ -196,7 +206,8 @@
                         </div>
                     </div>
                     <div class="col-xs-offset-2 col-xs-10">
-                        <button id="personAutoCoordinate" type="button" class="btn btn-default">Auto</button>
+                        <button (click)="ws.autoCoordinateCurrent"
+                                id="personAutoCoordinate" type="button" class="btn btn-default">Interpolate</button>
                     </div>
                 </div>
             </div>

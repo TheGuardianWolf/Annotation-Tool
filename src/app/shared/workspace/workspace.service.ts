@@ -3,7 +3,7 @@ import { ImageToolService } from '../image-tool/image-tool.service';
 import { StatusService } from '../status/status.service';
 
 import { Annotation } from '../classes/annotation';
-import { IPoint, Point, Person, Frame, Video } from '../classes/storage';
+import { IPoint, Point, BoundingBox, Person, Frame, Video } from '../classes/storage';
 import { Calibration, IFlipOrigin } from '../classes/calibration';
 import { Settings } from '../classes/settings';
 
@@ -52,6 +52,8 @@ export class WorkspaceService {
         return this._initialised;
     }
 
+    private lastAnnotatedFrame = null;
+
     // Inputs
     public videoFile: string;
     public annotationFile: string;
@@ -83,7 +85,7 @@ export class WorkspaceService {
         // Load fresh annotation
         this.annotation = new Annotation();
 
-        let promiseChain;
+        let promiseChain: Q.Promise<any>;
 
         let setAnnotationImages = (images) => {
             this.annotation.images = images;
@@ -129,7 +131,7 @@ export class WorkspaceService {
                     })
                     .then(setAnnotationImages),
                 getVideoAnnotations()
-            ]).done(fillAnnotationFrames);
+            ]);
         }
         else {
             // Otherwise just read in image paths and the workspace file
@@ -138,14 +140,136 @@ export class WorkspaceService {
                     .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
                     .then(getVideoAnnotations)
-            ]).then(fillAnnotationFrames);
+            ]);
         }
 
-        // Set status to blocking
+        promiseChain.then(fillAnnotationFrames);
+
+        this.annotation.beforeChangeFrame.push(
+            // Copies current frame annotations to next frame
+            () => {
+                if ((this.settings.copyBox === true || this.settings.copyLocation === true) && this.settings.mode === 'mixed') {
+                    let index = this.annotation.currentFrameIndex;
+                    let currentPerson = this.annotation.currentPerson;
+                    if (index >= 0 && index + 1 < this.annotation.data.frames.length) {
+                        let people = this.annotation.data.frames[index].people;
+                        let nextPeople = this.annotation.data.frames[index + 1].people;
+
+                        if (people[currentPerson]) {
+                            let nextPerson = nextPeople.filter((person) => {
+                                return person.id === people[currentPerson].id;
+                            });
+
+                            if (nextPerson.length === 0) {
+                                nextPerson = [Person.parse(people[currentPerson].toObject())];
+                                this.annotation.data.frames[index + 1].addPerson(nextPerson[0]);
+                            }
+
+                            // Required else JS makes reference to the objects in the previous person.
+                            let currentPersonCopy = Person.parse(people[currentPerson].toObject());
+
+                            if (this.settings.copyBox === true && people[currentPerson].boundingBox) {
+                                nextPerson.forEach((person) => {
+                                    if (!person.boundingBox) {
+                                        person.boundingBox = currentPersonCopy.boundingBox;
+                                    }
+                                });
+                            }
+
+                            if (this.settings.copyLocation === true && people[currentPerson].location) {
+                                nextPerson.forEach((person) => {
+                                    if (!person.location) {
+                                        person.location = currentPersonCopy.location;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        )
 
         this._initialised = true;
 
         return promiseChain;
+    }
+
+    public interpolateToCurrent() {
+        let deltas = 0;
+        let replaceIndex;
+        let start;
+        let currentFrameIndex = this.annotation.currentFrameIndex;
+        let currentPerson = this.annotation.currentPerson;
+
+        let end = this.annotation.data.frames[currentFrameIndex].people[currentPerson].boundingBox;
+        for (let i = currentFrameIndex - 1; i >= 0; i--) {
+            deltas++;
+            let person = this.annotation.data.frames[i].people[currentPerson];
+            if (person && person.keyframe) {
+                start = person.boundingBox;
+                replaceIndex = i + 1;
+                deltas = currentFrameIndex - i;
+                break;
+            }
+        }
+
+        if (start && end && start.isValid && end.isValid()) {
+            let autoBox = BoundingBox.interpolate(start, end, deltas);
+            autoBox.forEach((newBox, newBoxIndex) => {
+                let replace = replaceIndex + newBoxIndex;
+                if (this.annotation.data.frames[replace].people) {
+                    let test = this.annotation.data.frames[replace].people[currentPerson];
+                    if (test && !test.keyframe) {
+                        test.boundingBox = newBox;
+                    }
+                }
+            });
+        }
+    }
+
+    public autoCoordinateCurrent() {
+        let location = this.annotation.data.frames[this.annotation.currentFrameIndex].people[this.annotation.currentPerson].location;
+        this.its.getRealCoordinates(
+            location.virtual,
+            this.calibration.imageOrigin,
+            this.calibration.lensCalibrationFile,
+            this.calibration.perspectiveCalibrationFile,
+        )
+            .done((realPosition) => {
+                // TODO: Fix bug somewhere here
+                let locationX;
+                let locationY;
+                if (!this.calibration.switchOrigin) {
+                    locationX = this.calibration.flipOrigin.x ?
+                        this.calibration.roomSize.x - realPosition.x : realPosition.x;
+                    locationY = this.calibration.flipOrigin.y ?
+                        this.calibration.roomSize.y - realPosition.y : realPosition.y;
+                }
+                else {
+                    locationY = this.calibration.flipOrigin.x ?
+                        this.calibration.roomSize.y - realPosition.x : realPosition.x;
+                    locationX = this.calibration.flipOrigin.y ?
+                        this.calibration.roomSize.x - realPosition.y : realPosition.y;
+                }
+
+                if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
+                    location.segment = 'A';
+                }
+                else if (locationX <= 3600 && locationY <= 1700) {
+                    location.segment = 'C';
+                }
+                else if (locationX <= 3600 && locationY <= 4000) {
+                    location.segment = 'B';
+                }
+                else if (locationX <= 6000 && locationY <= 4000) {
+                    location.segment = 'D';
+                }
+                else {
+                    location.segment = 'N/A';
+                }
+
+                location.real = new Point(Math.round(locationX), Math.round(locationY));
+            });
     }
 
     public fromFile(file) {

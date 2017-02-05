@@ -12,15 +12,14 @@ import * as Q from 'q';
  */
 @Injectable()
 export class ImageToolService {
-    private cameraToolPath: string = path.join('native', 'CameraTool');
+    private cameraToolPath: string = path.join(__dirname, 'native', 'CameraTool');
 
     constructor() {
-
     }
 
     public extractImages(src: string, dst: string) {
         let cmd = [this.cameraToolPath, '-E', src, dst];
-        return Q.denodeify(ChildProcess.exec)(path.join(__dirname, cmd.join(' ')))
+        return Q.denodeify(ChildProcess.exec)(cmd.join(' '));
     }
 
     public readImageDir(src: string) {
@@ -49,8 +48,8 @@ export class ImageToolService {
             origin.x, origin.y,
             lCalibFile, pCalibFile
         ];
-        return Q.denodeify(ChildProcess.exec)(path.join(process.cwd(), cmd.join(' '))).then((data) => {
-            return JSON.parse(data as string) as IPoint;
+        return Q.denodeify(ChildProcess.exec)(cmd.join(' ')).then((data) => {
+            return JSON.parse((data as Array<string>)[0]) as IPoint;
         });
     }
 }

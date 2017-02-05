@@ -49,7 +49,7 @@ void extractImages(string src, string dst)
             }
         }
 
-        cout << "{\"fps\":" << fps << "}" << endl;
+        cout << "{\"fps\":" << fps << "}";
     }
 }
 
@@ -86,7 +86,7 @@ void lensCalibrationP(string x, string y, string calibFile)
         if (lCalib.generateMaps())
         {
             Point2f transformed = lCalib.onPoint(Point2f(stof(x), stof(y)));
-            cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}" << endl;
+            cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}";
         }
     }
 }
@@ -139,7 +139,7 @@ void perspectiveCalibrationP(string x, string y, string calibFile)
     if (pCalib.fromFile(calibFile))
     {
         Point2f transformed = pCalib.onPoint(Point2f(stof(x), stof(y)));
-        cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}" << endl;
+        cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}";
     }
 }
 
@@ -151,7 +151,7 @@ void imageDistanceP(string x, string y, string originX, string originY, string l
 
     Point2f transformed = imgDst.getRealCoordinate(Point2f(stof(x), stof(y)));
 
-    cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}" << endl;
+    cout << "{\"x\":" << transformed.x << ",\"y\":" << transformed.y << "}";
 }
 
 void imageDistanceD
@@ -169,7 +169,7 @@ void imageDistanceD
 
     double distance = imgDst.getRealDistance(Point2f(stof(startX), stof(startY)), Point2f(stof(endX), stof(endY)));
 
-    cout << "{\"distance\":" << distance << "}" << endl;
+    cout << "{\"distance\":" << distance << "}";
 }
 
 int main( int argc, char** argv)

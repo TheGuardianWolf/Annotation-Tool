@@ -4,7 +4,8 @@
             <div class="btn-toolbar" role="toolbar">
                 <span class="filename h4">{{ws.annotation.images[ws.annotation.currentFrameIndex]}}</span>
                 <div class="btn-group pull-right" role="group">
-                    <button id="saveAnnotation" type="button" class="btn btn-raised btn-primary">Save</button>
+                    <button (click)="save()"
+                            id="saveAnnotation" type="button" class="btn btn-raised btn-primary">Save</button>
                 </div>
             </div>
         </div>

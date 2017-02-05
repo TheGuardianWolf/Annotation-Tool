@@ -30,6 +30,7 @@
                     <label class="col-xs-2 control-label" for="imageOriginX">X</label>
                     <div class="col-xs-10">
                         <input [(ngModel)]="calibration.imageOriginX"
+                               (ngModelChange)="visualPropertyChange()"
                                name="imageOriginX"
                                class="form-control" type="number" id="imageOriginX" />
                     </div>
@@ -38,12 +39,13 @@
                     <label class="col-xs-2 control-label" for="imageOriginY">Y</label>
                     <div class="col-xs-10">
                         <input [(ngModel)]="calibration.imageOriginY"
+                               (ngModelChange)="visualPropertyChange()"
                                name="imageOriginY"
                                class="form-control" type="number" id="imageOriginY" />
                     </div>
                 </div>
                 <div class="col-xs-offset-2 col-xs-10">
-                    <button (click)="calibration.selectImageOrigin()"
+                    <button (click)="ws.settings.tool = 'imageOrigin'"
                             id="selectImageOrigin" type="button" class="btn btn-default">
                         Select
                     </button>

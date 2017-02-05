@@ -19,6 +19,10 @@ export class AnnotatorComponent implements OnInit, OnDestroy {
         this.router = _router;
     }
 
+    private save() {
+        this.ws.annotation.toFile(this.ws.workspaceDir).done();
+    }
+
     public ngOnInit() {
         if (this.ws.initialised) {
         }

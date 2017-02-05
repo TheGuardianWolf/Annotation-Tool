@@ -23,6 +23,10 @@ export class CalibrationControlComponent implements OnInit {
         this.ws = _ws;
     }
 
+    private visualPropertyChange() {
+        this.ws.annotation.redrawVisuals = true
+    }
+
     ngOnInit() {
         $.material.init();
     }

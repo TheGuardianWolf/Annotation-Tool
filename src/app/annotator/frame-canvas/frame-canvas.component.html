@@ -1,4 +1,4 @@
-<div #osdBinding class="well os-binding">
+<div #osdBinding class="well os-binding" [style.cursor]="cursor">
     <!--<canvas #canvas id="canvas" class="well image-canvas"></canvas>-->
 </div>
 <div class="bottom-toolbar">
@@ -17,22 +17,41 @@
                 out of <span>{{imagesCount}}</span>
             </div>
         </div>
+
+        <div class="btn-group frame-tools" role="group">
+            <button id="pointer-tool" type="button" class="btn btn-default"
+                    [class.active]="ws.settings.tool === 'pointer'"
+                    (click)="ws.settings.tool='pointer'">
+                <span class="glyphicon glyphicon-hand-up"></span>
+            </button>
+            <button id="box-tool" type="button" class="btn btn-default"
+                    [class.active]="ws.settings.tool === 'box'"
+                    (click)="ws.settings.tool='box'">
+                <span class="glyphicon glyphicon-modal-window"></span>
+            </button>
+            <button id="location-tool" type="button" class="btn btn-default"
+                    [class.active]="ws.settings.tool === 'location'"
+                    (click)="ws.settings.tool='location'">
+                <span class="glyphicon glyphicon-map-marker"></span>
+            </button>
+        </div>
+
         <div class="btn-group" role="group">
+            <button id="previous-image-fast" type="button" class="btn btn-default"
+                    (click)="ws.annotation.currentFrame = ws.annotation.currentFrame - 3">
+                <span class="glyphicon glyphicon-fast-backward"></span>
+            </button>
             <button id="previous-image" type="button" class="btn btn-default"
                     (click)="ws.annotation.currentFrame = ws.annotation.currentFrame - 1">
-                <span class="glyphicon glyphicon-chevron-left"></span>
+                <span class="glyphicon glyphicon-step-backward"></span>
             </button>
-            <!--<button id="zoom-in" type="button" class="btn btn-default"
-                    (click)="zoom = zoom + 0.5">
-                <span class="glyphicon glyphicon-zoom-in"></span>
-            </button>
-            <button id="zoom-out" type="button" class="btn btn-default"
-                    (click)="zoom = zoom - 0.5">
-                <span class="glyphicon glyphicon-zoom-out"></span>
-            </button>-->
             <button id="next-image" type="button" class="btn btn-default"
                     (click)="ws.annotation.currentFrame = ws.annotation.currentFrame + 1">
-                <span class="glyphicon glyphicon-chevron-right"></span>
+                <span class="glyphicon glyphicon-step-forward"></span>
+            </button>
+            <button id="next-image-fast" type="button" class="btn btn-default"
+                    (click)="ws.annotation.currentFrame = ws.annotation.currentFrame + 3">
+                <span class="glyphicon glyphicon-fast-forward"></span>
             </button>
         </div>
     </div>
