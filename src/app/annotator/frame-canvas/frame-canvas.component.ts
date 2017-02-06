@@ -300,7 +300,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             let index = frameNumber - 1;
 
             this.layers.image.activate();
-
+			
             let center = new paper.Point(
                 this.images[index].naturalWidth / 2,
                 this.images[index].naturalHeight / 2

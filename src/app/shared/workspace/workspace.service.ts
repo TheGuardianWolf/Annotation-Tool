@@ -11,6 +11,7 @@ import { Loader } from '../classes/loader';
 import * as Q from 'q';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as is from 'is';
 
 export interface IWorkspaceConfig {
     directory: string;
