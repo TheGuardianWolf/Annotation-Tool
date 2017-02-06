@@ -15,8 +15,6 @@ declare var $;
 })
 
 export class SettingsControlComponent implements OnInit {
-    // TODO: Impement box and location annotation modes
-    // TODO: Control annotation intents for box and location
     private ws: WorkspaceService;
     get settings() {
         return this.ws.settings

@@ -194,6 +194,7 @@ export class WorkspaceService {
         return promiseChain;
     }
 
+    // TODO: Make sure this works.
     public interpolateToCurrent() {
         let deltas = 0;
         let replaceIndex;
@@ -236,7 +237,6 @@ export class WorkspaceService {
             this.calibration.perspectiveCalibrationFile,
         )
             .done((realPosition) => {
-                // TODO: Fix bug somewhere here
                 let locationX;
                 let locationY;
                 if (!this.calibration.switchOrigin) {

@@ -169,6 +169,8 @@
     <Folder Include="src\app\shared\material-checkbox\" />
     <Folder Include="src\app\shared\status\" />
     <Folder Include="src\app\shared\workspace\" />
+    <Folder Include="src\app\views\" />
+    <Folder Include="src\app\views\page2\" />
     <Folder Include="src\assets\" />
     <Folder Include="src\assets\osd-icons\" />
     <Folder Include="src\assets\osd-icons\images\" />

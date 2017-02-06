@@ -35,8 +35,8 @@ interface IPaperLayers {
 }
 
 interface IVisualAnnotation {
-    boundingBox: paper.Shape;
-    location: paper.Shape;
+    boundingBox: paper.Path;
+    location: paper.Path;
 }
 
 /**
@@ -48,7 +48,6 @@ interface IVisualAnnotation {
 })
 
 export class FrameCanvasComponent implements OnInit, OnDestroy {
-    // TODO: Set keyframe on mod
     @ViewChild('osdBinding') osdBinding: ElementRef;
     private ws: WorkspaceService;
     private its: ImageToolService;
@@ -81,7 +80,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private visualAnnotation: Array<IVisualAnnotation> = [];
 
-    private visualImageOrigin: paper.Shape;
+    private visualImageOrigin: paper.Path;
 
     private layers: IPaperLayers = {
         'image': null,
@@ -110,28 +109,28 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         this.ws.annotation.currentFrame = parseInt(event.target.value);
     }
 
-    private createBoundingBox(rectangle: paper.Shape, id?: number) {
+    private createBoundingBox(topLeft: paper.Point, bottomRight: paper.Point, index: number) {
         let color: paper.Color;
+        let id = this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex].people[index].id;
 
-        // TODO: Fix color bug
         if (!is.number(id)) {
             color = new paper.Color({
                 'hue': 0,
                 'saturation': 0,
-                'brightness': 0.4
+                'brightness': 0.2
             });
         }
         else {
             color = new paper.Color({
-                'hue': ((180 * id) + 10 * id) % 360,
+                'hue': ((180 * id) + 30 * id) % 360,
                 'saturation': 1,
                 'brightness': 1
             });
-        }        
-        
+        }
+
         this.layers.boundingBox.activate();
-        let boundingBox = rectangle; // TODO: Create box on layer.
-        boundingBox.name = `bbx-${id}`;
+        let boundingBox = paper.Path.Rectangle(topLeft, bottomRight);
+        boundingBox.name = `bbx-${index}`;
         boundingBox.strokeColor = color;
         boundingBox.strokeScaling = false;
         boundingBox.fillColor = color;
@@ -140,28 +139,28 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         return boundingBox;
     }
 
-    private createLocationCircle(circle: paper.Shape, id?: number) {
+    private createLocationCircle(center: paper.Point, radius: number, index: number) {
         let color: paper.Color;
+        let id = this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex].people[index].id;
 
-        // TODO: Fix color bug
         if (!is.number(id)) {
             color = new paper.Color({
                 'hue': 0,
                 'saturation': 0,
-                'brightness': 0.4
+                'brightness': 0.2
             });
         }
         else {
             color = new paper.Color({
-                'hue': ((180 * id) + 10 * id) % 360,
+                'hue': ((180 * id) + 30 * id) % 360,
                 'saturation': 1,
                 'brightness': 1
             });
-        }   
+        }
 
         this.layers.location.activate();
-        let location = circle; // TODO: Create circle on layer.
-        location.name = `loc-${id}`;
+        let location = paper.Path.Circle(center, radius);
+        location.name = `loc-${index}`;
         location.fillColor = color;
         location.fillColor.alpha = 0.7;
         return location;
@@ -169,12 +168,11 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private createImageOriginCircle(locationPoint) {
         this.layers.imageOrigin.activate();
-        let circle = paper.Shape.Circle(
+        let circle = paper.Path.Circle(
             locationPoint,
             5
         );
         circle.fillColor = new paper.Color(0, 0, 255, 0.3);
-        console.log('New image origin drawn');
         return circle;
     }
 
@@ -219,16 +217,18 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             // Draw new visuals from annotation data
             if (person) {
                 if (person.boundingBox.isValid()) {
-                    newVisualAnnotation.boundingBox = this.createBoundingBox(paper.Shape.Rectangle(
+                    newVisualAnnotation.boundingBox = this.createBoundingBox(
                         new paper.Point(person.boundingBox.left, person.boundingBox.top),
-                        new paper.Point(person.boundingBox.right, person.boundingBox.bottom)
-                    ), index);
+                        new paper.Point(person.boundingBox.right, person.boundingBox.bottom),
+                        index
+                    );
                 }
                 if (person.location.virtual.isValid()) {
-                    newVisualAnnotation.location = this.createLocationCircle(paper.Shape.Circle(
+                    newVisualAnnotation.location = this.createLocationCircle(
                         new paper.Point(person.location.virtual.x, person.location.virtual.y),
-                        5
-                    ), index);
+                        5,
+                        index
+                    );
                 }
             }
 
@@ -251,17 +251,19 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     }
 
     private selectPerson(personIndex: number) {
-        if (
-            this.visualAnnotation[personIndex] &&
-            this.visualAnnotation[personIndex].boundingBox
-        ) {
+        if (this.visualAnnotation[personIndex]) {
             this.visualAnnotation.filter((visual) => {
-                return visual.boundingBox.selected === true;
+                if (visual.boundingBox) {
+                    return visual.boundingBox.selected === true;
+                }
+                return false;
             })
                 .forEach((visual) => {
                     visual.boundingBox.selected = false;
                 });
-            this.visualAnnotation[personIndex].boundingBox.selected = true;
+            if (this.visualAnnotation[personIndex].boundingBox) {
+                this.visualAnnotation[personIndex].boundingBox.selected = true;
+            }
         }
         paper.view.draw();
     }
@@ -269,15 +271,15 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     private pushVisualData(personIndex: number) {
         let visual = this.visualAnnotation[personIndex];
         let personData = this.ws.annotation.data.frames[this.ws.annotation.currentFrameIndex].people[personIndex];
-
         if (visual && personData) {
             if (visual.boundingBox) {
                 let shapeBounds = visual.boundingBox.bounds;
                 Object.keys(personData.boundingBox).forEach((key) => {
                     if (shapeBounds[key] && personData.boundingBox[key] !== shapeBounds[key]) {
-                        personData.boundingBox[key] = Math.floor(shapeBounds[key]);
+                        personData.boundingBox[key] = Math.floor(shapeBounds[key]);   
                     }
                 });
+                personData.keyframe = true;
             }
 
             if (visual.location) {
@@ -287,7 +289,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         personData.location.virtual[key] = Math.floor(shapeLocation[key]);
                     }
                 });
-            }
+            }  
         }
     }
 
@@ -345,6 +347,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     }
 
     private bindCanvas() {
+        let panning = false;
+
         this._viewer = osd({
             'element': this.osdBinding.nativeElement,
             'prefixUrl': "assets/osd-icons/images/",
@@ -383,7 +387,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 'handles': false
             });
             if (hitTest && hitTest.item) {
-                if (hitTest.item instanceof paper.Raster) {
+                if (hitTest.item instanceof paper.Raster || panning === true) {
                     hitTest = null;
                 }
             }
@@ -404,13 +408,17 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 if (this.ws.settings.tool === 'box' || this.ws.settings.tool === 'location' || modEvent.hitTest) {
                     this._viewer.setMouseNavEnabled(false);
                 }
+                else {
+                    panning = true;
+                }
                 callEventHandlers(modEvent, 'mouseDown');
                 paper.view.draw();
             },
             releaseHandler: (event) => {
+                panning = false;
+                this._viewer.setMouseNavEnabled(true);
                 let modEvent = performHitTest(event);
                 callEventHandlers(modEvent, 'mouseUp');
-                this._viewer.setMouseNavEnabled(true);
                 paper.view.draw();
             },
             dragHandler: (event) => {
@@ -445,6 +453,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             });
         });
         this.layers.location.bringToFront();
+        this.layers.image.sendToBack();
     }
 
     private bindEvents() {
@@ -486,7 +495,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         }
 
         let selectOnClick = (event) => {
-            if (event.hitTest && event.hitTest.item && event.hitTest.item.name) {
+            if (event.hitTest && event.hitTest.item && is.string(event.hitTest.item.name)) {
                 let hitTest = event.hitTest as paper.HitResult;
 
                 let itemName = event.hitTest.item.name.split('-');
@@ -526,10 +535,11 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
                 if (is.number(currentPerson) && currentPerson >= 0) {
                     if (!this.visualAnnotation[currentPerson].location) {
-                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(paper.Shape.Circle(
+                        this.visualAnnotation[currentPerson].location = this.createLocationCircle(
                             locationPoint,
-                            5
-                        ), currentPerson);
+                            5,
+                            currentPerson
+                        );
                     }
                     else {
                         this.visualAnnotation[currentPerson].location.position = locationPoint;
@@ -554,7 +564,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 dragged = hitTest;
             }
 
-            if (hitTest && hitTest.item && hitTest.item.name) {
+            if (hitTest && hitTest.item && is.string(hitTest.item.name)) {
                 let itemName = hitTest.item.name.split('-');
                 let selectedPersonIndex = parseInt(itemName[1]);
 
@@ -619,7 +629,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         let end = new paper.Point(start.x + delta.x, start.y + delta.y);
                         if (pointInsideImage(end)) {
                             let boundingBox = this.createBoundingBox(
-                                paper.Shape.Rectangle(start, end),
+                                start,
+                                end,
                                 currentPerson
                             )
                             this.visualAnnotation[currentPerson].boundingBox = boundingBox;
@@ -628,13 +639,14 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         }
                     }
                     else {
-                        let boundingBox = dragged as paper.Shape;
+                        let boundingBox = dragged as paper.Path;
                         let end = (boundingBox.bounds.bottomRight as any).add(new paper.Point(delta.x, delta.y));
                         if (pointInsideImage(end)) {
                             let start = boundingBox.bounds.topLeft;
                             boundingBox.remove();
                             boundingBox = this.createBoundingBox(
-                                paper.Shape.Rectangle(start, end),
+                                start,
+                                end,
                                 currentPerson
                             )
                             this.visualAnnotation[currentPerson].boundingBox = boundingBox;
