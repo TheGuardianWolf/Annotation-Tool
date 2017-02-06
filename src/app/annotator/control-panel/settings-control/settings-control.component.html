@@ -1,60 +1,36 @@
 <div class="settings">
     <form id="settings" class="form-horizontal" action="#">
         <fieldset>
-            <h4>Calibration Files</h4>
-            <div class="form-group is-fileinput">
-                <label class="col-xs-4 control-label" for="lensCalibrationFile">Lens Calibration</label>
-                <div class="col-xs-8">
-                    <input type="file" class="form-control" id="lensCalibrationFile" />
-                    <input readonly="" class="form-control" placeholder="Select file..." type="text">
-                </div>
-            </div>
-            <div class="form-group is-fileinput">
-                <label class="col-xs-4 control-label" for="perspectiveCalibrationFile">Perspective Calibration</label>
-                <div class="col-xs-8">
-                    <input type="file" class="form-control" id="perspectiveCalibrationFile" />
-                    <input readonly="" class="form-control" placeholder="Select file..." type="text">
-                </div>
-            </div>
-            <h4>Image Origin</h4>
-            <div class="coordinates row">
+            <h4>Annotation Copy</h4>
+            <div class="row">
                 <div class="col-xs-6 form-group">
-                    <label class="col-xs-4 control-label" for="imageOriginX">X</label>
-                    <div class="col-xs-8">
-                        <input class="form-control" type="number" id="imageOriginX" />
+                    <div class="checkbox">
+                        <label class="col-xs-12">
+                            <input ngModel="ws.settings.copyBox"
+                                   name="copyBox"
+                                   type="checkbox" /> Copy box
+                        </label>
                     </div>
                 </div>
                 <div class="col-xs-6 form-group">
-                    <label class="col-xs-4 control-label" for="imageOriginY">Y</label>
-                    <div class="col-xs-8">
-                        <input class="form-control" type="number" id="imageOriginY" />
+                    <div class="checkbox">
+                        <label class="col-xs-12">
+                            <input ngModel="ws.settings.copyLocation"
+                                   name="copyLocation"
+                                   type="checkbox" /> Copy location
+                        </label>
                     </div>
-                </div>
-                <div class="col-xs-offset-2 col-xs-10">
-                    <button id="selectImageOrigin" type="button" class="btn btn-default">Select</button>
                 </div>
             </div>
-            <div class="coordinates row">
-                <div class="col-xs-4 form-group">
-                    <div class="checkbox">
-                        <label class="col-xs-12">
-                            <input type="checkbox" id="flipOriginX" /> Flip X
-                        </label>
-                    </div>
-                </div>
-                <div class="col-xs-4 form-group">
-                    <div class="checkbox">
-                        <label class="col-xs-12">
-                            <input type="checkbox" id="flipOriginY" /> Flip Y
-                        </label>
-                    </div>
-                </div>
-                <div class="col-xs-4 form-group">
-                    <div class="checkbox">
-                        <label class="col-xs-12">
-                            <input type="checkbox" id="switchOrigin" /> Switch X-Y
-                        </label>
-                    </div>
+            <div class="form-group">
+                <label for="mode" class="col-md-2 control-label">Annotation Mode</label>
+                <div class="col-md-10">
+                    <select ngModel="ws.settings.mode"
+                            name="mode"
+                            id="mode" class="form-control">
+                        <option value="mixed" selected>Mixed</option>
+                        <option value="location">Location</option>
+                    </select>
                 </div>
             </div>
         </fieldset>

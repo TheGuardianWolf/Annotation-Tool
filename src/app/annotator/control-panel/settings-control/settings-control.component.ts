@@ -10,8 +10,7 @@ declare var $;
  */
 @Component({
     selector: 'settings-control',
-    templateUrl: './settings-control.component.html',
-    //styleUrls: ['./settings-control.component.scss'],
+    templateUrl: './settings-control.component.html'
 })
 
 export class SettingsControlComponent implements OnInit {

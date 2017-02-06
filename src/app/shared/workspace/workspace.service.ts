@@ -6,6 +6,7 @@ import { Annotation } from '../classes/annotation';
 import { IPoint, Point, BoundingBox, Person, Frame, Video } from '../classes/storage';
 import { Calibration, IFlipOrigin } from '../classes/calibration';
 import { Settings } from '../classes/settings';
+import { Loader } from '../classes/loader';
 
 import * as Q from 'q';
 import * as path from 'path';
@@ -77,7 +78,51 @@ export class WorkspaceService {
         this.annotation.data.camera = videoCamera;
     }
 
+    private copyToNextFrame = () => {
+        if ((this.settings.copyBox === true || this.settings.copyLocation === true) && this.settings.mode === 'mixed') {
+            let index = this.annotation.currentFrameIndex;
+            let currentPerson = this.annotation.currentPerson;
+            if (index >= 0 && index + 1 < this.annotation.data.frames.length) {
+                let people = this.annotation.data.frames[index].people;
+                let nextPeople = this.annotation.data.frames[index + 1].people;
+
+                if (people[currentPerson] && is.number(people[currentPerson].id)) {
+                    let nextPerson = nextPeople.filter((person) => {
+                        return person.id === people[currentPerson].id;
+                    });
+
+                    if (nextPerson.length === 0) {
+                        nextPerson = [Person.parse(people[currentPerson].toObject())];
+                        this.annotation.data.frames[index + 1].addPerson(nextPerson[0]);
+                    }
+
+                    // Required else JS makes reference to the objects in the previous person.
+                    let currentPersonCopy = Person.parse(people[currentPerson].toObject());
+
+                    if (this.settings.copyBox === true && people[currentPerson].boundingBox) {
+                        nextPerson.forEach((person) => {
+                            if (!person.boundingBox) {
+                                person.boundingBox = currentPersonCopy.boundingBox;
+                            }
+                        });
+                    }
+
+                    if (this.settings.copyLocation === true && people[currentPerson].location) {
+                        nextPerson.forEach((person) => {
+                            if (!person.location) {
+                                person.location = currentPersonCopy.location;
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    }
+
     public init(config: IWorkspaceConfig): Q.Promise<{}> {
+        // TODO: Move loading elsewhere.
+        Loader.create('Loading workspace...');
+
         this.workspaceDir = config.directory;
         this.videoFile = config.video;
         this.annotationFile = config.annotation;
@@ -145,49 +190,7 @@ export class WorkspaceService {
 
         promiseChain.then(fillAnnotationFrames);
 
-        this.annotation.beforeChangeFrame.push(
-            // Copies current frame annotations to next frame
-            () => {
-                if ((this.settings.copyBox === true || this.settings.copyLocation === true) && this.settings.mode === 'mixed') {
-                    let index = this.annotation.currentFrameIndex;
-                    let currentPerson = this.annotation.currentPerson;
-                    if (index >= 0 && index + 1 < this.annotation.data.frames.length) {
-                        let people = this.annotation.data.frames[index].people;
-                        let nextPeople = this.annotation.data.frames[index + 1].people;
-
-                        if (people[currentPerson] && is.number(people[currentPerson].id)) {
-                            let nextPerson = nextPeople.filter((person) => {
-                                return person.id === people[currentPerson].id;
-                            });
-
-                            if (nextPerson.length === 0) {
-                                nextPerson = [Person.parse(people[currentPerson].toObject())];
-                                this.annotation.data.frames[index + 1].addPerson(nextPerson[0]);
-                            }
-
-                            // Required else JS makes reference to the objects in the previous person.
-                            let currentPersonCopy = Person.parse(people[currentPerson].toObject());
-
-                            if (this.settings.copyBox === true && people[currentPerson].boundingBox) {
-                                nextPerson.forEach((person) => {
-                                    if (!person.boundingBox) {
-                                        person.boundingBox = currentPersonCopy.boundingBox;
-                                    }
-                                });
-                            }
-
-                            if (this.settings.copyLocation === true && people[currentPerson].location) {
-                                nextPerson.forEach((person) => {
-                                    if (!person.location) {
-                                        person.location = currentPersonCopy.location;
-                                    }
-                                });
-                            }
-                        }
-                    }
-                }
-            }
-        )
+        this.annotation.beforeChangeFrame.push(this.copyToNextFrame);
 
         this._initialised = true;
 

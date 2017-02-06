@@ -4,42 +4,15 @@ import * as Q from 'q';
 
 @Injectable()
 export class StatusService {
+    // TODO: Get status working with please wait.
     private _blocking: boolean = false;
-    private _working: boolean = false;
-    get working() {
+    get blocking() {
         return this._working;
     }
 
-    private _busy: boolean;
-    private _busyChain: Q.Promise<any>;
-    get busy() {
-        return this._busy;
-    }
-
-    private chainBusy(promises: Array<Q.Promise<any>>) {
-        this._busy = true;
-
-        let setBusy = () => {
-            this._busy = true;
-        }
-
-        let setFree = () => {
-            this._busy = false;
-        }
-
-        if (!this._busyChain || this._busyChain.isFulfilled) {
-            if (this._busyChain) {
-                this._busyChain.done();
-            }
-            this._busyChain = Q.allSettled([...promises])
-                .then(setFree);
-        }
-        else {
-            this._busyChain
-                .then(setBusy).done();
-            this._busyChain = Q.allSettled<Q.Promise<any>>([...promises, this._busyChain])
-                .then(setFree);
-        }
+    private _working: boolean = false;
+    get working() {
+        return this._working;
     }
 
     constructor() {

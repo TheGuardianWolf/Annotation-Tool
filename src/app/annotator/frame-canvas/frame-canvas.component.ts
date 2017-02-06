@@ -2,6 +2,7 @@
 import { WorkspaceService } from '../../shared/workspace/workspace.service';
 import { ImageToolService } from '../../shared/image-tool/image-tool.service';
 import { Person, Point, IPoint, BoundingBox } from '../../shared/classes/storage';
+import { Loader } from '../../shared/classes/loader';
 
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -276,7 +277,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 let shapeBounds = visual.boundingBox.bounds;
                 Object.keys(personData.boundingBox).forEach((key) => {
                     if (shapeBounds[key] && personData.boundingBox[key] !== shapeBounds[key]) {
-                        personData.boundingBox[key] = Math.floor(shapeBounds[key]);   
+                        personData.boundingBox[key] = Math.floor(shapeBounds[key]);
                     }
                 });
                 personData.keyframe = true;
@@ -289,7 +290,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         personData.location.virtual[key] = Math.floor(shapeLocation[key]);
                     }
                 });
-            }  
+            }
         }
     }
 
@@ -671,23 +672,17 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         // Pointer
         this.on('keyDown', 'e', (event) => {
-            if (this.ws.settings.mode === 'mixed') {
-                this.ws.settings.tool = 'pointer';
-            }
+            this.ws.settings.tool = 'pointer';
         });
 
         // Box drawer
         this.on('keyDown', 'r', (event) => {
-            if (this.ws.settings.mode === 'mixed') {
-                this.ws.settings.tool = 'box';
-            }
+            this.ws.settings.tool = 'box';
         });
 
         // Location marker
         this.on('keyDown', 't', (event) => {
-            if (this.ws.settings.mode === 'mixed') {
-                this.ws.settings.tool = 'location';
-            }
+            this.ws.settings.tool = 'location';
         });
 
         // Mixed mode
@@ -702,9 +697,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         // Interpolate bounding box from keyframes
         this.on('keyDown', 'd', (event) => {
-            if (this.ws.settings.mode === 'mixed') {
-                this.ws.interpolateToCurrent();
-            }
+            this.ws.interpolateToCurrent();
         });
 
         // Report mouse position
@@ -716,7 +709,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         // Select paper objects
         this.on('click', 'mixed.pointer.click', (event) => {
-            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
+            if (this.ws.settings.tool === 'pointer') {
                 selectOnClick(event);
             }
         });
@@ -726,6 +719,13 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
                 locationOnClick(event);
                 this.ws.settings.tool = 'pointer';
+            }
+        });
+
+        // Set location marker in location mode
+        this.on('click', 'location.location.click', (event) => {
+            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
+                locationOnClick(event, true);
             }
         });
 
@@ -742,16 +742,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             }
         });
 
-        // Set location marker in location mode
-        this.on('click', 'location.location.click', (event) => {
-            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'location') {
-                locationOnClick(event, true);
-            }
-        });
-
         // Drag paper objects
         this.on('drag', 'mixed.pointer.drag', (event) => {
-            if (this.ws.settings.mode === 'mixed' && this.ws.settings.tool === 'pointer') {
+            if (this.ws.settings.tool === 'pointer') {
                 moveOnDrag(event);
             }
         });
@@ -831,6 +824,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                             if (!this.ws.annotation.currentFrame) {
                                 this.ws.annotation.currentFrame = 1;
                             }
+                            // TODO: Move loading resolver elsewhere
+                            Loader.finish();
                         }
                         else {
                             throw 'Error: No images found.'
