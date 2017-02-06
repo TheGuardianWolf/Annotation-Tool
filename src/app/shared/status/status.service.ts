@@ -6,6 +6,9 @@ import * as Q from 'q';
 export class StatusService {
     private _blocking: boolean = false;
     private _working: boolean = false;
+    get working() {
+        return this._working;
+    }
 
     private _busy: boolean;
     private _busyChain: Q.Promise<any>;
