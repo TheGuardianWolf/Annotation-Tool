@@ -155,7 +155,7 @@ export class WorkspaceService {
                         let people = this.annotation.data.frames[index].people;
                         let nextPeople = this.annotation.data.frames[index + 1].people;
 
-                        if (people[currentPerson]) {
+                        if (people[currentPerson] && is.number(people[currentPerson].id)) {
                             let nextPerson = nextPeople.filter((person) => {
                                 return person.id === people[currentPerson].id;
                             });
