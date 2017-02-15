@@ -95,9 +95,9 @@ export class WorkspaceService {
                     if (nextPeople.length === 0) {
                         let nextPerson = Person.parse(people[currentPerson].toObject());
                         nextPerson.boundingBox = new BoundingBox(null, null, null, null);
+                        nextPerson.location.virtual = new Point(null, null);
                         nextPerson.location.real = new Point(null, null);
-                        nextPerson.location.real = new Point(null, null);
-                        nextPerson.location.segment = '';
+                        nextPerson.location.section = '';
                         nextPeople.push(nextPerson);
                         this.annotation.data.frames[index + 1].addPerson(nextPerson);
                     }
@@ -107,7 +107,7 @@ export class WorkspaceService {
 
                     if (this.settings.copyBox === true && people[currentPerson].boundingBox) {
                         nextPeople.forEach((person) => {
-                            if (!person.boundingBox) {
+                            if (!person.boundingBox || !person.boundingBox.isValid()) {
                                 person.boundingBox = currentPersonCopy.boundingBox;
                             }
                         });
@@ -115,7 +115,7 @@ export class WorkspaceService {
 
                     if (this.settings.copyLocation === true && people[currentPerson].location) {
                         nextPeople.forEach((person) => {
-                            if (!person.location) {
+                            if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && !is.string(person.location.section))) {
                                 person.location = currentPersonCopy.location;
                             }
                         });
@@ -262,19 +262,19 @@ export class WorkspaceService {
                 }
 
                 if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
-                    location.segment = 'A';
+                    location.section = 'A';
                 }
                 else if (locationX <= 3600 && locationY <= 1700) {
-                    location.segment = 'C';
+                    location.section = 'C';
                 }
                 else if (locationX <= 3600 && locationY <= 4000) {
-                    location.segment = 'B';
+                    location.section = 'B';
                 }
                 else if (locationX <= 6000 && locationY <= 4000) {
-                    location.segment = 'D';
+                    location.section = 'D';
                 }
                 else {
-                    location.segment = 'N/A';
+                    location.section = 'N/A';
                 }
 
                 location.real = new Point(Math.round(locationX), Math.round(locationY));

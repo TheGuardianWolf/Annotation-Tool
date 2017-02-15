@@ -16,7 +16,6 @@ declare var $;
 export class SettingsControlComponent implements OnInit {
     private ws: WorkspaceService;
     get settings() {
-        console.log(this.ws.settings);
         return this.ws.settings
     }
 

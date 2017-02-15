@@ -121,7 +121,7 @@ export class Person {
     public location: {
         virtual: Point;
         real: Point;
-        segment: String;
+        section: String;
     };
     public keyframe: boolean = false;
 
@@ -131,7 +131,7 @@ export class Person {
         boundingBox: BoundingBox,
         virtualPoint: Point,
         realPoint: Point,
-        segment: String
+        section: String
     ) {
         this.id = id;
         this.obscured = obscured;
@@ -139,7 +139,7 @@ export class Person {
         this.location = {
             'virtual': virtualPoint,
             'real': realPoint,
-            'segment': segment ? segment : ''
+            'section': section ? section : ''
         };
     }
 
@@ -156,14 +156,14 @@ export class Person {
             'location': {
                 'virtual': this.location.virtual.toObject(),
                 'real': this.location.real.toObject(),
-                'segment': null
+                'section': null
             }
         };
-        if (person.location.segment === 'A' ||
-            person.location.segment === 'B' ||
-            person.location.segment === 'C' ||
-            person.location.segment === 'D') {
-            person.location.segment = this.location.segment;
+        if (person.location.section === 'A' ||
+            person.location.section === 'B' ||
+            person.location.section === 'C' ||
+            person.location.section === 'D') {
+            person.location.section = this.location.section;
         }
 
         return person;
@@ -184,11 +184,11 @@ export class Person {
             new Point(person.location.real.x, person.location.real.y),
             ''
         );
-        if (p.location.segment === 'A' ||
-            p.location.segment === 'B' ||
-            p.location.segment === 'C' ||
-            p.location.segment === 'D') {
-            p.location.segment = person.location.segment;
+        if (p.location.section === 'A' ||
+            p.location.section === 'B' ||
+            p.location.section === 'C' ||
+            p.location.section === 'D') {
+            p.location.section = person.location.section;
         }
         return p;
     }
