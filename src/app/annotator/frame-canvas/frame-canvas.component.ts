@@ -15,7 +15,6 @@ import * as noUiSlider from 'nouislider';
 import * as paper from 'paper';
 
 const osd = require('openseadragon');
-const multiqueue = require('multiqueue');
 
 interface IEventHandlers {
     click: Object;
@@ -57,8 +56,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     get imagesCount() {
         return this.images.length;
     }
-
-    private tileCache: Array<any> = [];
 
     private _viewer;
     get viewer() {
@@ -767,7 +764,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     private loadImages(dir: string, filenames: Array<string>): Q.Promise<{}> {
         let promises: Array<Q.Promise<{}>> = [];
-        multiqueue.create('cacheTiles', 18);
 
         this.images = filenames.map((filename, index) => {
             // Set up deferred object to represent the 'image loaded' event
@@ -777,21 +773,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             let image = new Image();
             let imageSrc = image.src = path.join(dir, filename);
 
-            let cacheTile = () => {
-                this.tileCache[index] = new osd.ImageTileSource({
-                    'url': imageSrc,
-                    'buildPyramid': false
-                })
-            };
-
             image.onload = () => {
                 deferred.resolve(image.src);
-                multiqueue.add(
-                    cacheTile,
-                    (data) => {
-                    },
-                    'cacheTiles'
-                );
             };
             image.onerror = (err) => {
                 deferred.reject(err);
