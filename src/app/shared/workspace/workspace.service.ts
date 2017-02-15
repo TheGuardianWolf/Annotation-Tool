@@ -88,20 +88,25 @@ export class WorkspaceService {
                 let nextPeople = this.annotation.data.frames[index + 1].people;
 
                 if (people[currentPerson] && is.number(people[currentPerson].id)) {
-                    let nextPerson = nextPeople.filter((person) => {
+                    nextPeople = nextPeople.filter((person) => {
                         return person.id === people[currentPerson].id;
                     });
 
-                    if (nextPerson.length === 0) {
-                        nextPerson = [Person.parse(people[currentPerson].toObject())];
-                        this.annotation.data.frames[index + 1].addPerson(nextPerson[0]);
+                    if (nextPeople.length === 0) {
+                        let nextPerson = Person.parse(people[currentPerson].toObject());
+                        nextPerson.boundingBox = new BoundingBox(null, null, null, null);
+                        nextPerson.location.real = new Point(null, null);
+                        nextPerson.location.real = new Point(null, null);
+                        nextPerson.location.segment = '';
+                        nextPeople.push(nextPerson);
+                        this.annotation.data.frames[index + 1].addPerson(nextPerson);
                     }
 
                     // Required else JS makes reference to the objects in the previous person.
                     let currentPersonCopy = Person.parse(people[currentPerson].toObject());
 
                     if (this.settings.copyBox === true && people[currentPerson].boundingBox) {
-                        nextPerson.forEach((person) => {
+                        nextPeople.forEach((person) => {
                             if (!person.boundingBox) {
                                 person.boundingBox = currentPersonCopy.boundingBox;
                             }
@@ -109,7 +114,7 @@ export class WorkspaceService {
                     }
 
                     if (this.settings.copyLocation === true && people[currentPerson].location) {
-                        nextPerson.forEach((person) => {
+                        nextPeople.forEach((person) => {
                             if (!person.location) {
                                 person.location = currentPersonCopy.location;
                             }
