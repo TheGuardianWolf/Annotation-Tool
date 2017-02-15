@@ -9,7 +9,7 @@
         if (value !== this._mode) {
             if (value === 'location') {
                 this.copyBox = false;
-                this.copyLocation = true;
+                this.copyLocation = false;
                 this.tool = 'location';
             }
 

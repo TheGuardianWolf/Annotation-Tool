@@ -14,7 +14,6 @@ declare var $;
 @Component({
     selector: 'annotation-control',
     templateUrl: './annotation-control.component.html',
-    //styleUrls: ['./annotation-control.component.scss'],
 })
 
 export class AnnotationControlComponent implements OnInit {

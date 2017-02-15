@@ -80,7 +80,7 @@ export class WorkspaceService {
     }
 
     private copyToNextFrame = () => {
-        if (this.settings.copyBox === true || this.settings.copyLocation === true) {
+        if (this.settings.copyBox === true || this.settings.copyLocation === true || this.settings.mode === 'location') {
             let index = this.annotation.currentFrameIndex;
             let currentPerson = this.annotation.currentPerson;
             if (index >= 0 && index + 1 < this.annotation.data.frames.length) {
@@ -117,11 +117,97 @@ export class WorkspaceService {
                         nextPeople.forEach((person) => {
                             if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && person.location.section === '')) {
                                 person.location = currentPersonCopy.location;
+                                this.autoCoordinate(this.annotation.currentFrame + 1);
                             }
                         });
                     }
                 }
             }
+        }
+    }
+
+    public interpolateToCurrent() {
+        let deltas = 0;
+        let replaceIndex;
+        let start;
+        let currentFrameIndex = this.annotation.currentFrameIndex;
+        let currentPerson = this.annotation.currentPerson;
+
+        let end = this.annotation.data.frames[currentFrameIndex].people[currentPerson].boundingBox;
+        for (let i = currentFrameIndex - 1; i >= 0; i--) {
+            deltas++;
+            let person = this.annotation.data.frames[i].people[currentPerson];
+            if (person && person.keyframe) {
+                start = person.boundingBox;
+                replaceIndex = i + 1;
+                deltas = currentFrameIndex - i;
+                break;
+            }
+        }
+
+        if (start && end && start.isValid && end.isValid()) {
+            let autoBox = BoundingBox.interpolate(start, end, deltas);
+            autoBox.forEach((newBox, newBoxIndex) => {
+                let replace = replaceIndex + newBoxIndex;
+                if (this.annotation.data.frames[replace].people) {
+                    let test = this.annotation.data.frames[replace].people[currentPerson];
+                    if (test && !test.keyframe) {
+                        test.boundingBox = newBox;
+                    }
+                }
+            });
+        }
+    }
+
+    public autoCoordinate(frameNumber?: number) {
+        let frameIndex = this.annotation.currentFrameIndex;
+        if (is.number(frameNumber)) {
+            frameIndex = frameNumber - 1;
+        }
+
+        let location = this.annotation.data.frames[frameIndex].people[this.annotation.currentPerson].location;
+
+        if (location && location.virtual && location.virtual.isValid()) {
+            this.its.getRealCoordinates(
+                location.virtual,
+                this.calibration.imageOrigin,
+                this.calibration.lensCalibrationFile,
+                this.calibration.perspectiveCalibrationFile,
+            )
+                .done((realPosition) => {
+                    let locationX;
+                    let locationY;
+                    if (!this.calibration.switchOrigin) {
+                        locationX = this.calibration.flipOrigin.x ?
+                            this.calibration.roomSize.x - realPosition.x : realPosition.x;
+                        locationY = this.calibration.flipOrigin.y ?
+                            this.calibration.roomSize.y - realPosition.y : realPosition.y;
+                    }
+                    else {
+                        locationY = this.calibration.flipOrigin.x ?
+                            this.calibration.roomSize.y - realPosition.x : realPosition.x;
+                        locationX = this.calibration.flipOrigin.y ?
+                            this.calibration.roomSize.x - realPosition.y : realPosition.y;
+                    }
+
+                    if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
+                        location.section = 'A';
+                    }
+                    else if (locationX <= 3600 && locationY <= 1700) {
+                        location.section = 'C';
+                    }
+                    else if (locationX <= 3600 && locationY <= 4000) {
+                        location.section = 'B';
+                    }
+                    else if (locationX <= 6000 && locationY <= 4000) {
+                        location.section = 'D';
+                    }
+                    else {
+                        location.section = 'N/A';
+                    }
+
+                    location.real = new Point(Math.round(locationX), Math.round(locationY));
+                });
         }
     }
 
@@ -201,84 +287,6 @@ export class WorkspaceService {
         this._initialised = true;
 
         return promiseChain;
-    }
-
-    // TODO: Make sure this works.
-    public interpolateToCurrent() {
-        let deltas = 0;
-        let replaceIndex;
-        let start;
-        let currentFrameIndex = this.annotation.currentFrameIndex;
-        let currentPerson = this.annotation.currentPerson;
-
-        let end = this.annotation.data.frames[currentFrameIndex].people[currentPerson].boundingBox;
-        for (let i = currentFrameIndex - 1; i >= 0; i--) {
-            deltas++;
-            let person = this.annotation.data.frames[i].people[currentPerson];
-            if (person && person.keyframe) {
-                start = person.boundingBox;
-                replaceIndex = i + 1;
-                deltas = currentFrameIndex - i;
-                break;
-            }
-        }
-
-        if (start && end && start.isValid && end.isValid()) {
-            let autoBox = BoundingBox.interpolate(start, end, deltas);
-            autoBox.forEach((newBox, newBoxIndex) => {
-                let replace = replaceIndex + newBoxIndex;
-                if (this.annotation.data.frames[replace].people) {
-                    let test = this.annotation.data.frames[replace].people[currentPerson];
-                    if (test && !test.keyframe) {
-                        test.boundingBox = newBox;
-                    }
-                }
-            });
-        }
-    }
-
-    public autoCoordinateCurrent() {
-        let location = this.annotation.data.frames[this.annotation.currentFrameIndex].people[this.annotation.currentPerson].location;
-        this.its.getRealCoordinates(
-            location.virtual,
-            this.calibration.imageOrigin,
-            this.calibration.lensCalibrationFile,
-            this.calibration.perspectiveCalibrationFile,
-        )
-            .done((realPosition) => {
-                let locationX;
-                let locationY;
-                if (!this.calibration.switchOrigin) {
-                    locationX = this.calibration.flipOrigin.x ?
-                        this.calibration.roomSize.x - realPosition.x : realPosition.x;
-                    locationY = this.calibration.flipOrigin.y ?
-                        this.calibration.roomSize.y - realPosition.y : realPosition.y;
-                }
-                else {
-                    locationY = this.calibration.flipOrigin.x ?
-                        this.calibration.roomSize.y - realPosition.x : realPosition.x;
-                    locationX = this.calibration.flipOrigin.y ?
-                        this.calibration.roomSize.x - realPosition.y : realPosition.y;
-                }
-
-                if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
-                    location.section = 'A';
-                }
-                else if (locationX <= 3600 && locationY <= 1700) {
-                    location.section = 'C';
-                }
-                else if (locationX <= 3600 && locationY <= 4000) {
-                    location.section = 'B';
-                }
-                else if (locationX <= 6000 && locationY <= 4000) {
-                    location.section = 'D';
-                }
-                else {
-                    location.section = 'N/A';
-                }
-
-                location.real = new Point(Math.round(locationX), Math.round(locationY));
-            });
     }
 
     public fromFile(file) {

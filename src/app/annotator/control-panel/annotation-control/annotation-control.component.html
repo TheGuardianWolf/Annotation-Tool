@@ -127,9 +127,9 @@
                             </button>
                         </div>
                         <div class="col-xs-5">
-                            <button (click)="'ws.interpolateToCurrent()'"
-                                    id="personAutoflow" type="button" class="btn btn-default">
-                                Autoflow
+                            <button (click)="ws.interpolateToCurrent()"
+                                    id="personInterpolate" type="button" class="btn btn-default">
+                                Interpolate
                             </button>
                         </div>
                     </div>
@@ -206,8 +206,8 @@
                         </div>
                     </div>
                     <div class="col-xs-offset-2 col-xs-10">
-                        <button (click)="ws.autoCoordinateCurrent"
-                                id="personAutoCoordinate" type="button" class="btn btn-default">Interpolate</button>
+                        <button (click)="ws.autoCoordinateCurrent()"
+                                id="personAutoCoordinate" type="button" class="btn btn-default">Auto Coordinate</button>
                     </div>
                 </div>
             </div>

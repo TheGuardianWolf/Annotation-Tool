@@ -17,9 +17,7 @@ import 'bootstrap-material-design';
 import 'paper';
 import 'openseadragon';
 import 'openseadragon-paperjs-overlay';
-import 'multiqueue';
 import 'please-wait';
-
 
 // RxJS 5
 import 'rxjs/Rx';

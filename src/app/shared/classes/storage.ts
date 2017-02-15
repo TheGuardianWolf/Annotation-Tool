@@ -159,10 +159,11 @@ export class Person {
                 'section': null
             }
         };
-        if (person.location.section === 'A' ||
-            person.location.section === 'B' ||
-            person.location.section === 'C' ||
-            person.location.section === 'D') {
+
+        if (this.location.section === 'A' ||
+            this.location.section === 'B' ||
+            this.location.section === 'C' ||
+            this.location.section === 'D') {
             person.location.section = this.location.section;
         }
 
@@ -184,10 +185,10 @@ export class Person {
             new Point(person.location.real.x, person.location.real.y),
             ''
         );
-        if (p.location.section === 'A' ||
-            p.location.section === 'B' ||
-            p.location.section === 'C' ||
-            p.location.section === 'D') {
+        if (person.location.section === 'A' ||
+            person.location.section === 'B' ||
+            person.location.section === 'C' ||
+            person.location.section === 'D') {
             p.location.section = person.location.section;
         }
         return p;
@@ -196,7 +197,6 @@ export class Person {
 
 export class Frame {
     public frameNumber: number;
-    public keyframe: boolean = false;
 
     private _people: BehaviorSubject<Array<Person>> = new BehaviorSubject([]);
     get peopleObs(): Observable<Array<Person>> {

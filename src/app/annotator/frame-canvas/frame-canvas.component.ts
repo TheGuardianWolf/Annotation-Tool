@@ -233,7 +233,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             return newVisualAnnotation;
         }
 
-        if (is.number(personIndex)) {
+        if (is.number(personIndex) && personIndex >= 0) {
             let newPerson = people[personIndex];
             removeVisual(this.visualAnnotation[personIndex]);
             this.visualAnnotation[personIndex] = createVisual(newPerson, personIndex);
@@ -349,7 +349,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
         this._viewer = osd({
             'element': this.osdBinding.nativeElement,
-            'prefixUrl': "assets/osd-icons/images/",
+            'prefixUrl': 'assets/osd-icons/images/',
             'debugMode': false,
             'visibilityRatio': 0.8,
             'constrainDuringPan': true,
@@ -416,6 +416,9 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 panning = false;
                 this._viewer.setMouseNavEnabled(true);
                 let modEvent = performHitTest(event);
+                if (modEvent.hitTest) {
+                    this.ws.annotation.redrawVisuals = true;
+                }
                 callEventHandlers(modEvent, 'mouseUp');
                 paper.view.draw();
             },
@@ -542,7 +545,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                         this.visualAnnotation[currentPerson].location.position = locationPoint;
                     }
                     this.pushVisualData(currentPerson);
-                    this.ws.autoCoordinateCurrent();
+                    this.ws.autoCoordinate();
 
                     if (advanceFrame) {
                         this.ws.annotation.currentFrame++;
@@ -721,7 +724,6 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         // Set location marker in location mode
         this.on('click', 'location.location.click', (event) => {
             if (this.ws.settings.mode === 'location' && this.ws.settings.tool === 'location') {
-                console.log('Location mode location marker dropped');
                 locationOnClick(event, true);
             }
         });
@@ -835,7 +837,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 }
             )
                 .subscribe((value) => {
-                    this.drawVisuals(this.ws.annotation.currentFrame, this.ws.annotation.currentPerson);
+                    this.drawVisuals(this.ws.annotation.currentFrame);
                 });
         }
     }
