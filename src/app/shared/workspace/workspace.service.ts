@@ -80,7 +80,7 @@ export class WorkspaceService {
     }
 
     private copyToNextFrame = () => {
-        if ((this.settings.copyBox === true || this.settings.copyLocation === true) && this.settings.mode === 'mixed') {
+        if (this.settings.copyBox === true || this.settings.copyLocation === true) {
             let index = this.annotation.currentFrameIndex;
             let currentPerson = this.annotation.currentPerson;
             if (index >= 0 && index + 1 < this.annotation.data.frames.length) {
@@ -115,7 +115,7 @@ export class WorkspaceService {
 
                     if (this.settings.copyLocation === true && people[currentPerson].location) {
                         nextPeople.forEach((person) => {
-                            if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && !is.string(person.location.section))) {
+                            if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && person.location.section === '')) {
                                 person.location = currentPersonCopy.location;
                             }
                         });

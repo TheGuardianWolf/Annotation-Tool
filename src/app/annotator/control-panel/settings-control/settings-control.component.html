@@ -17,6 +17,7 @@
                     <div class="checkbox">
                         <label class="col-xs-12">
                             <input [(ngModel)]="settings.copyLocation"
+                                   [disabled]="settings.mode === 'location'"
                                    name="copyLocation"
                                    type="checkbox" /> Copy location
                         </label>
