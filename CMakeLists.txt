@@ -13,8 +13,8 @@ set (CMAKE_CXX_STANDARD 14)
 find_package( OpenCV REQUIRED )
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
-file(GLOB SOURCES "src/utils/camera-tool/includes/*.cpp")
-file(GLOB HEADERS "src/utils/camera-tool/includes/*.hpp")
+file(GLOB SOURCES "utils/camera-tool/includes/*.cpp")
+file(GLOB HEADERS "utils/camera-tool/includes/*.hpp")
 
-add_executable( CameraTool src/utils/camera-tool/CameraTool.cpp ${SOURCES})
+add_executable( CameraTool utils/camera-tool/CameraTool.cpp ${SOURCES})
 target_link_libraries( CameraTool ${OpenCV_LIBS} )
