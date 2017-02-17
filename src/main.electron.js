@@ -1,6 +1,8 @@
 const electron = require('electron');
+const defaultMenu = require('electron-default-menu');
+
 // Module to control application life.
-const {app} = electron;
+const { Menu, app, shell } = electron;
 // Module to create native browser window.
 const {BrowserWindow} = electron;
 
@@ -8,15 +10,19 @@ const {BrowserWindow} = electron;
 // be closed automatically when the JavaScript object is garbage collected.
 let win;
 
+let menu;
+
 function createWindow() {
+	// Set the menus
+  menu = defaultMenu(app, shell);
+  Menu.setApplicationMenu(Menu.buildFromTemplate(menu));
+  
   // Create the browser window.
   win = new BrowserWindow({width: 1200, height: 750});
-
+  win.maximize()
+  
   // and load the index.html of the app.
   win.loadURL(`file://${__dirname}/index.html`);
-
-  // Open the DevTools.
-  win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {
