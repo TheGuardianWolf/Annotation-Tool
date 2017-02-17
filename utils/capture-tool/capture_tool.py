@@ -123,7 +123,7 @@ class Capture:
             del self.captureProcesses[:]
             self.processLoaded = False
         else:
-            print("Processes not loaded")
+            print("Processes not loaded".)
 
     def save(self):
         if self.processLoaded:
@@ -146,6 +146,11 @@ class Capture:
                 print("Must end capture before saving.")
         else:
             print("Processes not loaded.")
+			
+	def exit(self):
+		if self.processLoaded:
+			self.kill()
+		exit()
             
     def menu(self):
         if sys.platform.startswith("linux"):
@@ -175,7 +180,7 @@ class Capture:
                 elif menuOption == "4":
                     self.kill()
                 elif menuOption == "5":
-                    exit()
+                    self.exit()
                 else:
                     print("Invalid option.")
         else:
