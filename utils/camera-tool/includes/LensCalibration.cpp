@@ -1,3 +1,9 @@
+/**
+ * LensCalibration.cpp
+ * Created by Jerry Fan, property of The University of Auckland.
+ * Licenced under the Artistic Licence 2.0.
+ */
+
 #include "LensCalibration.hpp"
 
 #include <iostream>
@@ -14,11 +20,22 @@ using namespace std;
 
 namespace
 {
+    /**
+     * Checks if extension is .xml or .yaml.
+     * @param  input Filename.
+     * @return       If extension is valid.
+     */
     bool isMarkup(string input)
     {
         return input.substr(input.length()-4, input.npos) == ".xml" || input.substr(input.length()-5, input.npos) == ".yaml";
     }
 }
+
+/**
+ * Class initialisers set board inner popints to 15 by 8, square size to 18
+ * arbitary units, pattern to chessboards, along with the default flags
+ * suggested by OpenCV.
+ */
 
 LensCalibration::LensCalibration()
 :boardSize(15, 8),
@@ -323,10 +340,6 @@ Point2f LensCalibration::onPoint(const Point2f& point)
         vector<Point2f> src(1, point);
         vector<Point2f> dst;
 
-        // buf.x = this->calibMap1.at<float>(point.y, point.x);
-        // buf.y = this->calibMap2.at<float>(point.y, point.x);
-
-        // buf = buf * this->optimalCameraMatrix;
         undistortPoints(src, dst, this->cameraMatrix, this->distCoeffs, Mat(), this->cameraMatrix);
 
         buf = dst[0];

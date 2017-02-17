@@ -1,3 +1,9 @@
+/**
+ * PerspectiveCalibration.cpp
+ * Created by Jerry Fan, property of The University of Auckland.
+ * Licenced under the Artistic Licence 2.0.
+ */
+
 #include "PerspectiveCalibration.hpp"
 
 #include <iostream>
@@ -92,19 +98,19 @@ vector<Point2f> PerspectiveCalibration::estimateTransformed(vector<Point2f>& ori
         double width;
         double height;
 
-        if (rightLength < leftLength)
-        {
-            height = rightLength;
-            width = ( rightLength / trueSize.y ) * trueSize.x;
-        }
-        else
-        {
-            height = leftLength;
-            width = ( leftLength / trueSize.y ) * trueSize.x;
-        }
+        // Figure out which side of the quadrilateral has the smallest vertical
+        // distance and use it as the corrected height.
+        height = rightLength < leftLength ? rightLength : leftLength;
 
+        // Automatically generate a correct width with the correct size ratio of
+        // the real size of the planar rectangle.
+        width = ( height / trueSize.y ) * trueSize.x;
+
+        // Figure out the scale factor from the heights.
         this->setScaleFactor(trueSize.y / height);
 
+        // Create the coordinates of the corrected rectangle based on the
+        // generated width and height.
         buf.emplace_back(original[0].x + translation.x, original[0].y + translation.y);
         buf.emplace_back(original[0].x + width + translation.x, original[0].y + translation.y);
         buf.emplace_back(original[0].x + translation.x, original[0].y + height + translation.y);
@@ -158,7 +164,7 @@ bool PerspectiveCalibration::fromFile(string filePath)
         fs.release();
 
         this->calibrated = true;
-        
+
         return true;
     }
 
@@ -216,7 +222,7 @@ Point2f PerspectiveCalibration::onPoint(const cv::Point2f& point)
     {
         vector<Point2f> src(1, point);
         vector<Point2f> dst;
-        
+
         perspectiveTransform(src, dst, this->transform);
 
         if (dst.size())

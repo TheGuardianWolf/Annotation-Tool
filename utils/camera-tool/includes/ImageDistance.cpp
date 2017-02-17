@@ -1,11 +1,23 @@
+/**
+ * ImageDistance.cpp
+ * Created by Jerry Fan, property of The University of Auckland.
+ * Licenced under the Artistic Licence 2.0.
+ */
+
 #include "ImageDistance.hpp"
 
 #include <math.h>
+#include <iostream>
 
 using namespace cv;
 using namespace std;
 
-#include <iostream>
+ImageDistance::ImageDistance(shared_ptr<LensCalibration> l, shared_ptr<PerspectiveCalibration> p)
+{
+    this->lens = l;
+    this->perspective = p;
+	this->origin = Point2f(0, 0);
+}
 
 ImageDistance::ImageDistance(shared_ptr<LensCalibration> l, shared_ptr<PerspectiveCalibration> p, Point2f o)
 {
@@ -21,7 +33,7 @@ ImageDistance::~ImageDistance()
 
 bool ImageDistance::isReady()
 {
-    return (this->lens && this->perspective && this->lens->isCalibrated() && this->lens->isMapped() && this->perspective->isCalibrated());
+    return (this->lens && this->perspective && !this->origin.isEmpty() && this->lens->isCalibrated() && this->lens->isMapped() && this->perspective->isCalibrated());
 }
 
 Point2f ImageDistance::transformCoordinate(Point2f coordinate)
@@ -52,14 +64,21 @@ Point2f ImageDistance::getOrigin()
 
 Point2f ImageDistance::getRealCoordinate(Point2f position)
 {
-    Point2f virtualCoordinates(this->transformCoordinate(position) - this->origin);
+	if (this->isReady())
+	{
+		Point2f virtualCoordinates(this->transformCoordinate(position) - this->origin);
 
-    return Point2f(virtualCoordinates.x * this->perspective->getScaleFactor(), virtualCoordinates.y * this->perspective->getScaleFactor());
+		return Point2f(virtualCoordinates.x * this->perspective->getScaleFactor(), virtualCoordinates.y * this->perspective->getScaleFactor());
+	}
+	return Point2f;
 }
 
 double ImageDistance::getRealDistance(Point2f start, Point2f stop)
 {
-    Point2f virtualDistance(this->transformCoordinate(stop) - this->transformCoordinate(start));
+	if (this->isReady())
+		Point2f virtualDistance(this->transformCoordinate(stop) - this->transformCoordinate(start));
 
-    return sqrt(((double) virtualDistance.x * (double) virtualDistance.x + (double) virtualDistance.y * (double) virtualDistance.y)) * perspective->getScaleFactor();
+		return sqrt(((double) virtualDistance.x * (double) virtualDistance.x + (double) virtualDistance.y * (double) virtualDistance.y)) * perspective->getScaleFactor();
+	}
+	return -1.0;
 }
