@@ -31,6 +31,6 @@ Find the ```visualise_location.py``` file in this folder and start editing with 
 ## TODO
 
 * Track person identity by person id instead of index in person array to prevent issues in multi-person annotations
-* Make proper terminal UI
+* Make proper user interface
 * Add options for camera views used
 * Add trail and smoother animation effects (perhaps outside the scope of Matplotlib)
