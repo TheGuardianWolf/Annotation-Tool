@@ -26,8 +26,8 @@ the project root directory. The output is in the
 
 **Manual**
 
-Run the following commands if the automatic build fails, from the project root 
-directory:
+Run the following commands from the project root directory if the automatic 
+build fails:
 
 ```bash
 mkdir build
@@ -38,29 +38,58 @@ make
 
 ## Usage
 
-The script can be called by the following shell commands:
+The tool accepts a variety of options to perform set tasks. Run the tool in 
+a terminal.
 
 ```bash
-/path/to/this/folder/visualise_location.py
+/path/to/build/CameraTool <options> <arg1> <arg2> ...
 ```
 
-From there, the script will prompt for a filepath to your annotation files 
-without the camera suffix or extension. The annotation files must follow the 
-conventions of the dataset. Specified files must exist and be valid annotations 
-for this to work.
+If this does not work, make sure the executable bit is set.
 
+### Extracting video files
+
+Used for extracting the frames from video files.
+
+```bash
+/path/to/build/CameraTool -E <source_video> <destination_folder>
 ```
-Annotation path (no camera suffix): /path/to/annotations/SX_Name_00X
+
+### Save lens calibration from video to file
+
+Must be run on a video file that contains instances of a checkerboard pattern.
+
+```bash
+/path/to/build/CameraTool -E <source_video> <destination_folder>
 ```
 
-Generated images and video will be placed in your current working directory.
+### Apply lens distortion correction to image
 
-## Changes
+Uses OpenCV to compute ideal pixel coordinates for all pixels in an image to 
+perform lens distortion correction. Settings preserves edge space.
 
-### Interface
+```bash
+/path/to/build/CameraTool -E <source_video> <destination_folder>
+```
 
-### Modules
+### Apply lens distortion correction effect on point
+
+Uses OpenCV to compute what would happen to a point on an image if lens 
+distortion corrections were made on an image at that point, and returns the 
+translated point.
+
+### Save perspective calibration from points to file
+Creates perspective calibration files from source points in image space and
+the real world size of the planar rectangle specified from the source points.
+
+### Apply perspective distortion correction to image
+
+### Apply perspective distortion correction effect on point
+
+### Calculates the real world coordinates of a point
+
+### Calculates the real distance between two image points
 
 ## TODO
 
-* Use a better options system in the interface.
+* Consider using a better options system in the interface.

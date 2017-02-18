@@ -44,3 +44,4 @@ any text editor.
 * Add options for camera views used
 * Add trail and smoother animation effects (perhaps outside the scope of 
   Matplotlib)
+* Clean up code into functions

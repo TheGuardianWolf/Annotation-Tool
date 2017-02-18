@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 """
+	visualise_location.py
+	Created by Jerry Fan, property of The University of Auckland.
+	Licenced under the Artistic Licence 2.0.
+
     Visualise location on a plan view map of the IE room.
     Issues:
         - Only works for single person annotations as it tracks by person array index.

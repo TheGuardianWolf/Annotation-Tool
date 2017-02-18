@@ -1,0 +1,17 @@
+{
+  "name": "folder-mediainfo",
+  "version": "1.0.0",
+  "description": "Totals mediainfo on videos inside a folder.",
+  "main": "folder-mediainfo.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jerry Fan - The University of Auckland",
+  "license": "Artistic-2.0",
+  "dependencies": {
+    "file-type": "^4.1.0",
+    "juration": "0.0.1",
+    "read-chunk": "^2.0.0",
+    "xml2json": "^0.11.0"
+  }
+}

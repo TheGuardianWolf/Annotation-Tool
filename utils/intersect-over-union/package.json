@@ -1,0 +1,14 @@
+{
+  "name": "intersect-over-union",
+  "version": "1.0.0",
+  "description": "Performs bounding box scoring between two annotation files using the intersect over union method.",
+  "main": "intersect-over-union.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jerry Fan",
+  "license": "Artistic-2.0",
+  "dependencies": {
+    "rectangles": "0.0.1"
+  }
+}

@@ -3,9 +3,8 @@
  * Created by Jerry Fan, property of The University of Auckland.
  * Licenced under the Artistic Licence 2.0.
  *
- * This tool interfaces with the calibration and distance C++ modules for a
- * range of purposes, including providing an interface for inferring a
- * coordinate for the Annotation-Tool using JSON to pass data.
+ * This utility runs mediainfo on videos inside a folder to determine their total
+ * length.
  */
 
 #include "./includes/LensCalibration.hpp"

@@ -1,4 +1,13 @@
 #!/usr/bin/env python3
+"""
+	capture_tool.py
+	Created by Jerry Fan, property of The University of Auckland.
+	Licenced under the Artistic Licence 2.0.
+	
+	This utility uses guvcview and the Linux uvc driver to capture
+	video using preset settings and rename them according to user 
+	set variables.
+"""
 
 import subprocess
 import sys
