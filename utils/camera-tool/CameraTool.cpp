@@ -75,7 +75,7 @@ void extractImages(string src, string dst)
  * @param dst    Destination markup file (.xml or .yaml extension required).
  * @param frames Number of valid calibration frames (Don't use over 50).
  */
-void lensCalibrationV(string src, string dst, string frames)
+void lensCalibrationF(string src, string dst, string frames)
 {
     LensCalibration lCalib;
     if (lCalib.fromVideo(src, (size_t) stoi(frames)))
@@ -138,7 +138,6 @@ void lensCalibrationP(string x, string y, string calibFile)
  * @param bRPtsSrcY  Source quadrilateral bottom right y.
  * @param ratioX     Real length of the planar rectangle.
  * @param ratioY     Real width of the planar rectangle.
- * @param lCalibFile Lens calibration file.
  * @param outFile    Output calibration file (.xml or .yaml extension).
  */
 void perspectiveCalibrationF
@@ -148,21 +147,18 @@ void perspectiveCalibrationF
     string bLPtsSrcX, string bLPtsSrcY,
     string bRPtsSrcX, string bRPtsSrcY,
     string ratioX, string ratioY,
-    string lCalibFile,
     string outFile
 )
 {
-    LensCalibration lCalib(lCalibFile);
     vector<Point2f> ptsSrc;
-    ptsSrc.push_back(lCalib.onPoint(Point2f(stof(tLPtsSrcX), stof(tLPtsSrcY))));
-    ptsSrc.push_back(lCalib.onPoint(Point2f(stof(tRPtsSrcX), stof(tRPtsSrcY))));
-    ptsSrc.push_back(lCalib.onPoint(Point2f(stof(bLPtsSrcX), stof(bLPtsSrcY))));
-    ptsSrc.push_back(lCalib.onPoint(Point2f(stof(bRPtsSrcX), stof(bRPtsSrcY))));
+    ptsSrc.push_back(Point2f(stof(tLPtsSrcX), stof(tLPtsSrcY)));
+    ptsSrc.push_back(Point2f(stof(tRPtsSrcX), stof(tRPtsSrcY)));
+    ptsSrc.push_back(Point2f(stof(bLPtsSrcX), stof(bLPtsSrcY)));
+    ptsSrc.push_back(Point2f(stof(bRPtsSrcX), stof(bRPtsSrcY)));
 
     Point2f ratio(stof(ratioX), stof(ratioY));
 
     PerspectiveCalibration pCalib;
-
 
     vector<Point2f> ptsDst = pCalib.estimateTransformed(ptsSrc, ratio, Point2f(0,0));
 
@@ -218,7 +214,13 @@ void perspectiveCalibrationP(string x, string y, string calibFile)
  * @param lCalibFile Lens calibration file.
  * @param pCalibFile Perspective calibration file.
  */
-void imageDistanceP(string x, string y, string originX, string originY, string lCalibFile, string pCalibFile)
+void imageDistanceP
+(
+    string x, string y, 
+    string originX, string originY, 
+    string lCalibFile, 
+    string pCalibFile
+)
 {
     shared_ptr<LensCalibration> l = make_shared<LensCalibration>(lCalibFile);
     shared_ptr<PerspectiveCalibration> p = make_shared<PerspectiveCalibration>(pCalibFile);
@@ -239,7 +241,8 @@ void imageDistanceP(string x, string y, string originX, string originY, string l
  * @param lCalibFile Lens calibration file.
  * @param pCalibFile Perspective calibration file.
  */
-void imageDistanceD(
+void imageDistanceD
+(
     string startX, string startY,
     string endX, string endY,
     string lCalibFile, string pCalibFile
@@ -262,9 +265,9 @@ int main(int argc, char** argv)
     {
         extractImages(argv[2], argv[3]);
     }
-    else if (option == "-Lv")
+    else if (option == "-Lf")
     {
-        lensCalibrationV(argv[2], argv[3], argv[4]);
+        lensCalibrationF(argv[2], argv[3], argv[4]);
     }
     else if (option == "-Li")
     {
@@ -283,8 +286,7 @@ int main(int argc, char** argv)
             argv[6], argv[7],
             argv[8], argv[9],
             argv[10], argv[11],
-            argv[12],
-            argv[13]
+            argv[12]
         );
     }
     else if (option == "-Pi")

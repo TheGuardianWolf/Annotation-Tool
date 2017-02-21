@@ -2,6 +2,7 @@
 node_modules/
 dist/
 app/
+dist*/
 
 # VS
 ## Ignore Visual Studio temporary files, build results, and

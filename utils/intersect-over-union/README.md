@@ -1,5 +1,8 @@
 # Intersect Over Union Utility
 
+Created by Jerry Fan, property of The University of Auckland. Licenced under 
+the Artistic Licence 2.0.
+
 This utility compares two seperate annotation files and reports on the ratio of
 overlap between the bounding box intersection area to the union area.
 

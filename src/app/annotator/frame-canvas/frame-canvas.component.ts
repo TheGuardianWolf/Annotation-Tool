@@ -698,6 +698,11 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         this.on('keyDown', 'd', (event) => {
             this.ws.interpolateToCurrent();
         });
+		
+		// Automatic real location via Camera-Tool
+        this.on('keyDown', 'f', (event) => {
+            this.ws.autoCoordinate();
+        });
 
         // Report mouse position
         this.on('move', 'mousePosition', (event) => {

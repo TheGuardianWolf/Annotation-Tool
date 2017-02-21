@@ -1,4 +1,7 @@
-# Visualise Location Utility
+# Visualise-Location Utility
+
+Created by Jerry Fan, property of The University of Auckland. Licenced under 
+the Artistic Licence 2.0.
 
 This python 3 utility generates a visual plan-view animation of a person 
 walking through the room using annotation data from specified views of a video 

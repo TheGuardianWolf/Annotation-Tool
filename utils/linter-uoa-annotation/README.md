@@ -1,5 +1,8 @@
 # Capture-Tool Utility
 
+Created by Jerry Fan, property of The University of Auckland. Licenced under 
+the Artistic Licence 2.0.
+
 The Capture-Tool is python script that utilizes the Linux guvcview-git 
 application in a subprocess to control the webcams over the uvc driver 
 interface.

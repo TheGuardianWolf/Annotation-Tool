@@ -7,11 +7,17 @@ if(CYGWIN)
 	set (CMAKE_EXE_LINKER_FLAGS "-static")
 endif()
 
-set (CMAKE_CXX_FLAGS "-Wall")
+if(WIN32)
+	set (BUILD_SHARED_LIBRARIES OFF)
+endif()
+
+set (OpenCV_FIND_QUIETLY OFF)
+#set (CMAKE_CXX_FLAGS "-Wall")
 set (CMAKE_CXX_STANDARD 14)
 
+set (CMAKE_MODULE_PATH "C:\\tools\\libs\\opencv\\build")
 find_package( OpenCV REQUIRED )
-include_directories( ${OpenCV_INCLUDE_DIRS} )
+#include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 file(GLOB SOURCES "utils/camera-tool/includes/*.cpp")
 file(GLOB HEADERS "utils/camera-tool/includes/*.hpp")

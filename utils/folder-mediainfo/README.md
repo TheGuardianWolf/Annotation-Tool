@@ -1,5 +1,8 @@
 # Folder-Mediainfo Utility
 
+Created by Jerry Fan, property of The University of Auckland. Licenced under 
+the Artistic Licence 2.0.
+
 This utility runs mediainfo on videos inside a folder to determine their total
 length.
 
