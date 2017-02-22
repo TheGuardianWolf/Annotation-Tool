@@ -97,7 +97,7 @@ export class WorkspaceService {
                         nextPerson.boundingBox = new BoundingBox(null, null, null, null);
                         nextPerson.location.virtual = new Point(null, null);
                         nextPerson.location.real = new Point(null, null);
-                        nextPerson.location.section = '';
+                        nextPerson.location.zone = '';
                         nextPeople.push(nextPerson);
                         this.annotation.data.frames[index + 1].addPerson(nextPerson);
                     }
@@ -115,7 +115,7 @@ export class WorkspaceService {
 
                     if (this.settings.copyLocation === true && people[currentPerson].location) {
                         nextPeople.forEach((person) => {
-                            if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && person.location.section === '')) {
+                            if (!person.location || (!person.location.virtual.isValid() && !person.location.real.isValid() && person.location.zone === '')) {
                                 person.location = currentPersonCopy.location;
                                 this.autoCoordinate(this.annotation.currentFrame + 1);
                             }
@@ -191,19 +191,19 @@ export class WorkspaceService {
                     }
 
                     if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
-                        location.section = 'A';
+                        location.zone = 'A';
                     }
                     else if (locationX <= 3600 && locationY <= 1700) {
-                        location.section = 'C';
+                        location.zone = 'C';
                     }
                     else if (locationX <= 3600 && locationY <= 4000) {
-                        location.section = 'B';
+                        location.zone = 'B';
                     }
                     else if (locationX <= 6000 && locationY <= 4000) {
-                        location.section = 'D';
+                        location.zone = 'D';
                     }
                     else {
-                        location.section = 'N/A';
+                        location.zone = 'N/A';
                     }
 
                     location.real = new Point(Math.round(locationX), Math.round(locationY));

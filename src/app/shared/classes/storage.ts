@@ -121,7 +121,7 @@ export class Person {
     public location: {
         virtual: Point;
         real: Point;
-        section: String;
+        zone: string;
     };
     public keyframe: boolean = false;
 
@@ -131,7 +131,7 @@ export class Person {
         boundingBox: BoundingBox,
         virtualPoint: Point,
         realPoint: Point,
-        section: String
+        zone: string
     ) {
         this.id = id;
         this.obscured = obscured;
@@ -139,7 +139,7 @@ export class Person {
         this.location = {
             'virtual': virtualPoint,
             'real': realPoint,
-            'section': section ? section : ''
+            'zone': zone ? zone : ''
         };
     }
 
@@ -156,15 +156,12 @@ export class Person {
             'location': {
                 'virtual': this.location.virtual.toObject(),
                 'real': this.location.real.toObject(),
-                'section': null
+                'zone': null
             }
         };
 
-        if (this.location.section === 'A' ||
-            this.location.section === 'B' ||
-            this.location.section === 'C' ||
-            this.location.section === 'D') {
-            person.location.section = this.location.section;
+        if (/^[A-D]$/.test(this.location.zone)) {
+            person.location.zone = this.location.zone;
         }
 
         return person;
@@ -185,11 +182,8 @@ export class Person {
             new Point(person.location.real.x, person.location.real.y),
             ''
         );
-        if (person.location.section === 'A' ||
-            person.location.section === 'B' ||
-            person.location.section === 'C' ||
-            person.location.section === 'D') {
-            p.location.section = person.location.section;
+        if (/^[A-D]$/.test(person.location.zone)) {
+            p.location.zone = person.location.zone;
         }
         return p;
     }
