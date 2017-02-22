@@ -1,7 +1,7 @@
 {
   "name": "folder-mediainfo",
   "version": "1.0.0",
-  "description": "Totals mediainfo on videos inside a folder.",
+  "description": "Uses mediainfo to batch extract video metadata from a folder of videos.",
   "main": "folder-mediainfo.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

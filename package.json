@@ -1,8 +1,11 @@
 {
   "name": "uoa-annotation-tool",
   "version": "1.0.0",
-  "repository": "none",
-  "author": "Jerry Fan, The University of Auckland",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TheGuardianWolf/Annotation-Tool.git"
+  },
+  "author": "Jerry Fan - The University of Auckland",
   "license": "Artistic-2.0",
   "main": "src/main.electron.js",
   "scripts": {

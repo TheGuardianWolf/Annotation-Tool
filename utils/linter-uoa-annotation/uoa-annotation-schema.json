@@ -1,0 +1,280 @@
+{
+    "title": "VideoAnnotationSchema",
+    "description": "Schema for UoA location aware multi-camera person tracking annotation style.",
+    "oneOf": [{
+            "type": "object",
+            "required": ["number", "name", "increment", "camera", "frames"],
+            "properties": {
+                "number": {
+                    "type": "number",
+                    "minimum": 1
+                },
+                "name": {
+                    "type": "string",
+                    "pattern": "^[A-Z][a-z]*$"
+                },
+                "increment": {
+                    "type": "string",
+                    "pattern": "^\\d{3}$"
+                },
+                "camera": {
+                    "type": "number",
+                    "minimum": 1,
+                    "maximum": 4
+                },
+                "frames": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "object",
+                        "required": ["frameNumber", "numberOfPeople", "people"],
+                        "properties": {
+                            "frameNumber": {
+                                "type": "number",
+                                "minimum": 1
+                            },
+                            "numberOfPeople": {
+                                "type": "number",
+                                "multipleOf": 1
+                            },
+                            "people": {
+                                "type": "array",
+                                "minItems": {
+                                    "$data": "1/numberOfPeople"
+                                },
+                                "maxItems": {
+                                    "$data": "1/numberOfPeople"
+                                },
+                                "items": {
+                                    "type": "object",
+                                    "required": ["id", "obscured", "box", "location"],
+                                    "properties": {
+                                        "id": {
+                                            "type": "number"
+                                        },
+                                        "obscured": {
+                                            "type": "boolean"
+                                        },
+                                        "box": {
+                                            "type": "object",
+                                            "required": ["topLeft", "topRight", "bottomLeft", "bottomRight"],
+                                            "properties": {
+                                                "topLeft": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": "number",
+                                                            "minimum": 0,
+                                                            "maximum": 1920,
+                                                            "exclusiveMaximum": true,
+                                                            "multipleOf": 1
+                                                        },
+                                                        "y": {
+                                                            "type": "number",
+                                                            "minimum": 0,
+                                                            "maximum": 1080,
+                                                            "exclusiveMaximum": true,
+                                                            "multipleOf": 1
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                },
+                                                "topRight": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": "number",
+                                                            "minimum": {
+                                                                "$data": "2/topLeft/x"
+                                                            },
+                                                            "exclusiveMinimum": true,
+                                                            "maximum": 1920,
+                                                            "multipleOf": 1
+                                                        },
+                                                        "y": {
+                                                            "type": "number",
+                                                            "constant": {
+                                                                "$data": "2/topLeft/y"
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                },
+                                                "bottomLeft": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": "number",
+                                                            "constant": {
+                                                                "$data": "2/topLeft/x"
+                                                            }
+                                                        },
+                                                        "y": {
+                                                            "type": "number",
+                                                            "minimum": {
+                                                                "$data": "2/topLeft/y"
+                                                            },
+                                                            "exclusiveMinimum": true,
+                                                            "maximum": 1080,
+                                                            "multipleOf": 1
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                },
+                                                "bottomRight": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": "number",
+                                                            "constant": {
+                                                                "$data": "2/topRight/x"
+                                                            }
+                                                        },
+                                                        "y": {
+                                                            "type": "number",
+                                                            "constant": {
+                                                                "$data": "2/bottomLeft/y"
+                                                            }
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        },
+                                        "location": {
+                                            "type": ["object"],
+                                            "required": ["virtual", "real", "zone"],
+                                            "properties": {
+                                                "virtual": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": ["number", "null"],
+                                                            "minimum": 0,
+                                                            "maximum": 1920,
+                                                            "exclusiveMaximum": true,
+                                                            "multipleOf": 1
+                                                        },
+                                                        "y": {
+                                                            "type": ["number", "null"],
+                                                            "minimum": 0,
+                                                            "maximum": 1080,
+                                                            "exclusiveMaximum": true,
+                                                            "multipleOf": 1
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                },
+                                                "real": {
+                                                    "type": "object",
+                                                    "required": ["x", "y"],
+                                                    "properties": {
+                                                        "x": {
+                                                            "type": ["number", "null"],
+                                                            "minimum": 0,
+                                                            "maximum": 6000,
+                                                            "multipleOf": 1
+                                                        },
+                                                        "y": {
+                                                            "type": ["number", "null"],
+                                                            "minimum": 0,
+                                                            "maximum": 4000,
+                                                            "multipleOf": 1
+                                                        }
+                                                    },
+                                                    "additionalProperties": false
+                                                },
+                                                "zone": {
+                                                    "type": ["string", "null"],
+                                                    "pattern": "^[A-D]$"
+                                                }
+                                            },
+                                            "additionalProperties": false
+                                        }
+                                    },
+                                    "switch": [{
+                                        "if": {
+                                            "properties": {
+                                                "obscured": {
+                                                    "constant": false
+                                                }
+                                            }
+                                        },
+                                        "then": {
+                                            "properties": {
+                                                "location": {
+                                                    "additionalProperties": {
+                                                        "not": {
+                                                            "type": "null"
+                                                        },
+                                                        "switch": [{
+                                                            "if": {
+                                                                "type": "object"
+                                                            },
+                                                            "then": {
+                                                                "additionalProperties": {
+                                                                    "not": {
+                                                                        "type": "null"
+                                                                    }
+                                                                }
+                                                            }
+                                                        }]
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }]
+                                },
+                                "additionalProperties": false
+                            }
+                        }
+                    },
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false
+        },
+        {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+                "type": "object",
+                "required": ["id", "height", "topColor", "bottomColor", "links"],
+                "properties": {
+                    "id": {
+                        "type": "number",
+                        "minimum": 0,
+                        "multipleOf": 1
+                    },
+                    "height": {
+                        "type": "number",
+                        "minimum": 560,
+                        "maximum": 2500,
+                        "multipleOf": 1
+                    },
+                    "topColor": {
+                        "type": "string"
+                    },
+                    "bottomColor": {
+                        "type": "string"
+                    },
+                    "links": {
+                        "type": ["array", "null"],
+                        "uniqueItems": true,
+                        "items": {
+                            "type": "number",
+                            "minimum": 0,
+                            "multipleOf": 1
+                        }
+                    }
+                }
+            }
+        }
+    ]
+}
