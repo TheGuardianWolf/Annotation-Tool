@@ -35,14 +35,6 @@ install directory for the installer.
 * Linter-UoA-Annotation
 * Visualise-Location
 
-## Dependencies
-
-* Node.js ^6.9
-* Camera-Tool
-    * CMake ^3.1
-    * C++ compiler with C++14 support
-    * OpenCV ^3.1
-
 ## Usage
 
 Grab the latest release for your system from ()[Releases].
@@ -176,6 +168,14 @@ Make sure you have Node.js installed and in your PATH.
 Clone the git repository and run ```npm install``` inside the directory. 
 Node development tools will be automatically installed.
 
+### Dependencies
+
+* Node.js ^6.9
+* Camera-Tool
+    * CMake ^3.1
+    * C++ compiler with C++14 support
+    * OpenCV ^3.1
+
 ### NPM Scripts
 
 A few npm scripts are provided for ease of use.
@@ -192,9 +192,6 @@ npm build
 
 # Builds with webpack in watch mode
 npm build:watch
-
-# Builds with webpack in production mode
-npm build:prod
 
 # Packages with electron-packager for Win32
 npm run package:win32
