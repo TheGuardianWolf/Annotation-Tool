@@ -3,6 +3,8 @@ import { Location } from '@angular/common';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 
+import { Loader } from '../shared/classes/loader';
+
 declare var $;
 
 import { IWorkspaceConfig, WorkspaceService } from '../shared/workspace/workspace.service';
@@ -68,7 +70,9 @@ export class HubWorkspaceComponent implements OnInit {
             // location.href used as workaround
             location.href = __filename + '#/annotator'
         }, (err) => {
-            throw err;
+            console.error(err);
+            // TODO: Move loading resolver elsewhere 
+            Loader.finish();
         });
     }
 }

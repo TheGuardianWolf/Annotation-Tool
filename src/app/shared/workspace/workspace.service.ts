@@ -253,6 +253,15 @@ export class WorkspaceService {
             return deferred.promise;
         }
 
+        let readInImageSrcs = () => {
+            return this.its.readImageDir(this.workspaceDir).then((imageSrcs) => {
+                if (imageSrcs.length === 0) {
+                    return Q.reject('No images in directory.');
+                }
+                return imageSrcs;
+            });
+        }
+
         if (this.videoFile) {
             // Get context from input video
             this.getVideoContext();
@@ -263,9 +272,7 @@ export class WorkspaceService {
             // If there's a video file, extract the images and read in image paths
             promiseChain = Q.all([
                 this.its.extractImages(this.videoFile, this.workspaceDir)
-                    .then(() => {
-                        return this.its.readImageDir(this.workspaceDir);
-                    })
+                    .then(readInImageSrcs)
                     .then(setAnnotationImages),
                 getVideoAnnotations()
             ]);
@@ -273,7 +280,7 @@ export class WorkspaceService {
         else {
             // Otherwise just read in image paths and the workspace file
             promiseChain = Q.all([
-                this.its.readImageDir(this.workspaceDir)
+                readInImageSrcs()
                     .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
                     .then(getVideoAnnotations)
@@ -299,6 +306,10 @@ export class WorkspaceService {
                 this.annotation.data.increment = workspaceVars.video.increment;
                 this.annotation.data.camera = workspaceVars.video.camera;
                 return workspaceVars;
+            },
+            (err) => {
+                this.calibration = new Calibration();
+                return null;
             }
         );
     }

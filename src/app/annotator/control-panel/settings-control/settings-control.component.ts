@@ -6,7 +6,7 @@ import { WorkspaceService } from '../../../shared/workspace/workspace.service';
 declare var $;
 
 /**
- * This class represents the lazy loaded HubStartComponent.
+ * This class represents the lazy loaded SettingsControlComponent.
  */
 @Component({
     selector: 'settings-control',

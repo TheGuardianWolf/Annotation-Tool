@@ -33,7 +33,7 @@ ImageDistance::~ImageDistance()
 
 bool ImageDistance::isReady()
 {
-    return (this->lens && this->perspective && !this->origin.isEmpty() && this->lens->isCalibrated() && this->lens->isMapped() && this->perspective->isCalibrated());
+    return (this->lens && this->perspective && this->lens->isCalibrated() && this->lens->isMapped() && this->perspective->isCalibrated());
 }
 
 Point2f ImageDistance::transformCoordinate(Point2f coordinate)
@@ -68,14 +68,15 @@ Point2f ImageDistance::getRealCoordinate(Point2f position)
 	{
 		Point2f virtualCoordinates(this->transformCoordinate(position) - this->origin);
 
-		return Point2f(virtualCoordinates.x * this->perspective->getScaleFactor(), virtualCoordinates.y * this->perspective->getScaleFactor());
+		return Point2f((float)(virtualCoordinates.x * this->perspective->getScaleFactor()), (float)(virtualCoordinates.y * this->perspective->getScaleFactor()));
 	}
-	return Point2f;
+	return Point2f(-1, -1);
 }
 
 double ImageDistance::getRealDistance(Point2f start, Point2f stop)
 {
 	if (this->isReady())
+	{
 		Point2f virtualDistance(this->transformCoordinate(stop) - this->transformCoordinate(start));
 
 		return sqrt(((double) virtualDistance.x * (double) virtualDistance.x + (double) virtualDistance.y * (double) virtualDistance.y)) * perspective->getScaleFactor();

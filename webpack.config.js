@@ -33,18 +33,34 @@ var webpackConfig = {
             {
                 context: './build',
                 from: {
-                    glob: 'CameraTool*',
+                    glob: 'CameraTool',
                     dot: false
                 },
-                to: './native',
+                to: './native'
             },
+			{
+                context: './build',
+                from: {
+                    glob: 'CameraTool.exe',
+                    dot: false
+                },
+                to: './native'
+            },
+			{
+				context: './build/Release',
+				from: {
+					glob: '**/*',
+					dot: true
+				},
+				to: './native'
+			},
             {
                 context: './src/assets',
                 from: {
                     glob: '**/*',
                     dot: false
                 },
-                to: './assets',
+                to: './assets'
             }
         ],
             {

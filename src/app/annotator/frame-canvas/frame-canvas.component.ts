@@ -806,6 +806,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                 (imageList) => {
                     imagesLoaded = this.loadImages(this.ws.workspaceDir, imageList);
                     imagesLoaded.done(() => {
+                        // TODO: Move loading resolver elsewhere 
                         Loader.finish();
                         if (this.images[0]) {
                             this.viewer.open(new osd.ImageTileSource({
@@ -815,10 +816,10 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
                             if (!this.ws.annotation.currentFrame) {
                                 this.ws.annotation.currentFrame = 1;
                             }
-                            // TODO: Move loading resolver elsewhere 
+                            
                         }
                         else {
-                            throw 'Error: No images found.'
+                            throw 'Error: No images found.';
                         }
                     });
                 }

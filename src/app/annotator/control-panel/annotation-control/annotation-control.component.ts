@@ -9,7 +9,7 @@ import * as is from 'is';
 declare var $;
 
 /**
- * This class represents the lazy loaded HubStartComponent.
+ * This class represents the lazy loaded AnnotationControlComponent.
  */
 @Component({
     selector: 'annotation-control',

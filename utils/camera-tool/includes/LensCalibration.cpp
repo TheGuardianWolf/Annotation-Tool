@@ -136,7 +136,7 @@ bool LensCalibration::runCalibration()
     {
         for( int j = 0; j < boardSize.width; ++j )
         {
-            objectPoints[0].push_back(Point3f(j*squareSize, i*squareSize, 0));
+            objectPoints[0].push_back(Point3f((float)(j*squareSize), (float)(i*squareSize), 0));
         }
     }
 
@@ -313,7 +313,7 @@ bool LensCalibration::onImage(string imagePath, Mat& fixedImage)
         }
         catch(int e)
         {
-            cout << "Image could not be read: " << imagePath << endl;
+            cout << "Image could not be read: " << imagePath << "Error code: " << e << endl;
             return false;
         }
 

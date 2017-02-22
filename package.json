@@ -10,10 +10,9 @@
   "main": "src/main.electron.js",
   "scripts": {
     "cmake": "cmake-js",
-    "postinstall": "npm run cmake",
-	"build:watch": "webpack -w --inline --colors --progress --display-error-details --display-cached"
+    "postinstall": "npm run cmake && npm run build",
+	"build:watch": "webpack -w --inline --colors --progress --display-error-details --display-cached",
     "build": "webpack --inline --colors --progress --display-error-details --display-cached",
-    "build:prod": "webpack --progress --profile --colors --display-error-details --display-cached --optimize-occurence-order --optimize-dedupe",
     "start": "npm run electron",
     "electron": "electron app",
     "package:win32": "electron-packager app App --platform=win32 --arch=all --out=dist --overwrite",

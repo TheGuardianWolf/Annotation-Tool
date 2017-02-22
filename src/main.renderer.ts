@@ -1,12 +1,12 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 // include for production builds
-// import {enableProdMode} from '@angular/core';
+import { enableProdMode } from '@angular/core';
 
 import { Loader } from './app/shared/classes/loader';
 import { AppModule } from './app/app.module';
 
-// enableProdMode() // include for production builds
+enableProdMode() // include for production builds
 
 export function main() {
     return platformBrowserDynamic().bootstrapModule(AppModule)
