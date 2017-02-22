@@ -26,7 +26,7 @@
     "@types/nouislider": "^9.0.0",
     "@types/paper": "^0.9.0",
     "@types/q": "0.0.32",
-    "angular2-template-loader": "^0.6.0",
+    "angular2-template-loader": "0.6.0",
     "awesome-typescript-loader": "^3.0.0-beta.17",
     "cmake-js": "^3.4.1",
     "copy-webpack-plugin": "^4.0.1",
