@@ -52,7 +52,7 @@ pre-existing calibration (markup) files are stored in a text file in the
 calibration folder. 
 
 To create your own calibration files, follow the intructions at 
-samples/README.md.
+[samples/README.md](https://github.com/TheGuardianWolf/Annotation-Tool/tree/master/samples/README.md).
 
 ### Annotations
 
@@ -160,7 +160,7 @@ Currently unavailable (See #TODO).
 
 Make sure you have the Camera-Tool dependencies installed and in your PATH. For 
 more information on development with the Camera-Tool, a readme is available at 
-utils/camera-tool/README.md.
+[utils/camera-tool/README.md](https://github.com/TheGuardianWolf/Annotation-Tool/blob/master/utils/camera-tool/README.md).
 
 Make sure you have Node.js installed and in your PATH.
 

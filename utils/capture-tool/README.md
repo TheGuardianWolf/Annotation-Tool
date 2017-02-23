@@ -77,7 +77,7 @@ Ensures processes are killed and exits.
 Using this tool disables the guvcview GUI for next launch, it must be manually
 set to launch with GUI through a terminal if it is required.
 
-See [Capture-Tool#TODO](#TODO) for solution.
+See [Capture-Tool#TODO](#todo) for solution.
 
 ## Changes
 

@@ -16,12 +16,14 @@ style.
 The script can be called by the following shell commands:
 
 ```bash
-node /path/to/this/folder/linter-uoa-annotation <file_or_folder_path>
+node /path/to/this/folder/linter-uoa-annotation.js <file_or_folder_path>
 ```
 
 If a file is specified, it will check for a JSON extension and attempt to parse 
 it. Otherwise, it will search in a directory for files with JSON extension and 
 attempt to parse it.
+
+Follow the on screen prompts for instructions.
 
 ### Issues 
 
@@ -36,7 +38,7 @@ frame numbers between the smallest frame number and the largest
 * The resolver does not currently work since it can't resolve the constant 
 errors
 
-See [Linter-UoA-Annotation#TODO](#TODO) for solution.
+See [Linter-UoA-Annotation#TODO](#todo) for solution.
 
 ## Changes
 
