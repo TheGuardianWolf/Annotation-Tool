@@ -27,10 +27,14 @@ attempt to parse it.
 
 This tool does not verify all data relationships due to JSON schema limitations.
 
+* Currently requires a rescan if the resolver is used to pick up any new errors 
+caused by the resolution (such as constants)
 * In the people annotations, linked to entries are not verified to be doubly 
 linked
 * In the video annotations, the frame array is not verified to contain all 
 frame numbers between the smallest frame number and the largest
+* The resolver does not currently work since it can't resolve the constant 
+errors
 
 See [Linter-UoA-Annotation#TODO](#TODO) for solution.
 
@@ -44,7 +48,8 @@ which is located at ```uoa-annotation-schema.json```.
 
 ## TODO
 
-* Write custom resolver for easy to fix errors and prompt user to fix
+* Find a way to fix the 'constant' error type
+* Rescan the file and add new errors after resolving
 * Custom error messages are required for clarity
 * Run pre-validation on the linted files or write custom keywords for ajv to 
 extend the schema validation to solve issues.

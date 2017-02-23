@@ -95,6 +95,9 @@
                                                         },
                                                         "y": {
                                                             "type": "number",
+                                                            "minimum": 0,
+                                                            "exclusiveMinimum": true,
+                                                            "maximum": 1080,
                                                             "constant": {
                                                                 "$data": "2/topLeft/y"
                                                             }
@@ -108,6 +111,9 @@
                                                     "properties": {
                                                         "x": {
                                                             "type": "number",
+                                                            "minimum": 0,
+                                                            "maximum": 1920,
+                                                            "exclusiveMaximum": true,
                                                             "constant": {
                                                                 "$data": "2/topLeft/x"
                                                             }
@@ -130,12 +136,18 @@
                                                     "properties": {
                                                         "x": {
                                                             "type": "number",
+                                                            "minimum": 0,
+                                                            "exclusiveMinimum": true,
+                                                            "maximum": 1920,
                                                             "constant": {
                                                                 "$data": "2/topRight/x"
                                                             }
                                                         },
                                                         "y": {
                                                             "type": "number",
+                                                            "minimum": 0,
+                                                            "exclusiveMinimum": true,
+                                                            "maximum": 1080,
                                                             "constant": {
                                                                 "$data": "2/bottomLeft/y"
                                                             }
@@ -209,22 +221,32 @@
                                         "then": {
                                             "properties": {
                                                 "location": {
-                                                    "additionalProperties": {
-                                                        "not": {
-                                                            "type": "null"
-                                                        },
-                                                        "switch": [{
-                                                            "if": {
-                                                                "type": "object"
-                                                            },
-                                                            "then": {
-                                                                "additionalProperties": {
-                                                                    "not": {
-                                                                        "type": "null"
-                                                                    }
+                                                    "properties": {
+                                                        "virtual": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "x": {
+                                                                    "type": "number"
+                                                                },
+                                                                "y": {
+                                                                    "type": "number"
                                                                 }
                                                             }
-                                                        }]
+                                                        },
+                                                        "real": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "x": {
+                                                                    "type": "number"
+                                                                },
+                                                                "y": {
+                                                                    "type": "number"
+                                                                }
+                                                            }
+                                                        },
+                                                        "zone": {
+                                                            "type": ["string"]
+                                                        }
                                                     }
                                                 }
                                             }
