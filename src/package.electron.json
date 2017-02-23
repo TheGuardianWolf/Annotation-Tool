@@ -1,5 +1,16 @@
 {
-    "name": "UoA Annotation Tool",
-    "version": "0.1.3",
-    "main": "electron.js"
+    "name": "uoa-annotation-tool",
+    "version": "1.0.0",
+    "author": "Jerry Fan - The University of Auckland",
+    "description": "An annotation tool for location aware multi-camera person tracking datasets.",
+    "license": "Artistic-2.0",
+    "main": "electron.js",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/TheGuardianWolf/Annotation-Tool.git"
+    },
+    "dependencies": {
+        "electron-default-menu": "^1.0.0"
+    },
+    "productName" : "UoA Annotation Tool"
 }

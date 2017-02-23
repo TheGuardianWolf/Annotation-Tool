@@ -1,6 +1,7 @@
 {
   "name": "uoa-annotation-tool",
   "version": "1.0.0",
+  "description": "An annotation tool for location aware multi-camera person tracking datasets.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TheGuardianWolf/Annotation-Tool.git"
@@ -12,11 +13,11 @@
     "cmake": "cmake-js",
     "postinstall": "npm run cmake && npm run build",
 	"build:watch": "webpack -w --inline --colors --progress --display-error-details --display-cached",
-    "build": "webpack --inline --colors --progress --display-error-details --display-cached",
+    "build": "webpack --inline --colors --progress --display-error-details --display-cached && cd app && npm install && cd ..",
     "start": "npm run electron",
     "electron": "electron app",
-    "package:win32": "electron-packager app App --platform=win32 --arch=all --out=dist --overwrite",
-    "package:linux": "electron-packager app App --overwrite --platform=linux --arch=all --prune=true --out=dist"
+    "package:win32": "electron-packager app AnnotationTool --platform=win32 --arch=all --out=dist --overwrite",
+    "package:linux": "electron-packager app AnnotationTool --overwrite --platform=linux --arch=all --prune=true --out=dist"
   },
   "devDependencies": {
     "@types/core-js": "^0.9.35",
