@@ -21,3 +21,9 @@ file(GLOB HEADERS "utils/camera-tool/includes/*.hpp")
 
 add_executable( CameraTool utils/camera-tool/CameraTool.cpp ${SOURCES})
 target_link_libraries( CameraTool ${OpenCV_LIBS} )
+
+# Node Addon - Does not work properly due to OpenCV issues
+#add_library(CameraTool-Node "utils/camera-tool/CameraTool-Node.cpp" "utils/camera-tool/node-interface/ICameraTool.cpp" ${SOURCES})
+#set_target_properties(CameraTool-Node PROPERTIES PREFIX "" SUFFIX ".node")
+#target_include_directories(CameraTool-Node PRIVATE ${CMAKE_JS_INC})
+#target_link_libraries(CameraTool-Node ${CMAKE_JS_LIB} ${OpenCV_LIBS})
