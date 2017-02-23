@@ -67,7 +67,7 @@ export class WorkspaceService {
     }
 
     private getVideoContext() {
-        let videoBasename = path.basename(this.videoFile, '.mkv').split('_');
+        let videoBasename = path.parse(this.videoFile).name.split('_');
         let sequenceNumber = parseInt(videoBasename[0].substr(-1));
         let sequenceName = videoBasename[1];
         let videoIncrement = videoBasename[2];
