@@ -36,7 +36,7 @@ download the source code package.
 
 ## Usage
 
-Grab the latest release for your system from ()[Releases].
+Grab the latest release for your system from [Releases](https://github.com/TheGuardianWolf/Annotation-Tool/releases).
 
 After installing the package, open the Annotation-Tool from the install 
 directory.
