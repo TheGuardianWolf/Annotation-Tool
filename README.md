@@ -25,8 +25,7 @@ provide access to the host system's native APIs.
 
 With this tool comes six utilities that can be used as standalone tools to help 
 with various annotation tasks. These can be found in the utils folder if you 
-download the source code package, or the source folder inside the application 
-install directory for the installer.
+download the source code package.
 
 * Camera-Tool
 * Capture-Tool
