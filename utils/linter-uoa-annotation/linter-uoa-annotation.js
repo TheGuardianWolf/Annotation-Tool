@@ -76,6 +76,10 @@ let promptBoolean = (message, def) => {
     if (input === 'y' || input === 'Y') {
         return true;
     }
+	else if (input === 'n' || input === 'N') {
+		return false;
+	}
+	
     if (def) {
         return true;
     }
