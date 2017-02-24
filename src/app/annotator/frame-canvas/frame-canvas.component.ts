@@ -330,17 +330,25 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     @HostListener('document:keydown', ['$event'])
     private keyDownBinding(event: KeyboardEvent) {
-        let handler = this.eventHandlers.keyDown[event.key];
-        if (is.function(handler)) {
-            handler(event);
+        if (!(/^(INPUT|TEXTAREA|SELECT)$/.test((event.target as HTMLElement).nodeName)) ||
+            (/^(checkbox|radio|hidden)$/i.test((event.target as HTMLElement).getAttribute('type')))
+        ) {
+            let handler = this.eventHandlers.keyDown[event.key];
+            if (is.function(handler)) {
+                handler(event);
+            }
         }
     }
 
     @HostListener('document:keyup', ['$event'])
     private keyUpBinding(event: KeyboardEvent) {
-        let handler = this.eventHandlers.keyUp[event.key];
-        if (is.function(handler)) {
-            handler(event);
+        if (!(/^(INPUT|TEXTAREA|SELECT)$/.test((event.target as HTMLElement).nodeName)) ||
+            (/^(checkbox|radio|hidden)$/i.test((event.target as HTMLElement).getAttribute('type')))
+        ) {
+            let handler = this.eventHandlers.keyUp[event.key];
+            if (is.function(handler)) {
+                handler(event);
+            }
         }
     }
 
@@ -685,12 +693,12 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         });
 
         // Mixed mode
-        this.on('keyDown', '1', (event) => {
+        this.on('keyDown', 'c', (event) => {
             this.ws.settings.mode = 'mixed';
         });
 
         // Location mode
-        this.on('keyDown', '2', (event) => {
+        this.on('keyDown', 'v', (event) => {
             this.ws.settings.mode = 'location';
         });
 

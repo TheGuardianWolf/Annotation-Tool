@@ -126,8 +126,8 @@ location markers.
 _Mode Selection_
 
 ```
-1 - Mixed annotation mode
-2 - Location annotation mode 
+c - Mixed annotation mode
+v - Location annotation mode 
 ```
 
 _Tool Selection_

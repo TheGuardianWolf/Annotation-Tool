@@ -1,6 +1,6 @@
 {
     "name": "uoa-annotation-tool",
-    "version": "1.2.0",
+    "version": "1.2.2",
     "author": "Jerry Fan - The University of Auckland",
     "description": "An annotation tool for location aware multi-camera person tracking datasets.",
     "license": "Artistic-2.0",
