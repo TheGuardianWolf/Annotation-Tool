@@ -370,7 +370,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'preserveViewport': true,
             'minZoomImageRatio': 0.8,
             'maxZoomPixelRatio': 2.5,
-            'showNavigationControl': false
+            'showNavigationControl': false // Cause of a memory leak in detatched DOM elements, so disabled for now
         });
         this._overlay = this.viewer.paperjsOverlay();
 
