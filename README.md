@@ -276,7 +276,7 @@ Of note is the workspace service, which contains much of the application state
 for the annotation workspace.
 
 ## TODO
-
+* Optimise memory use of FrameCanvasComponent (i.e. don't load all images into memory at once).
 * Add error or info messages to alert users. This can be done using the 
 material framework currently installed
 * Enable the use of StatusComponent to notify user that the app is busy with 

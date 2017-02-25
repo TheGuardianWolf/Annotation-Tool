@@ -15,6 +15,7 @@ import * as noUiSlider from 'nouislider';
 import * as paper from 'paper';
 
 const osd = require('openseadragon');
+declare var $;
 
 interface IEventHandlers {
     click: Object;
@@ -75,6 +76,8 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
     }
 
     private mousePosition: paper.Point = new paper.Point(0, 0);
+
+    private mouseTracker = null;
 
     private visualAnnotation: Array<IVisualAnnotation> = [];
 
@@ -367,6 +370,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             'preserveViewport': true,
             'minZoomImageRatio': 0.8,
             'maxZoomPixelRatio': 2.5,
+            'showNavigationControl': false
         });
         this._overlay = this.viewer.paperjsOverlay();
 
@@ -402,7 +406,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
         }
 
         // Bind the mouse event handlers to the OpenSeadragon tracker.
-        new osd.MouseTracker({
+        this.mouseTracker = new osd.MouseTracker({
             element: this.viewer.canvas,
             clickHandler: (event) => {
                 let modEvent = performHitTest(event);
@@ -809,7 +813,7 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
             this.bindEvents();
 
             let imagesLoaded: Q.Promise<{}>;
-
+            
             this.ws.annotation.imagesObs.subscribe(
                 (imageList) => {
                     imagesLoaded = this.loadImages(this.ws.workspaceDir, imageList);
@@ -858,7 +862,23 @@ export class FrameCanvasComponent implements OnInit, OnDestroy {
 
     public ngOnDestroy() {
         if (this.ws.initialised) {
+            // Memory management to remove references to unused objects.
+            this.images = null;
+
+            paper.view.off('mousemove');
+            paper.view.remove();
+            paper.project.remove();
+
             window.onresize = undefined;
+            this.mouseTracker ? this.mouseTracker.destroy() : null;
+            this.mouseTracker = null;
+
+            this._viewer ? this._viewer.destroy() : null;
+            this._viewer = null;
+
+            this._overlay = null;
+
+            this.osdBinding = null;
         }
     }
 }
