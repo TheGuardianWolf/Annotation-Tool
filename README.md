@@ -41,18 +41,21 @@ Grab the latest release for your system from [Releases](https://github.com/TheGu
 After installing the package, open the Annotation-Tool from the install 
 directory.
 
-### Using the Calibration Samples
+### Using the Sample Material
 
-The calibration samples are available at ```samples/calibration/```.
+Sample materials are available from [Releases](https://github.com/TheGuardianWolf/Annotation-Tool/releases/tag/v1.2.3-sample).
 
-These calibration files were created using the calibration sequences available 
+The calibration files were created using the calibration sequences available 
 in the dataset. A video set is provided for lens calibration, whilst an image 
 set is provided for perspective calibration. Points that were used for the 
 pre-existing calibration (markup) files are stored in a text file in the 
 calibration folder. 
 
-To create your own calibration files, follow the intructions at 
-[samples/README.md](https://github.com/TheGuardianWolf/Annotation-Tool/tree/master/samples/README.md).
+Eight videos with accompanying annotations are provided. These were 
+compressed for easier transfer.
+
+To create your own calibration files, follow the intructions in the readme 
+in the sample archive set.
 
 ### Annotations
 
