@@ -24,8 +24,7 @@ dependencies on those libraries.
 **Automatic**
 
 This utility should have been built along with the ```npm install``` command in 
-the project root directory. The output is in the 
-```/path/to/Annotation-Tool/build``` directory.
+the project root directory. The output is in the ```/path/to/Annotation-Tool/build``` directory.
 
 **Manual**
 
@@ -54,6 +53,17 @@ a terminal.
 ```
 
 If this does not work, make sure the executable bit is set.
+
+### Runtime Dependencies
+The following libraries are required in linux if you are running the default 
+build.
+
+```
+libhdf5 libbz2 libjpeg libwebp libpng libtiff libjpeg libwebp libpng libtiff libImath libIlmImf libIex libHalf libIlmThread libgtk-3 libgdk-3 libpangocairo-1.0 libpango-1.0 libatk-1.0 libcairo-gobject libcairo libgdk_pixbuf-2.0 libgio-2.0 libgobject-2.0 libglib-2.0 libgthread-2.0 libglib-2.0 libgthread-2.0 libdc1394 libxine libv4l1 libv4l2 libavcodec libavformat libavutil libswscale libavresample libtbb
+```
+
+If an opencv package exists for your distribution, that may be installed to 
+provide these dependencies.
 
 ### Extracting video files
 
