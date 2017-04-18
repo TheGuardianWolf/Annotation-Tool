@@ -35,7 +35,9 @@ env:
 
 before_install:
 # Install OpenCV 3
+  - chmod +x ./travis-build-opencv
   - ./travis-build-opencv
+
   - export PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config):$HOME/usr/lib/pkgconfig
   - export INCLUDE_PATH=$HOME/usr/include:${INCLUDE_PATH}
   - export LD_LIBRARY_PATH=$HOME/usr/lib:${LD_LIBRARY_PATH}
