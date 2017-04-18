@@ -24,9 +24,7 @@ export class AnnotatorComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit() {
-        if (this.ws.initialised) {
-        }
-        else {
+        if (!this.ws.initialised) {
             this.router.navigate(['/hub', 'workspace']);
         }
     }

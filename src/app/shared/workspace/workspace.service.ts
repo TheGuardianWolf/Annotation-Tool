@@ -3,6 +3,7 @@ import { ImageToolService } from '../image-tool/image-tool.service';
 import { StatusService } from '../status/status.service';
 
 import { Annotation } from '../classes/annotation';
+import { IZone, Zone } from '../classes/zone';
 import { IPoint, Point, BoundingBox, Person, Frame, Video } from '../classes/storage';
 import { Calibration, IFlipOrigin } from '../classes/calibration';
 import { Settings } from '../classes/settings';
@@ -48,6 +49,8 @@ export class WorkspaceService {
     public calibration: Calibration = new Calibration();
 
     public settings: Settings = new Settings();
+
+    public zones: Array<Zone> = [];
 
     private _initialised: boolean = false;
     get initialised() {
@@ -262,6 +265,18 @@ export class WorkspaceService {
             });
         }
 
+        let loadZones = () => {
+            // Load in the zones from config
+            return Q.denodeify(fs.readFile)(path.join(__dirname, 'config', 'zone.ts')).then( (zones: string) => {
+                this.zones = (JSON.parse(zones) as Array<IZone>).map((obj) => {
+                    return Zone.parse(obj);
+                });
+            },
+            () => {
+                this.zones = [];
+            });
+        }
+
         if (this.videoFile) {
             // Get context from input video
             this.getVideoContext();
@@ -274,7 +289,8 @@ export class WorkspaceService {
                 this.its.extractImages(this.videoFile, this.workspaceDir)
                     .then(readInImageSrcs)
                     .then(setAnnotationImages),
-                getVideoAnnotations()
+                getVideoAnnotations(),
+                loadZones()
             ]);
         }
         else {
@@ -283,7 +299,8 @@ export class WorkspaceService {
                 readInImageSrcs()
                     .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
-                    .then(getVideoAnnotations)
+                    .then(getVideoAnnotations),
+                loadZones()
             ]);
         }
 
