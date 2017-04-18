@@ -1,0 +1,61 @@
+dist: trusty
+sudo: require
+language: node_js
+node_js:
+  - "7"
+env: 
+  - COMPILER=g++-6
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - build-essential
+      - gcc-6
+      - g++-6
+      - cmake
+      - libgtk2.0-dev 
+      - pkg-config 
+      - libavcodec-dev 
+      - libavformat-dev 
+      - libswscale-dev
+      - python-dev 
+      - python-numpy 
+      - libtbb2 
+      - libtbb-dev 
+      - libjpeg-dev 
+      - libpng-dev 
+      - libtiff-dev 
+      - libjasper-dev 
+      - libdc1394-22-dev
+      - libcairo2-dev 
+      - libjpeg8-dev 
+      - libpango1.0-dev 
+      - libgif-dev
+env:
+- ARGS="--jobs 2 --resolver lts-7.2" CACHE_NAME=LTS_7_2
+
+before_install:
+# Install OpenCV 3
+  - chmod +x ./travis-build-opencv
+  - ./travis-build-opencv
+
+  - export PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config):$HOME/usr/lib/pkgconfig
+  - export INCLUDE_PATH=$HOME/usr/include:${INCLUDE_PATH}
+  - export LD_LIBRARY_PATH=$HOME/usr/lib:${LD_LIBRARY_PATH}
+  - export OpenCV_DIR=$HOME/usr/share/OpenCV
+
+before_cache:
+  - rm -f $HOME/fresh-cache
+
+script:
+  # Check versions of gcc, g++ and cmake
+  - gcc -v && g++ -v && cmake --version
+  # Run your build commands next
+  - npm install
+
+# Caching so the next build will be fast too.
+cache:
+  timeout: 1000
+  directories:
+    - $HOME/usr
