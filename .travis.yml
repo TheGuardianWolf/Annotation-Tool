@@ -41,6 +41,7 @@ before_install:
   - export PKG_CONFIG_PATH=$(pkg-config --variable pc_path pkg-config):$HOME/usr/lib/pkgconfig
   - export INCLUDE_PATH=$HOME/usr/include:${INCLUDE_PATH}
   - export LD_LIBRARY_PATH=$HOME/usr/lib:${LD_LIBRARY_PATH}
+  - export OpenCV_DIR=$HOME/usr/share/OpenCV
 
 before_cache:
   - rm -f $HOME/fresh-cache
