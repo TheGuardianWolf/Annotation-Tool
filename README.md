@@ -1,4 +1,6 @@
 # Annotation-Tool
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/TheGuardianWolf/Annotation-Tool/issues)
+[![Build Status](https://travis-ci.org/TheGuardianWolf/Annotation-Tool.png?branch=master)](https://travis-ci.org/TheGuardianWolf/Annotation-Tool)
 
 Created by Jerry Fan, property of The University of Auckland. Licenced under 
 the Artistic Licence 2.0.
@@ -186,7 +188,7 @@ Node development tools will be automatically installed.
 * Node.js ^6.9
 * Camera-Tool
     * CMake ^3.1
-    * C++ compiler with C++14 support
+    * C++ compiler with C++11 support
     * OpenCV ^3.1
 
 ### NPM Scripts

@@ -317,4 +317,6 @@ int main(int argc, char** argv)
             argv[5], argv[6]
         );
     }
+
+    return 0;
 }

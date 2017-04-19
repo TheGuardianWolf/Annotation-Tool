@@ -30,9 +30,11 @@ export interface IWorkspaceVars {
     };
     'lensCalibrationFile': string;
     'perspectiveCalibrationFile': string;
+    'zoneFile': string;
     'imageOrigin': IPoint;
     'flipOrigin': IFlipOrigin;
     'switchOrigin': boolean;
+    'roomSize': IPoint;
 }
 
 /**
@@ -190,21 +192,18 @@ export class WorkspaceService {
                             this.calibration.roomSize.x - realPosition.y : realPosition.y;
                     }
 
-                    if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
-                        location.zone = 'A';
-                    }
-                    else if (locationX <= 3600 && locationY <= 1700) {
-                        location.zone = 'C';
-                    }
-                    else if (locationX <= 3600 && locationY <= 4000) {
-                        location.zone = 'B';
-                    }
-                    else if (locationX <= 6000 && locationY <= 4000) {
-                        location.zone = 'D';
-                    }
-                    else {
-                        location.zone = 'N/A';
-                    }
+                    // Setup default for zone.
+                    location.zone = '';
+
+                    // Find location in one of the zones.
+                    this.calibration.zones.forEach((zone) => {
+                        if (zone.contains({
+                            'x': locationX,
+                            'y': locationY
+                        })) {
+                            location.zone = zone.label;
+                        }
+                    });
 
                     location.real = new Point(Math.round(locationX), Math.round(locationY));
                 });
@@ -283,7 +282,7 @@ export class WorkspaceService {
                 readInImageSrcs()
                     .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
-                    .then(getVideoAnnotations)
+                    .then(getVideoAnnotations),
             ]);
         }
 
@@ -328,9 +327,11 @@ export class WorkspaceService {
                 },
                 'lensCalibrationFile': this.calibration.lensCalibrationFile,
                 'perspectiveCalibrationFile': this.calibration.perspectiveCalibrationFile,
+                'zoneFile': this.calibration.zoneFile,
                 'imageOrigin': this.calibration.imageOrigin,
                 'flipOrigin': this.calibration.flipOrigin,
-                'switchOrigin': this.calibration.switchOrigin
+                'switchOrigin': this.calibration.switchOrigin,
+                'roomSize': this.calibration.roomSize
             }, null, 4));
     }
 }
