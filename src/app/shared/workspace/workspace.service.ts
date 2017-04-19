@@ -193,21 +193,18 @@ export class WorkspaceService {
                             this.calibration.roomSize.x - realPosition.y : realPosition.y;
                     }
 
-                    if (locationX >= 0 && locationY >= 0 && locationX <= 1500 && locationY <= 1700) {
-                        location.zone = 'A';
-                    }
-                    else if (locationX <= 3600 && locationY <= 1700) {
-                        location.zone = 'C';
-                    }
-                    else if (locationX <= 3600 && locationY <= 4000) {
-                        location.zone = 'B';
-                    }
-                    else if (locationX <= 6000 && locationY <= 4000) {
-                        location.zone = 'D';
-                    }
-                    else {
-                        location.zone = 'N/A';
-                    }
+                    // Setup default for zone.
+                    location.zone = 'N/A';
+
+                    // Find location in one of the zones.
+                    this.zones.forEach((zone) => {
+                        if (zone.contains({
+                            'x': locationX,
+                            'y': locationY
+                        })) {
+                            location.zone = zone.label;
+                        }
+                    })
 
                     location.real = new Point(Math.round(locationX), Math.round(locationY));
                 });
