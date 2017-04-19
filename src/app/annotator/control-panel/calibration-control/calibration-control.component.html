@@ -22,6 +22,37 @@
                                    webkitdirectory="false"></file-electron>
                 </div>
             </div>
+            <div class="form-group is-fileinput">
+                <label class="col-xs-2 control-label" for="zoneFile">Zone Configuration</label>
+                <div class="col-xs-10">
+                    <file-electron [(ngModel)]="calibration.zoneFile"
+                                   inputId="zoneFile"
+                                   name="zoneFile"
+                                   placeholder="Select file..."
+                                   webkitdirectory="false"></file-electron>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <h4>Room Size</h4>
+            <div class="coordinates row">
+                <div class="col-sm-6 form-group">
+                    <label class="col-xs-2 control-label" for="imageOriginX">X</label>
+                    <div class="col-xs-10">
+                        <input [(ngModel)]="calibration.roomSizeX"
+                               name="roomSizeX"
+                               class="form-control" type="number" id="roomSizeX" />
+                    </div>
+                </div>
+                <div class="col-sm-6 form-group">
+                    <label class="col-xs-2 control-label" for="roomSizeY">Y</label>
+                    <div class="col-xs-10">
+                        <input [(ngModel)]="calibration.roomSizeY"
+                               name="roomSizeY"
+                               class="form-control" type="number" id="roomSizeY" />
+                    </div>
+                </div>
+            </div>
         </fieldset>
         <fieldset>
             <h4>Image Origin</h4>

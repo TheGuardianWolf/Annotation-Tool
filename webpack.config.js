@@ -61,14 +61,6 @@ var webpackConfig = {
                     dot: false
                 },
                 to: './assets'
-            },
-            {
-                context: './src/app-config',
-                from: {
-                    glob: '**/*',
-                    dot: false
-                },
-                to: './config'
             }
         ],
             {

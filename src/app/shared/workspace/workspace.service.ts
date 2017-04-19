@@ -3,7 +3,6 @@ import { ImageToolService } from '../image-tool/image-tool.service';
 import { StatusService } from '../status/status.service';
 
 import { Annotation } from '../classes/annotation';
-import { IZone, Zone } from '../classes/zone';
 import { IPoint, Point, BoundingBox, Person, Frame, Video } from '../classes/storage';
 import { Calibration, IFlipOrigin } from '../classes/calibration';
 import { Settings } from '../classes/settings';
@@ -31,9 +30,11 @@ export interface IWorkspaceVars {
     };
     'lensCalibrationFile': string;
     'perspectiveCalibrationFile': string;
+    'zoneFile': string;
     'imageOrigin': IPoint;
     'flipOrigin': IFlipOrigin;
     'switchOrigin': boolean;
+    'roomSize': IPoint;
 }
 
 /**
@@ -49,8 +50,6 @@ export class WorkspaceService {
     public calibration: Calibration = new Calibration();
 
     public settings: Settings = new Settings();
-
-    public zones: Array<Zone> = [];
 
     private _initialised: boolean = false;
     get initialised() {
@@ -194,17 +193,17 @@ export class WorkspaceService {
                     }
 
                     // Setup default for zone.
-                    location.zone = 'N/A';
+                    location.zone = '';
 
                     // Find location in one of the zones.
-                    this.zones.forEach((zone) => {
+                    this.calibration.zones.forEach((zone) => {
                         if (zone.contains({
                             'x': locationX,
                             'y': locationY
                         })) {
                             location.zone = zone.label;
                         }
-                    })
+                    });
 
                     location.real = new Point(Math.round(locationX), Math.round(locationY));
                 });
@@ -262,18 +261,6 @@ export class WorkspaceService {
             });
         }
 
-        let loadZones = () => {
-            // Load in the zones from config
-            return Q.denodeify(fs.readFile)(path.join(__dirname, 'config', 'zone.ts')).then( (zones: string) => {
-                this.zones = (JSON.parse(zones) as Array<IZone>).map((obj) => {
-                    return Zone.parse(obj);
-                });
-            },
-            () => {
-                this.zones = [];
-            });
-        }
-
         if (this.videoFile) {
             // Get context from input video
             this.getVideoContext();
@@ -286,8 +273,7 @@ export class WorkspaceService {
                 this.its.extractImages(this.videoFile, this.workspaceDir)
                     .then(readInImageSrcs)
                     .then(setAnnotationImages),
-                getVideoAnnotations(),
-                loadZones()
+                getVideoAnnotations()
             ]);
         }
         else {
@@ -297,7 +283,6 @@ export class WorkspaceService {
                     .then(setAnnotationImages),
                 this.fromFile(path.join(this.workspaceDir, 'workspace.json'))
                     .then(getVideoAnnotations),
-                loadZones()
             ]);
         }
 
@@ -342,9 +327,11 @@ export class WorkspaceService {
                 },
                 'lensCalibrationFile': this.calibration.lensCalibrationFile,
                 'perspectiveCalibrationFile': this.calibration.perspectiveCalibrationFile,
+                'zoneFile': this.calibration.zoneFile,
                 'imageOrigin': this.calibration.imageOrigin,
                 'flipOrigin': this.calibration.flipOrigin,
-                'switchOrigin': this.calibration.switchOrigin
+                'switchOrigin': this.calibration.switchOrigin,
+                'roomSize': this.calibration.roomSize
             }, null, 4));
     }
 }

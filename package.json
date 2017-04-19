@@ -12,7 +12,7 @@
   "scripts": {
     "cmake": "cmake-js",
     "postinstall": "npm run cmake && npm run build",
-	"build:watch": "webpack -w --inline --colors --progress --display-error-details --display-cached",
+    "build:watch": "webpack -w --inline --colors --progress --display-error-details --display-cached",
     "build": "webpack --inline --colors --progress --display-error-details --display-cached && cd app && npm install && cd ..",
     "start": "npm run electron",
     "electron": "electron app",

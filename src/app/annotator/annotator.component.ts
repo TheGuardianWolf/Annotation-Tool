@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/co
 import { WorkspaceService } from '../shared/workspace/workspace.service';
 import { Router } from '@angular/router';
 
+import * as path from 'path';
+
 /**
  * This class represents the lazy loaded AnnotatorComponent.
  */
@@ -21,6 +23,7 @@ export class AnnotatorComponent implements OnInit, OnDestroy {
 
     private save() {
         this.ws.annotation.toFile(this.ws.workspaceDir).done();
+        this.ws.toFile(path.join(this.ws.workspaceDir, 'workspace.json')).done();
     }
 
     public ngOnInit() {
