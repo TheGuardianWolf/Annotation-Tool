@@ -186,7 +186,7 @@ Node development tools will be automatically installed.
 * Node.js ^6.9
 * Camera-Tool
     * CMake ^3.1
-    * C++ compiler with C++14 support
+    * C++ compiler with C++11 support
     * OpenCV ^3.1
 
 ### NPM Scripts
