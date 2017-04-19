@@ -17,7 +17,7 @@ export class Calibration {
         return this._calibrated;
     }
 
-    private _lensCalibrationFile: string;
+    private _lensCalibrationFile: string = '';
     get lensCalibrationFile() {
         return this._lensCalibrationFile;
     }
@@ -28,7 +28,7 @@ export class Calibration {
         }
     }
 
-    private _perspectiveCalibrationFile: string;
+    private _perspectiveCalibrationFile: string = '';
     get perspectiveCalibrationFile() {
         return this._perspectiveCalibrationFile;
     }
@@ -43,8 +43,8 @@ export class Calibration {
     get zones() {
         return this._zones;
     }
-    
-    private _zoneFile: string;
+
+    private _zoneFile: string = '';
     get zoneFile() {
         return this._zoneFile;
     }
