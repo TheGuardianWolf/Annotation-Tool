@@ -1,4 +1,6 @@
 # Annotation-Tool
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/TheGuardianWolf/Annotation-Tool/issues)
+[![Build Status](https://travis-ci.org/TheGuardianWolf/Annotation-Tool.png?branch=master)](https://travis-ci.org/TheGuardianWolf/Annotation-Tool)
 
 Created by Jerry Fan, property of The University of Auckland. Licenced under 
 the Artistic Licence 2.0.
