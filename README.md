@@ -2,10 +2,14 @@
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/TheGuardianWolf/Annotation-Tool/issues)
 [![Build Status](https://travis-ci.org/TheGuardianWolf/Annotation-Tool.png?branch=master)](https://travis-ci.org/TheGuardianWolf/Annotation-Tool)
 
-Created by Jerry Fan, property of The University of Auckland. Licenced under 
-the Artistic Licence 2.0.
+Created by Jerry Fan as part of the research topic of "A Computationally Efficient Pipeline for Camera-based Indoor Person Tracking". Property of The University of Auckland. Licenced under the Artistic Licence 2.0.
 
 Submit an issue or pull request for bugfixes. Fork for feature additions.
+
+If you use this tool as part of your research, please cite:
+
+> A. T-Y. Chen, J. Fan, M. Biglari-Abhari, K. I-K. Wang, "A Computationally Efficient Pipeline for Camera-based Indoor Person Tracking",
+> Image and Vision Computing New Zealand (IVCNZ), 2017.
 
 ## Runtime Dependencies
 As this tool relies on the Camera-Tool utility included, the following 
