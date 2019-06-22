@@ -220,7 +220,7 @@ These binaries can be obtained prebuilt from [OpenCV Releases](https://opencv.or
 
 ### Dependencies
 
-* Node.js ^6.9
+* Node.js ^12.4.0
 * Camera-Tool
     * CMake ^3.1
     * C++ compiler with C++11 support
