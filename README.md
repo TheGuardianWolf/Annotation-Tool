@@ -58,6 +58,13 @@ Grab the latest release for your system from [Releases](https://github.com/TheGu
 After installing the package, open the Annotation-Tool from the install 
 directory.
 
+Pop-up warnings and errors are not available, so please refer to the below section
+for instructions. Errors are viewable on the Electron console however, which may give
+more insight into issue.
+
+Note: The filename convention for input files is strictly ```SX_Name_XXX_CX```, where X 
+is an integer and 'Name' is a string.
+
 ### Using the Sample Material
 
 Sample materials are available from [Releases](https://github.com/TheGuardianWolf/Annotation-Tool/releases/tag/v1.2.3-sample).
@@ -186,6 +193,30 @@ Make sure you have Node.js installed and in your PATH.
 
 Clone the git repository and run ```npm install``` inside the directory. 
 Node development tools will be automatically installed.
+
+### Building on Windows
+
+Builds on Windows are a pain to setup. There are a few pain points in this package.
+
+**MSVC and Python**
+
+For the least amount of trouble with node-gyp, ensure you have [MSVC Build Tools 2015](https://www.microsoft.com/en-nz/download/details.aspx?id=48159)
+installed and Python 2.7. Then, run the following commands:
+
+```
+npm config set python python2.7 --global
+npm config set msvs_version 2015 --global
+
+```
+
+**Canvas**
+
+This package has some specific requirements for its build depedencies, make sure you read
+its [wiki](https://github.com/Automattic/node-canvas/wiki/Installation:-Windows).
+
+**OpenCV**
+
+These binaries can be obtained prebuilt from [OpenCV Releases](https://opencv.org/releases/)
 
 ### Dependencies
 
