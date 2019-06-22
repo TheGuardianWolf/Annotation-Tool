@@ -18,12 +18,18 @@ export class ImageToolService {
     }
 
     public extractImages(src: string, dst: string) {
-        let cmd = [this.cameraToolPath, '-E', src, dst];
-        return Q.denodeify(ChildProcess.exec)(cmd.join(' '));
+        return Q.denodeify(ChildProcess.execFile)(
+            this.cameraToolPath,
+            [
+                '-E',
+                src,
+                dst
+            ]
+        );
     }
 
     public readImageDir(src: string) {
-        return Q.denodeify(fs.readdir)(src).then((files) => {
+        return Q.denodeify(fs.readdir)(path.normalize(src)).then((files) => {
             return (files as Array<string>).filter((file) => {
                 let parts = file.split('.');
                 return parts[parts.length - 1] === 'jpg' && parseInt(parts[0]) >= 0;
@@ -41,16 +47,16 @@ export class ImageToolService {
         origin: IPoint,
         lCalibFile: string, pCalibFile: string
     ) {
-        let cmd = [
+        return Q.denodeify(ChildProcess.execFile)(
             this.cameraToolPath,
-            '-Ip',
-            point.x, point.y,
-            origin.x, origin.y,
-            lCalibFile, pCalibFile
-        ];
-        return Q.denodeify(ChildProcess.exec)(cmd.join(' ')).then((data) => {
+            [
+                '-Ip',
+                point.x.toString(), point.y.toString(),
+                origin.x.toString(), origin.y.toString(),
+                path.normalize(lCalibFile), path.normalize(pCalibFile)
+            ]
+        ).then((data) => {
             return JSON.parse((data as Array<string>)[0]) as IPoint;
         });
     }
 }
-

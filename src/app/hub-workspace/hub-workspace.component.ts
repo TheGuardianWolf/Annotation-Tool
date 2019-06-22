@@ -32,11 +32,13 @@ export class HubWorkspaceComponent implements OnInit {
         this.createForm = _fb.group({
             'directory': [null, Validators.required],
             'video': [null, Validators.required],
-            'annotation': [null]
+            'annotation': [null],
+            'zones': [null]
         });
         this.loadForm = _fb.group({
             'directory': [null, Validators.required],
-            'annotation': [null]
+            'annotation': [null],
+            'zones': [null]
         });
     }
 

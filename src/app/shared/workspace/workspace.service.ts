@@ -214,9 +214,17 @@ export class WorkspaceService {
         // TODO: Move loading elsewhere.
         Loader.create('Loading workspace...');
 
-        this.workspaceDir = config.directory;
-        this.videoFile = config.video;
-        this.annotationFile = config.annotation;
+        if (config.directory) {
+            this.workspaceDir = path.normalize(config.directory);
+        }
+
+        if (config.video) {
+            this.videoFile = path.normalize(config.video);
+        }
+
+        if (config.annotation) {
+            this.annotationFile = path.normalize(config.annotation);
+        }
 
         // Load fresh annotation
         this.annotation = new Annotation();
@@ -296,7 +304,7 @@ export class WorkspaceService {
     }
 
     public fromFile(file) {
-        return Q.denodeify(fs.readFile)(file).then(
+        return Q.denodeify(fs.readFile)(path.normalize(file)).then(
             (file) => {
                 let workspaceVars: IWorkspaceVars = JSON.parse(file as string);
                 this.calibration = new Calibration(workspaceVars);
@@ -315,7 +323,7 @@ export class WorkspaceService {
 
     public toFile(file) {
         return Q.denodeify(fs.writeFile)(
-            file,
+            path.normalize(file),
             JSON.stringify({
                 'sequence': {
                     'number': this.annotation.data.number,
@@ -335,4 +343,3 @@ export class WorkspaceService {
             }, null, 4));
     }
 }
-
