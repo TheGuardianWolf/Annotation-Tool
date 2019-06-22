@@ -116,7 +116,7 @@ automatically.
 
 This feature automatically triggers whenever the location marker tool is used 
 provided that the calibration files are specified. However, if you manually 
-enter in the image-space coordinates, then you must use the _AUTOCOODINATE_ 
+enter in the image-space coordinates, then you must use the _AUTOCOORDINATE_ 
 button. 
 
 **Tips for Workflow**
