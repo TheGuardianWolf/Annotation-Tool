@@ -1949,13 +1949,22 @@
       "dev": true
     },
     "electron": {
-      "version": "1.4.15",
-      "resolved": "https://registry.npmjs.org/electron/-/electron-1.4.15.tgz",
-      "integrity": "sha1-6syv4/Va3gKnRrcGrBS0PbbHzPg=",
+      "version": "1.8.8",
+      "resolved": "https://registry.npmjs.org/electron/-/electron-1.8.8.tgz",
+      "integrity": "sha512-1f9zJehcTTGjrkb06o6ds+gsRq6SYhZJyxOk6zIWjRH8hVy03y/RzUDELzNas71f5vcvXmfGVvyjeEsadDI8tg==",
       "dev": true,
       "requires": {
+        "@types/node": "^8.0.24",
         "electron-download": "^3.0.1",
         "extract-zip": "^1.0.3"
+      },
+      "dependencies": {
+        "@types/node": {
+          "version": "8.10.56",
+          "resolved": "https://registry.npmjs.org/@types/node/-/node-8.10.56.tgz",
+          "integrity": "sha512-5yWs9hy3UWdandOgvmmPCNJ3jI5/o8syatQWOmiAO/9/PptOQ+0O2ANKHltFhE4MGCt/QiVkoxQFUbeha9Yf4w==",
+          "dev": true
+        }
       }
     },
     "electron-chromedriver": {
