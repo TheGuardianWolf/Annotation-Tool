@@ -32,7 +32,7 @@
     "cmake-js": "^5.2.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.23.1",
-    "electron": "1.4.15",
+    "electron": "18.3.7",
     "electron-packager": "^14.0.0",
     "es6-promise": "^4.0.5",
     "es6-shim": "^0.35.2",
